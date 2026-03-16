@@ -13,6 +13,7 @@ const pool = new Pool({
     password: "postgres",
     port: 5432
 })
+
 app.listen(3001, () => {
   console.log('Backend działa na http://localhost:3001');
 });

@@ -135,6 +135,9 @@ button {
     font-size: 20px;
     border-radius: 14px;
     cursor: pointer;
+    margin-left: 90vh;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 /* ================= FOOTER ================= */
@@ -226,4 +229,27 @@ button {
         gap: 32px;
         text-align: center;
     }
+}
+.slot-machine-new{
+    background-image: url("./nvcasino.png");
+    background-repeat: no-repeat;
+    position: relative;
+    width: 530px;
+    height: 300px;
+    margin: auto;
+}
+.slot1{
+    position: absolute;
+    top: 90px;
+    left: 55px;
+}
+.slot2{
+    position: absolute;
+    top: 90px;
+    left: 215px;
+}
+.slot3{
+    position: absolute;
+    top: 90px;
+    left: 380px;
 }

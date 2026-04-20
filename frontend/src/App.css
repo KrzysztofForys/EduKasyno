@@ -253,3 +253,15 @@ button {
     top: 90px;
     left: 380px;
 }
+
+.footer-link {
+    color: #FAFAFA;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.footer-link:hover {
+    opacity: 1;
+    color: #79BAFC;
+}

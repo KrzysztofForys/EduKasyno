@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom"
-
-export const Navbar = () => {
+type NavbarProps = {
+  balance: number
+}
+export const Navbar = ({balance}: NavbarProps) => {
   return (
     <header className="nav">
       <div className="logo">
@@ -9,6 +11,7 @@ export const Navbar = () => {
       </div>
 
       <nav>
+        {balance} <img src="zeton-maly.png"/>
         <Link to="/" className="link">Home</Link>
         <Link to="/sloty" className="link">Sloty</Link>
         <Link to="/ruletka" className="link">Ruletka</Link>

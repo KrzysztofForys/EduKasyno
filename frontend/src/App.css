@@ -241,7 +241,7 @@ button {
 .slot1{
     position: absolute;
     top: 90px;
-    left: 55px;
+    left: 35px;
 }
 .slot2{
     position: absolute;
@@ -252,4 +252,80 @@ button {
     position: absolute;
     top: 90px;
     left: 380px;
+}
+.slot-machine{
+    width: 630px;
+    height: 400px;
+    margin: auto;
+    background-color: #333;
+    border: 5px solid black;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+    overflow: hidden;
+    z-index: 2;
+}
+.slot-machine__slot{
+    background-color: white;
+    outline: 3px solid dimgray;
+    height: 219px;
+    width: 167px;
+    margin: 70px 15px;
+    border-radius: 5px;
+    z-index: 1;
+    overflow: hidden;
+}
+.slot-machine__slot img {
+  height: 219px;
+  width: 100%;
+  object-fit: contain;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.1s ease;
+}
+
+.reel-inner {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s linear;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999;
+}
+
+.modal-content {
+  background: black;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  min-width: 300px;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }

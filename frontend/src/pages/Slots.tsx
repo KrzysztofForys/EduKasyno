@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { Reel } from "../components/Reel";
 type SlotsProps = {
   balance: number,
@@ -37,16 +37,20 @@ const handleStop = (symbol: string) => {
 };
 
   return (
-    <div>
+    <div className="slots-container">
       <div className="slot-machine" style={{ display: "flex", gap: "10px" }}>
         <Reel spinning={spinning} stopDelay={0} onStop={handleStop} />
         <Reel spinning={spinning} stopDelay={300} onStop={handleStop} />
         <Reel spinning={spinning} stopDelay={600} onStop={handleStop} />
       </div>
 
-      <input type="number" name="bet" placeholder="kwota" step={100} value={bet} onChange={(event) => setBet(Number(event.target.value))}/><br/>
-      <button onClick={handleSpin} disabled={spinning}>
-        Zakręć bębnami
+      <div className="bet-layout">
+        <button className="change-bet" onClick={() => setBet(prev => prev == 0 ? 0 : prev - 100)}>-</button>
+        <input type="number" name="bet" placeholder="kwota" min={0} value={bet} onChange={(event) => setBet(Number(event.target.value))}/>
+        <button className="change-bet" onClick={() => setBet(prev => prev + 100)}>+</button>
+      </div>
+      <button onClick={handleSpin} disabled={spinning} className="slots-btn">
+        Zakręć
       </button>
 
       {message && (

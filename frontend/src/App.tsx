@@ -9,7 +9,7 @@ import {Scratch} from "./pages/Scratch.tsx"
 import "./App.css"
 
 export const App = () => {
-  const [tokens, setTokens] = useState<number>(0)
+  const [tokens, setTokens] = useState<number>(1000)
   return (
     <BrowserRouter>
       <Routes>

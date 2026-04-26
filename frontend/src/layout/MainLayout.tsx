@@ -6,7 +6,7 @@ type MainLayoutProps = {
 }
 export const MainLayout = ({balance}: MainLayoutProps) => {
   return (
-    <>
+    <div className="layout-container">
       <Navbar balance={balance}/>
 
       <main>
@@ -14,7 +14,7 @@ export const MainLayout = ({balance}: MainLayoutProps) => {
       </main>
 
       <Footer />
-    </>
+    </div>
   )
 }
 

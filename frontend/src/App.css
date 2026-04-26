@@ -19,10 +19,9 @@ body {
 /* ================= NAV ================= */
 .nav {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px 128px;
+    flex-direction: row;
     gap: 20px;
+    height: 22px;
 }
 
 .logo {
@@ -241,7 +240,7 @@ button {
 .slot1{
     position: absolute;
     top: 90px;
-    left: 55px;
+    left: 35px;
 }
 .slot2{
     position: absolute;
@@ -252,6 +251,154 @@ button {
     position: absolute;
     top: 90px;
     left: 380px;
+}
+.slot-machine{
+    width: 630px;
+    height: 400px;
+    margin: auto;
+    background-color: #333;
+    border: 5px solid black;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+    overflow: hidden;
+    z-index: 2;
+}
+.slot-machine__slot{
+    background-color: white;
+    outline: 3px solid dimgray;
+    height: 219px;
+    width: 167px;
+    margin: 70px 15px;
+    border-radius: 5px;
+    z-index: 1;
+    overflow: hidden;
+}
+.slot-machine__slot img {
+  height: 219px;
+  width: 100%;
+  object-fit: contain;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.1s ease;
+}
+
+.reel-inner {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s linear;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999;
+}
+
+.modal-content {
+  background: black;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  min-width: 300px;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.wallet{
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: inherit;
+    height: auto;
+    line-height: 20px;
+}
+.wallet p{
+    margin: 0;
+}
+.wallet img{
+    height: 20px;
+    width: 20px;
+}
+.slots-container{
+    width: 1000px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px
+}
+.bet-layout{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin: auto;
+}
+.bet-layout input{
+    border-radius: 5px;
+    border: 2px solid gray;
+    text-align: center;
+    font-size: 20px;
+}
+.change-bet{
+    all: unset;
+    color: white;
+    background-color: gray;
+    padding: 10px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 25px;
+    border-radius: 3px;
+}
+.slots-btn{
+    margin: auto;
+}
+.layout-container{
+    display: flex;
+    flex-direction: column;
+}
+header{
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    gap: 20px;
+}
+.reel-inner {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s linear;
+}
+
+.reel-inner.stopping {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .footer-link {

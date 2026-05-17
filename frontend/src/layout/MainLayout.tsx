@@ -1,18 +1,20 @@
 import { Outlet } from "react-router-dom"
 import Navbar from "../components/Navbar.tsx"
 import {Footer} from "../components/Footer.tsx"
-
-export const MainLayout = () => {
+type MainLayoutProps = {
+  balance: number
+}
+export const MainLayout = ({balance}: MainLayoutProps) => {
   return (
-    <>
-      <Navbar />
+    <div className="layout-container">
+      <Navbar balance={balance}/>
 
       <main>
         <Outlet />
       </main>
 
       <Footer />
-    </>
+    </div>
   )
 }
 

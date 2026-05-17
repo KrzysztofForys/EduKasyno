@@ -400,3 +400,15 @@ header{
 .reel-inner.stopping {
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+.footer-link {
+    color: #FAFAFA;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.footer-link:hover {
+    opacity: 1;
+    color: #79BAFC;
+}

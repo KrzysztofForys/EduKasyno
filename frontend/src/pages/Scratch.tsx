@@ -1,3 +1,5 @@
+import './Scratch.module.css';
+
 export const Scratch = () => {
   return (
     <div className="content">

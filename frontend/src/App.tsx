@@ -18,7 +18,7 @@ export const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/sloty" element={<Slots balance={tokens} setBalance={setTokens}/>} />
           <Route path="/ruletka" element={<Roulette />} />
-          <Route path="/zdrapki" element={<Scratch />} />
+          <Route path="/zdrapki" element={<Scratch balance={tokens} setBalance={setTokens}/>} />
           
           {/* Nowe ścieżki - na razie puste */}
           {/* <Route path="/o-nas" element={<About />} />

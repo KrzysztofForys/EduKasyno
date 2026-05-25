@@ -24,7 +24,7 @@ export const App = () => {
           <Route element={<MainLayout balance={tokens}/>}>
           <Route path="/" element={<Home />} />
           <Route path="/sloty" element={<Slots balance={tokens} setBalance={setTokens}/>} />
-          <Route path="/ruletka" element={<Roulette />} />
+          <Route path="/ruletka" element={<Roulette balance={tokens} setBalance={setTokens} />} />
           <Route path="/zdrapki" element={<Scratch balance={tokens} setBalance={setTokens}/>} />
           
           {/* Nowe ścieżki - Dodane */}

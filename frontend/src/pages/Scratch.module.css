@@ -1,0 +1,670 @@
+/* Scratch.module.css */
+
+/* --- LOBBY CONTAINER --- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  font-family: 'Poppins', sans-serif;
+  color: #FAFAFA;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 42px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #79BAFC 0%, #B588F7 50%, #FF65B6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 4px 20px rgba(121, 186, 252, 0.15);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #B0B0B0;
+  font-weight: 300;
+}
+
+/* --- CARD SELECTION GRID --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 20px;
+}
+
+@media (max-width: 968px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- CHOICE CARDS --- */
+.choiceCard {
+  background: rgba(30, 30, 35, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 30px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.choiceCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.05), transparent 70%);
+  pointer-events: none;
+}
+
+/* Hover effects based on tier */
+.choiceCard:hover {
+  transform: translateY(-8px) scale(1.02);
+  background: rgba(35, 35, 42, 0.8);
+}
+
+.classicTier:hover {
+  border-color: #198754;
+  box-shadow: 0 10px 30px rgba(25, 135, 84, 0.25), inset 0 0 15px rgba(25, 135, 84, 0.1);
+}
+
+.goldTier:hover {
+  border-color: #d4af37;
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25), inset 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+.extremeTier:hover {
+  border-color: #ff007f;
+  box-shadow: 0 10px 30px rgba(255, 0, 127, 0.25), inset 0 0 15px rgba(255, 0, 127, 0.1);
+}
+
+.tierTag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.classicTag {
+  background: rgba(25, 135, 84, 0.15);
+  color: #39e58a;
+  border: 1px solid rgba(25, 135, 84, 0.3);
+}
+
+.goldTag {
+  background: rgba(212, 175, 55, 0.15);
+  color: #ffd700;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.extremeTag {
+  background: rgba(255, 0, 127, 0.15);
+  color: #ff4fa3;
+  border: 1px solid rgba(255, 0, 127, 0.3);
+}
+
+.cardIcon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  animation: float 3s ease-in-out infinite;
+}
+
+.choiceCard:nth-child(2) .cardIcon {
+  animation-delay: 0.5s;
+}
+
+.choiceCard:nth-child(3) .cardIcon {
+  animation-delay: 1s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.cardName {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.cardDesc {
+  font-size: 13px;
+  color: #A0A0A0;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.costSection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 8px 16px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.tokenIcon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.playButton {
+  all: unset;
+  background: linear-gradient(135deg, #79BAFC 0%, #4D8BFF 100%);
+  color: #FFF;
+  font-weight: 600;
+  padding: 12px 36px;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 80%;
+  box-sizing: border-box;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(77, 139, 255, 0.3);
+}
+
+.playButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(77, 139, 255, 0.5);
+  filter: brightness(1.1);
+}
+
+.playButton:disabled {
+  background: #333338;
+  color: #777;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* --- GAME BOARD --- */
+.gameArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.gameControls {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 500px;
+  justify-content: space-between;
+}
+
+.actionButton {
+  all: unset;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FAFAFA;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.actionButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.actionButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.scratchAllBtn {
+  background: linear-gradient(135deg, #FF65B6 0%, #B588F7 100%);
+  border: none;
+  box-shadow: 0 4px 15px rgba(181, 136, 247, 0.3);
+}
+
+.scratchAllBtn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(181, 136, 247, 0.5);
+  filter: brightness(1.1);
+}
+
+/* --- CLASSIC CARD DETAILS (3x3 Grid) --- */
+.classicInnerGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  background: #111112;
+  padding: 16px;
+  gap: 12px;
+}
+
+.classicScratchField {
+  background: radial-gradient(circle at center, #1b2820 0%, #0d1410 100%);
+  border: 1px solid #198754;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FAFAFA;
+  font-weight: 700;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(25, 135, 84, 0.2);
+}
+
+.classicScratchField.winning {
+  animation: goldPulse 1.5s infinite alternate;
+  background: radial-gradient(circle at center, #2e4a37 0%, #152b1b 100%);
+  border-color: #39e58a;
+  color: #39e58a;
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(57, 229, 138, 0.4);
+}
+
+.fieldAmount {
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.fieldLabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: #888;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* --- GOLD CARD DETAILS (Numbers Matching) --- */
+.goldInnerContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #12100a;
+  padding: 16px 20px;
+  gap: 16px;
+}
+
+.goldWinningSection {
+  background: linear-gradient(to right, rgba(212, 175, 55, 0.08), rgba(212, 175, 55, 0.02));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.goldWinLabel {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #c59b27;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.goldWinNumbers {
+  display: flex;
+  gap: 16px;
+}
+
+.goldWinNumberBox {
+  background: #ffd700;
+  color: #111;
+  font-weight: 800;
+  font-size: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.35);
+  border: 2px solid #FFF;
+}
+
+.goldPlayerSection {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  flex-grow: 1;
+}
+
+.goldPlayerBox {
+  background: radial-gradient(circle at center, #1b160e 0%, #0d0a06 100%);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.goldPlayerBox.winning {
+  border-color: #ffd700;
+  background: radial-gradient(circle at center, #3d2f14 0%, #171207 100%);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
+  animation: goldPulse 1.5s infinite alternate;
+}
+
+.goldNumber {
+  font-size: 22px;
+  font-weight: 800;
+  color: #FFF;
+}
+
+.goldPlayerBox.winning .goldNumber {
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+.goldPrize {
+  font-size: 11px;
+  font-weight: 600;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.goldPlayerBox.winning .goldPrize {
+  color: #FFF;
+}
+
+/* --- EXTREME CARD DETAILS (4x4 Matrix + Multiplier) --- */
+.extremeInnerContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #0f071a;
+  padding: 14px 18px;
+  gap: 12px;
+}
+
+.extremeTopSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 0, 127, 0.05);
+  border: 1px solid rgba(255, 0, 127, 0.25);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.extremeMultiplierBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.extremeMultLabel {
+  font-size: 10px;
+  color: #ff4fa3;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.extremeMultValue {
+  background: linear-gradient(135deg, #ff007f 0%, #8a2be2 100%);
+  color: #FFF;
+  font-weight: 800;
+  font-size: 16px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+}
+
+.extremeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 6px;
+  flex-grow: 1;
+}
+
+.extremeBox {
+  background: radial-gradient(circle at center, #170929 0%, #080312 100%);
+  border: 1px solid rgba(138, 43, 226, 0.3);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.extremeBox.winning {
+  border-color: #ff007f;
+  background: radial-gradient(circle at center, #3d0c2b 0%, #12020d 100%);
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
+  animation: neonPulse 1.5s infinite alternate;
+}
+
+.extremeBox.empty {
+  opacity: 0.3;
+}
+
+.extremeBoxValue {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ff4fa3;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.extremeBox.winning .extremeBoxValue {
+  color: #FFF;
+  text-shadow: 0 0 8px #ff007f;
+}
+
+.extremeBoxIcon {
+  font-size: 11px;
+  margin-top: 1px;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes goldPulse {
+  from {
+    border-color: rgba(255, 215, 0, 0.4);
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.1);
+  }
+  to {
+    border-color: rgba(255, 215, 0, 1);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  }
+}
+
+@keyframes neonPulse {
+  from {
+    border-color: rgba(255, 0, 127, 0.4);
+    box-shadow: 0 0 5px rgba(255, 0, 127, 0.1);
+  }
+  to {
+    border-color: rgba(255, 0, 127, 1);
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+  }
+}
+
+/* --- RESULT MODAL --- */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modalContent {
+  background: #17171c;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+  animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modalThemeClassic { border-color: #198754; box-shadow: 0 0 40px rgba(25, 135, 84, 0.2); }
+.modalThemeGold { border-color: #d4af37; box-shadow: 0 0 40px rgba(212, 175, 55, 0.2); }
+.modalThemeExtreme { border-color: #ff007f; box-shadow: 0 0 40px rgba(255, 0, 127, 0.2); }
+
+.modalIcon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+.modalTitle {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.modalTitleWin {
+  background: linear-gradient(135deg, #ffd700 0%, #ff4fa3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.modalTitleLose {
+  color: #C0C0C0;
+}
+
+.modalPayout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 32px;
+  font-weight: 800;
+  color: #FFF;
+  margin: 16px 0;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modalText {
+  font-size: 14px;
+  color: #A0A0A0;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.modalButton {
+  all: unset;
+  background: linear-gradient(135deg, #79BAFC 0%, #4D8BFF 100%);
+  color: #FFF;
+  font-weight: 700;
+  padding: 14px 36px;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(77, 139, 255, 0.4);
+  transition: all 0.2s ease;
+  font-size: 16px;
+}
+
+.modalButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(77, 139, 255, 0.6);
+  filter: brightness(1.1);
+}
+
+/* Background sparkling star animation */
+.sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+}

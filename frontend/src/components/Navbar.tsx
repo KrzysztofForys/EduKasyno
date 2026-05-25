@@ -19,7 +19,7 @@ export const Navbar = ({balance}: NavbarProps) => {
 
       <div className="wallet">
         <div>{balance}</div>
-        <img src="zeton-maly.svg"/>
+        <img src="zeton-portfel.svg"/>
       </div>
     </header>
   )

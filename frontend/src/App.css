@@ -412,3 +412,10 @@ header{
     opacity: 1;
     color: #79BAFC;
 }
+svg{
+    display: block;
+}
+img:hover{
+    transform: rotate(90deg);
+    transition: 4s;
+}

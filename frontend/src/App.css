@@ -36,6 +36,43 @@ body {
     opacity: 0.9;
 }
 
+/* ================= NAV ================= */
+.nav {
+    display: flex;
+    justify-content: space-between; /* Rozsuwa logo i menu na boki */
+    align-items: center;
+    padding: 24px 128px;
+    gap: 20px;
+    line-height: 20px;
+}
+
+.logo {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #79BAFC;
+}
+
+.nav-text {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* STYL DLA LINKÓW W NAVBARZE */
+.link {
+    color: #FAFAFA;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    margin-left: 24px; /* Zamiast margin-right, daje elegancki odstęp między linkami */
+    transition: color 0.3s, opacity 0.3s;
+    opacity: 0.8;
+}
+
+.link:hover {
+    color: #79BAFC;
+    opacity: 1;
+}
 /* ================= HERO ================= */
 .hero {
     display: flex;
@@ -98,9 +135,14 @@ body {
 
 .card-content {
     position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     bottom: 0;
     padding: 24px;
     width: 100%;
+    height: 100%;
     background: linear-gradient(to top, rgba(0, 0, 0, .85), transparent);
 }
 
@@ -157,7 +199,8 @@ button {
     font-size: 14px;
     margin-bottom: 8px;
 }
-.link{
+
+.link {
     margin-right: 5px;
 }
 
@@ -229,7 +272,8 @@ button {
         text-align: center;
     }
 }
-.slot-machine-new{
+
+.slot-machine-new {
     background-image: url("./nvcasino.png");
     background-repeat: no-repeat;
     position: relative;
@@ -237,22 +281,26 @@ button {
     height: 300px;
     margin: auto;
 }
-.slot1{
+
+.slot1 {
     position: absolute;
     top: 90px;
     left: 35px;
 }
-.slot2{
+
+.slot2 {
     position: absolute;
     top: 90px;
     left: 215px;
 }
-.slot3{
+
+.slot3 {
     position: absolute;
     top: 90px;
     left: 380px;
 }
-.slot-machine{
+
+.slot-machine {
     width: 630px;
     height: 400px;
     margin: auto;
@@ -265,7 +313,8 @@ button {
     overflow: hidden;
     z-index: 2;
 }
-.slot-machine__slot{
+
+.slot-machine__slot {
     background-color: white;
     outline: 3px solid dimgray;
     height: 219px;
@@ -275,61 +324,63 @@ button {
     z-index: 1;
     overflow: hidden;
 }
+
 .slot-machine__slot img {
-  height: 219px;
-  width: 100%;
-  object-fit: contain;
+    height: 219px;
+    width: 100%;
+    object-fit: contain;
 }
 
 .fade-out {
-  opacity: 0;
-  transition: opacity 0.1s ease;
+    opacity: 0;
+    transition: opacity 0.1s ease;
 }
 
 .fade-in {
-  opacity: 1;
-  transition: opacity 0.1s ease;
+    opacity: 1;
+    transition: opacity 0.1s ease;
 }
 
 .reel-inner {
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s linear;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s linear;
 }
+
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  z-index: 999;
+    z-index: 999;
 }
 
 .modal-content {
-  background: black;
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-  min-width: 300px;
+    background: black;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 300px;
 }
 
 .modal-content h2 {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .modal-content button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-.wallet{
+.wallet {
     display: flex;
     gap: 6px;
     align-items: center;
@@ -337,14 +388,17 @@ button {
     height: auto;
     line-height: 20px;
 }
-.wallet p{
+
+.wallet p {
     margin: 0;
 }
-.wallet img{
+
+.wallet img {
     height: 20px;
     width: 20px;
 }
-.slots-container{
+
+.slots-container {
     width: 1000px;
     margin: auto;
     padding: 20px;
@@ -353,19 +407,22 @@ button {
     flex-direction: column;
     gap: 20px
 }
-.bet-layout{
+
+.bet-layout {
     display: flex;
     flex-direction: row;
     gap: 10px;
     margin: auto;
 }
-.bet-layout input{
+
+.bet-layout input {
     border-radius: 5px;
     border: 2px solid gray;
     text-align: center;
     font-size: 20px;
 }
-.change-bet{
+
+.change-bet {
     all: unset;
     color: white;
     background-color: gray;
@@ -377,28 +434,32 @@ button {
     font-size: 25px;
     border-radius: 3px;
 }
-.slots-btn{
+
+.slots-btn {
     margin: auto;
 }
-.layout-container{
+
+.layout-container {
     display: flex;
     flex-direction: column;
 }
-header{
+
+header {
     height: auto;
     display: flex;
     flex-direction: row;
     padding: 10px;
     gap: 20px;
 }
+
 .reel-inner {
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s linear;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s linear;
 }
 
 .reel-inner.stopping {
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .footer-link {
@@ -418,4 +479,86 @@ svg{
 img:hover{
     transform: rotate(90deg);
     transition: 4s;
+}
+
+/* ================= PAGE CONTENT ================= */
+.page-content {
+    padding: 60px 128px;
+    max-width: 1200px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+.page-content h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    color: #79BAFC;
+    margin-bottom: 24px;
+}
+
+.page-content p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #CCCCCC;
+}
+
+/* MISSION GRID */
+.mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.mission-item {
+    background: #252525;
+    padding: 30px;
+    border-radius: 12px;
+    border-left: 4px solid #79BAFC;
+}
+
+.contact-info {
+    background: #252525;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+@media (max-width: 1024px) {
+    .page-content {
+        padding: 40px;
+    }
+    .mission-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* LISTA ZASAD & FAQ */
+.rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 24px;
+}
+
+.rule-box, .faq-item {
+    background: #212121;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+.rule-box h4, .faq-item h4 {
+    font-family: 'Poppins', sans-serif;
+    color: #79BAFC;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.terms-container h3 {
+    font-family: 'Poppins', sans-serif;
+    color: #FAFAFA;
+    font-size: 22px;
+    margin-top: 30px;
+    margin-bottom: 12px;
 }

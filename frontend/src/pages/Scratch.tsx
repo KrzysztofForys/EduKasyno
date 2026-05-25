@@ -383,7 +383,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
                 <p className={styles.cardDesc}>{card.desc}</p>
                 <div className={styles.costSection}>
                   <span>{card.cost}</span>
-                  <img src="zeton-maly.svg" alt="Żeton" className={styles.tokenIcon} />
+                  <img src="zeton-portfel.svg" alt="Żeton" className={styles.tokenIcon} />
                 </div>
                 <button
                   className={styles.playButton}
@@ -424,7 +424,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
                   >
                     <div className={styles.fieldAmount}>
                       {field.amount}
-                      <img src="zeton-maly.svg" alt="Żetony" style={{ width: "14px" }} />
+                      <img src="zeton-portfel.svg" alt="Żetony" style={{ width: "14px" }} />
                     </div>
                     <div className={styles.fieldLabel}>Żetonów</div>
                   </div>
@@ -460,7 +460,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
                       <div className={styles.goldNumber}>{card.number}</div>
                       <div className={styles.goldPrize}>
                         {card.prize}
-                        <img src="zeton-maly.svg" alt="Żetony" style={{ width: "10px" }} />
+                        <img src="zeton-portfel.svg" alt="Żetony" style={{ width: "10px" }} />
                       </div>
                     </div>
                   ))}
@@ -494,7 +494,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
                         <>
                           <div className={styles.extremeBoxValue}>
                             +{box.prize}
-                            <img src="zeton-maly.svg" alt="Żetony" style={{ width: "8px" }} />
+                            <img src="zeton-portfel.svg" alt="Żetony" style={{ width: "8px" }} />
                           </div>
                           <div className={styles.extremeBoxIcon}>💎</div>
                         </>
@@ -553,7 +553,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
                 <h2 className={`${styles.modalTitle} styles.modalTitleWin`}>Gratulacje!</h2>
                 <div className={styles.modalPayout}>
                   <span>+{payout}</span>
-                  <img src="zeton-maly.svg" alt="Żetony" style={{ width: "28px" }} />
+                  <img src="zeton-portfel.svg" alt="Żetony" style={{ width: "28px" }} />
                 </div>
                 <p className={styles.modalText}>
                   Zdrapka okazała się szczęśliwa! Twoja nagroda w wysokości {payout} żetonów

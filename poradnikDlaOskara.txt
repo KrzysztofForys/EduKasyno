@@ -1,5 +1,0 @@
-git clone https://github.com/KrzysztofForys/EduKasyno
-stwórz nową gałąź i tam rób
-cmd w folderze frontend/backend
-npm install
-npm run dev

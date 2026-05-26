@@ -1,0 +1,49 @@
+git clone https://github.com/KrzysztofForys/EduKasyno
+git switch -c nazwa_brancha
+git branch - pokazuje listę branchy, aktywny branch jest zaznaczony - UPEWNIASZ SIĘ, ŻE NIE JEST NIM MAIN/MASTER (jak jest, to git switch nazwa_brancha)
+commity w branchu stworzonym poprzednią komendą
+git commit -m "msg" (jak są nieśledzone pliki: git add .)
+git push origin nazwa_brancha - wysyłka do GitHuba\
+
+git pull - pobranie aktualnej wersji z GitHuba
+
+Po pobraniu projektu, aby móc go odpalić:
+cmd w folderze frontend/backend
+npm install
+npm run dev
+
+
+Jak nie masz pobranego postgresa (nie działa ci psql w CMD):
+https://www.enterprisedb.com/downloads/postgres-postgresql-downloads - pobierasz
+odpalasz installer
+przeklikujesz go aż się zacznie rozpakowywać
+jak cię pyta o StackBuildera, to nie zaznaczasz - nie jest nam do niczego potrzebny
+
+potem otwierasz CMD i piszesz: psql --version (powinno zwrócić psql (PostgreSQL) 18.4)
+jak NIE ZWRÓCI:
+klawisz Windows
+w wyszukiwaniu dajesz edytuj zmienne środowiskowe
+wchodzisz tam
+na samym dole jest opcja "Zmienne środowiskowe..." - klikasz
+Na dole są wypisane zmienne systemowe - klikasz na tą o nazwie "Path", a następnie edytuj
+Klikasz "Nowy"
+Wklejasz w polu C:\Program Files\PostgreSQL\bin
+Klikasz OK
+I możesz zamknąć resztę okienek
+Teraz psql już powinien działać
+
+Logowanie do postgresa w CMD: psql -U postgres
+Hasło w pliku .env, który umieszczacie w folderze backend (wyślę go wam na grupę)
+(jak coś to dotenv jest w package.json, więc npm install w backendzie go pobierze)
+
+Jak odpalacie projekt po raz pierwszy i nie macie bazy:
+w terminalu przejście do folderu backend
+npm run db:create (tworzy bazę)
+npm run db:init (dodaje tabele)
+Jak nastąpią zmiany w skrypcie SQL (skryptBazy.sql), to odpalacie npm run db:init
+
+
+
+
+
+

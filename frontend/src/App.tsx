@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { useState } from "react"
-import {MainLayout} from "./layout/MainLayout.tsx"
+import { MainLayout } from "./layout/MainLayout.tsx"
 
-import {Home} from "./pages/Home.tsx"
+import { Home } from "./pages/Home.tsx"
 import Slots from "./pages/Slots.tsx"
-import {Roulette} from "./pages/Roulette"
-import {Scratch} from "./pages/Scratch.tsx"
+import { Roulette } from "./pages/Roulette"
+import { Scratch } from "./pages/Scratch.tsx"
 import { About } from "./pages/About.tsx"
 import { Mission } from "./pages/Mission.tsx"
 import { Contact } from "./pages/Contact.tsx"
@@ -21,12 +21,12 @@ export const App = () => {
     <BrowserRouter>
       <Routes>
 
-          <Route element={<MainLayout balance={tokens}/>}>
+        <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/sloty" element={<Slots balance={tokens} setBalance={setTokens}/>} />
+          <Route path="/sloty" element={<Slots />} />
           <Route path="/ruletka" element={<Roulette balance={tokens} setBalance={setTokens} />} />
-          <Route path="/zdrapki" element={<Scratch balance={tokens} setBalance={setTokens}/>} />
-          
+          <Route path="/zdrapki" element={<Scratch balance={tokens} setBalance={setTokens} />} />
+
           {/* Nowe ścieżki - Dodane */}
           <Route path="/o-nas" element={<About />} />
           <Route path="/misja" element={<Mission />} />
@@ -34,7 +34,7 @@ export const App = () => {
           <Route path="/zespol" element={<Team />} />
           <Route path="/odpowiedzialna-gra" element={<ResponsibleGaming />} />
           <Route path="/regulamin" element={<Terms />} />
-          <Route path="/pomoc" element={<Help />} /> 
+          <Route path="/pomoc" element={<Help />} />
         </Route>
       </Routes>
     </BrowserRouter>

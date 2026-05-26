@@ -1,12 +1,10 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { Reel } from "../components/Reel";
+import { useBalance } from "../context/BalanceContext.tsx"
 
-type SlotsProps = {
-  balance: number;
-  setBalance: Dispatch<SetStateAction<number>>;
-};
 
-export default function Slots({ balance, setBalance }: SlotsProps) {
+export default function Slots() {
+  const { balance, tryToChangeBalance } = useBalance()
   const [spinning, setSpinning] = useState(false);
   const [results, setResults] = useState<string[]>([]);
   const [message, setMessage] = useState<string | null>(null);
@@ -23,10 +21,11 @@ export default function Slots({ balance, setBalance }: SlotsProps) {
     }
 
     // Deduct bet from balance
-    setBalance((prev) => prev - bet);
-    setResults([]);
-    setSpinning(true);
-  };
+    if (tryToChangeBalance(-bet)) {
+      setResults([]);
+      setSpinning(true);
+    }
+  }
 
   const handleStop = (symbol: string) => {
     setResults((prev) => {
@@ -37,14 +36,14 @@ export default function Slots({ balance, setBalance }: SlotsProps) {
         setTimeout(() => {
           if (updated[0] === updated[1] && updated[1] === updated[2]) {
             setMessage("JACKPOT!");
-            setBalance((prev) => prev + bet * 10);
+            tryToChangeBalance(bet * 10);
           } else if (
             updated[0] === updated[1] ||
             updated[1] === updated[2] ||
             updated[0] === updated[2]
           ) {
             setMessage("Mała wygrana!");
-            setBalance((prev) => prev + bet * 2);
+            tryToChangeBalance(bet * 2);
           } else {
             setMessage("Spróbuj ponownie.");
           }

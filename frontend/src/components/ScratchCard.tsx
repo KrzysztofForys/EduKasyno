@@ -9,6 +9,7 @@ interface ScratchCardProps {
   theme: "classic" | "gold" | "extreme";
   isRevealed: boolean;
   onComplete: () => void;
+  onBought: (isBought: boolean) => void;
   children: React.ReactNode;
 }
 
@@ -31,6 +32,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   theme,
   isRevealed,
   onComplete,
+  onBought,
   children,
 }) => {
   const { tryToChangeBalance } = useBalance()
@@ -45,7 +47,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   const [scratchPercent, setScratchPercent] = useState(0);
 
   const lastPosRef = useRef<{ x: number; y: number } | null>(null);
-  const checkThrottleRef = useRef<number>(0);
   const particlesRef = useRef<Particle[]>([]);
   const animationFrameRef = useRef<number>(0);
 
@@ -275,6 +276,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     if (!isBought) {
       if (!tryToChangeBalance(-cartCost)) return;
       setIsBought(true);
+      onBought(true);
       audio.playCoinSound();
     }
     if (fullyRevealed) return;
@@ -371,7 +373,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
 
     if (percent >= 60) {
       revealCardFully();
-      setIsBought(false);
     }
   };
 
@@ -418,6 +419,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       }
     };
     fadeOut();
+    setIsBought(false);
+    onBought(false);
   };
 
   return (

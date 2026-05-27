@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom"
 import { useBalance } from "../context/BalanceContext.tsx"
+import { formatBalance } from "../utils/format.ts"
 
 export const Navbar = () => {
+
   const { balance } = useBalance()
+
+
   return (
     <header>
       <div className="logo">
@@ -18,7 +22,7 @@ export const Navbar = () => {
       </nav>
 
       <div className="wallet">
-        <div>{balance}</div>
+        <div>{formatBalance(balance)}</div>
         <img src="zeton-portfel.svg" />
       </div>
     </header>

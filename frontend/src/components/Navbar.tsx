@@ -25,6 +25,10 @@ export const Navbar = () => {
         <div>{formatBalance(balance)}</div>
         <img src="zeton-portfel.svg" />
       </div>
+
+      <div>
+        <p>Profil</p>
+      </div>
     </header>
   )
 }

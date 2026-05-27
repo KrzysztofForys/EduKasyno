@@ -2,11 +2,7 @@ import { useState } from "react";
 import styles from "./Scratch.module.css";
 import { ScratchCard } from "../components/ScratchCard";
 import { audio } from "../utils/audio";
-
-type ScratchProps = {
-  balance: number;
-  setBalance: React.Dispatch<React.SetStateAction<number>>;
-};
+import { useBalance } from "../context/BalanceContext";
 
 // Define Card configurations for Lobby
 interface CardConfig {
@@ -81,7 +77,8 @@ type CardState =
   | { type: "gold"; data: GoldCardState }
   | { type: "extreme"; data: ExtremeCardState };
 
-export const Scratch = ({ balance, setBalance }: ScratchProps) => {
+export const Scratch = () => {
+  const { tryToChangeBalance } = useBalance()
   const [gameState, setGameState] = useState<"lobby" | "playing" | "revealing" | "complete">("lobby");
   const [activeCard, setActiveCard] = useState<CardConfig | null>(null);
   const [cardState, setCardState] = useState<CardState | null>(null);
@@ -324,7 +321,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
 
     // Update user balance if there's a payout
     if (totalWin > 0) {
-      setBalance((prev) => prev + totalWin);
+      tryToChangeBalance(totalWin);
     }
 
     // Trigger visual/sound feedback

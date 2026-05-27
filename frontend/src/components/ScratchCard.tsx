@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import { audio } from "../utils/audio";
+import { useBalance } from "../context/BalanceContext.tsx"
 
 interface ScratchCardProps {
+  cartCost: number;
   width: number;
   height: number;
   theme: "classic" | "gold" | "extreme";
@@ -23,6 +25,7 @@ interface Particle {
 }
 
 export const ScratchCard: React.FC<ScratchCardProps> = ({
+  cartCost,
   width,
   height,
   theme,
@@ -30,6 +33,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   onComplete,
   children,
 }) => {
+  const { balance, tryToChangeBalance } = useBalance()
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -115,8 +120,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       theme === "gold"
         ? "rgba(255, 255, 255, 0.7)"
         : theme === "classic"
-        ? "rgba(143, 255, 143, 0.6)"
-        : "rgba(255, 79, 240, 0.6)";
+          ? "rgba(143, 255, 143, 0.6)"
+          : "rgba(255, 79, 240, 0.6)";
     ctx.lineWidth = 6;
     ctx.strokeRect(5, 5, width - 10, height - 10);
 
@@ -125,8 +130,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       theme === "gold"
         ? "rgba(212, 175, 55, 0.5)"
         : theme === "classic"
-        ? "rgba(25, 135, 84, 0.5)"
-        : "rgba(138, 43, 226, 0.5)";
+          ? "rgba(25, 135, 84, 0.5)"
+          : "rgba(138, 43, 226, 0.5)";
     ctx.lineWidth = 2;
     ctx.strokeRect(10, 10, width - 20, height - 20);
 
@@ -145,8 +150,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       theme === "gold"
         ? "★ ZŁOTY SKARBIEC ★"
         : theme === "classic"
-        ? "🍀 SZCZĘŚLIWA KONICZYNA 🍀"
-        : "⚡ NEONOWY JACKPOT ⚡";
+          ? "🍀 SZCZĘŚLIWA KONICZYNA 🍀"
+          : "⚡ NEONOWY JACKPOT ⚡";
     ctx.fillText(headerText, width / 2, height / 2 - 25);
 
     // Call to Action
@@ -155,8 +160,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       theme === "gold"
         ? "#FFECA1"
         : theme === "classic"
-        ? "#B6FFD4"
-        : "#FFA9FF";
+          ? "#B6FFD4"
+          : "#FFA9FF";
     ctx.fillText("ZDRAP TUTAJ MYSZKĄ LUB PALCEM", width / 2, height / 2 + 15);
 
     ctx.font = "normal 10px 'Open Sans', sans-serif";
@@ -215,8 +220,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       theme === "gold"
         ? ["#ffe875", "#c59b27", "#85581a", "#ffffff"]
         : theme === "classic"
-        ? ["#8fff8f", "#198754", "#0a4b27", "#ffffff"]
-        : ["#ff7be9", "#8a2be2", "#e0115f", "#ffffff"];
+          ? ["#8fff8f", "#198754", "#0a4b27", "#ffffff"]
+          : ["#ff7be9", "#8a2be2", "#e0115f", "#ffffff"];
 
     for (let i = 0; i < count; i++) {
       particlesRef.current.push({
@@ -262,6 +267,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   const handleStart = (
     e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
   ) => {
+    {/* dodac tu to ze sprawdza koszt dopiero jaK ZACZNIESZ ZMAZYWAC */ }
     if (fullyRevealed) return;
     const coords = getMouseCoords(e);
     if (!coords) return;
@@ -372,7 +378,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
         ctx.clearRect(0, 0, width, height);
         ctx.save();
         ctx.globalAlpha = alpha;
-        
+
         // Redraw canvas with opacity
         let grad = ctx.createLinearGradient(0, 0, width, height);
         if (theme === "classic") {
@@ -388,7 +394,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, width, height);
         ctx.restore();
-        
+
         requestAnimationFrame(fadeOut);
       }
     };
@@ -408,14 +414,14 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
           theme === "gold"
             ? "0 8px 32px rgba(197, 155, 39, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.15)"
             : theme === "classic"
-            ? "0 8px 32px rgba(25, 135, 84, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.1)"
-            : "0 8px 32px rgba(138, 43, 226, 0.45), inset 0 0 15px rgba(255, 79, 240, 0.15)",
+              ? "0 8px 32px rgba(25, 135, 84, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.1)"
+              : "0 8px 32px rgba(138, 43, 226, 0.45), inset 0 0 15px rgba(255, 79, 240, 0.15)",
         border:
           theme === "gold"
             ? "2px solid #c59b27"
             : theme === "classic"
-            ? "2px solid #198754"
-            : "2px solid #8a2be2",
+              ? "2px solid #198754"
+              : "2px solid #8a2be2",
         backgroundColor: "#161618",
         touchAction: "none",
         userSelect: "none",

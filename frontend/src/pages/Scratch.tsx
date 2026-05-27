@@ -90,12 +90,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
   const [showResultModal, setShowResultModal] = useState(false);
 
   // Generate Card values on buy
-  const handleBuyCard = (card: CardConfig) => {
-    if (balance < card.cost) return;
-
-    // Deduct cost and play buying sound
-    setBalance((prev) => prev - card.cost);
-    audio.playCoinSound();
+  const handleSelectCard = (card: CardConfig) => {
 
     setActiveCard(card);
     setIsCanvasRevealed(false);
@@ -236,7 +231,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
 
   const generateExtremeCard = (): ExtremeCardState => {
     const isWin = Math.random() < 0.28; // 28% win rate
-    
+
     // Weighted multipliers
     const multRoll = Math.random();
     let multiplier = 1;
@@ -369,7 +364,6 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
       {gameState === "lobby" && (
         <div className={styles.grid}>
           {CARDS_LOBBY.map((card) => {
-            const canAfford = balance >= card.cost;
             return (
               <div
                 key={card.id}
@@ -387,10 +381,9 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
                 </div>
                 <button
                   className={styles.playButton}
-                  onClick={() => handleBuyCard(card)}
-                  disabled={!canAfford}
+                  onClick={() => handleSelectCard(card)}
                 >
-                  {canAfford ? "Kup Zdrapkę" : "Brak Środków"}
+                  Wybierz zdrapkę
                 </button>
               </div>
             );
@@ -403,6 +396,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
         <div className={styles.gameArea}>
           {/* Scratch Card Frame Wrapper */}
           <ScratchCard
+            cartCost={activeCard.cost}
             width={activeCard.width}
             height={activeCard.height}
             theme={activeCard.id}
@@ -416,11 +410,10 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
                 {cardState.data.fields.map((field, idx) => (
                   <div
                     key={idx}
-                    className={`${styles.classicScratchField} ${
-                      field.isWinning && (gameState === "complete" || gameState === "revealing")
-                        ? styles.winning
-                        : ""
-                    }`}
+                    className={`${styles.classicScratchField} ${field.isWinning && (gameState === "complete" || gameState === "revealing")
+                      ? styles.winning
+                      : ""
+                      }`}
                   >
                     <div className={styles.fieldAmount}>
                       {field.amount}
@@ -451,11 +444,10 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
                   {cardState.data.playerCards.map((card, idx) => (
                     <div
                       key={idx}
-                      className={`${styles.goldPlayerBox} ${
-                        card.isWinning && (gameState === "complete" || gameState === "revealing")
-                          ? styles.winning
-                          : ""
-                      }`}
+                      className={`${styles.goldPlayerBox} ${card.isWinning && (gameState === "complete" || gameState === "revealing")
+                        ? styles.winning
+                        : ""
+                        }`}
                     >
                       <div className={styles.goldNumber}>{card.number}</div>
                       <div className={styles.goldPrize}>
@@ -484,11 +476,10 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
                   {cardState.data.boxes.map((box, idx) => (
                     <div
                       key={idx}
-                      className={`${styles.extremeBox} ${
-                        box.prize > 0
-                          ? styles.winning
-                          : styles.empty
-                      }`}
+                      className={`${styles.extremeBox} ${box.prize > 0
+                        ? styles.winning
+                        : styles.empty
+                        }`}
                     >
                       {box.prize > 0 ? (
                         <>
@@ -539,13 +530,12 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
       {showResultModal && activeCard && (
         <div className={styles.modal}>
           <div
-            className={`${styles.modalContent} ${
-              activeCard.id === "classic"
-                ? styles.modalThemeClassic
-                : activeCard.id === "gold"
+            className={`${styles.modalContent} ${activeCard.id === "classic"
+              ? styles.modalThemeClassic
+              : activeCard.id === "gold"
                 ? styles.modalThemeGold
                 : styles.modalThemeExtreme
-            }`}
+              }`}
           >
             {payout > 0 ? (
               <>

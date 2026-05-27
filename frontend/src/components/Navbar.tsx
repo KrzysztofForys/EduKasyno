@@ -26,9 +26,7 @@ export const Navbar = () => {
         <img src="zeton-portfel.svg" />
       </div>
 
-      <div>
-        <p>Profil</p>
-      </div>
+      {/* TODO: dodac profil bo go nie mam */}
     </header>
   )
 }

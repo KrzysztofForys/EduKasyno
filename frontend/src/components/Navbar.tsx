@@ -1,26 +1,32 @@
 import { Link } from "react-router-dom"
-type NavbarProps = {
-  balance: number
-}
-export const Navbar = ({balance}: NavbarProps) => {
-  return (
-      <header>
-        <div className="logo">
-          <span>&#127891;</span>
-          <strong>Edu Kasyno</strong>
-        </div>
+import { useBalance } from "../context/BalanceContext.tsx"
+import { formatBalance } from "../utils/format.ts"
 
-        <nav>
-          <Link to="/" className="link">Home</Link>
-          <Link to="/sloty" className="link">Sloty</Link>
-          <Link to="/ruletka" className="link">Ruletka</Link>
-          <Link to="/zdrapki" className="link">Zdrapki</Link>
-        </nav>
+export const Navbar = () => {
+
+  const { balance } = useBalance()
+
+
+  return (
+    <header>
+      <div className="logo">
+        <span>&#127891;</span>
+        <strong>Edu Kasyno</strong>
+      </div>
+
+      <nav>
+        <Link to="/" className="link">Home</Link>
+        <Link to="/sloty" className="link">Sloty</Link>
+        <Link to="/ruletka" className="link">Ruletka</Link>
+        <Link to="/zdrapki" className="link">Zdrapki</Link>
+      </nav>
 
       <div className="wallet">
-        <div>{balance}</div>
-        <img src="zeton-portfel.svg"/>
+        <div>{formatBalance(balance)}</div>
+        <img src="zeton-portfel.svg" />
       </div>
+
+      {/* TODO: dodac profil bo go nie mam */}
     </header>
   )
 }

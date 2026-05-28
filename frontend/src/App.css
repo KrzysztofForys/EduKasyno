@@ -1,5 +1,57 @@
-/* polowa jest realnie do wyjebania jakby kto wpierdala 600 lini kodu kurwa niech usuwa bo to nie ma sensu  */
+/* ==========================================================================
+   0. DESIGN SYSTEM & GLOBALNE ZMIENNE
+   ========================================================================== */
+:root {
+   /* Czcionki */
+   --font-main: 'Open Sans', sans-serif;
+   --font-heading: 'Poppins', sans-serif;
 
+   /* Kolory tła */
+   --bg-main: #1A1A1A;
+   --bg-card: #212121;
+   --bg-card-hover: #2a2a2a;
+   --bg-light: #252525;
+   --bg-darker: #0d0d0f;
+   --bg-modal-overlay: rgba(0, 0, 0, 0.6);
+
+   /* Kolory akcentów i brandowe */
+   --color-primary: #79BAFC;
+   --color-primary-hover: #5ba8ff;
+   --color-gold: #d4af37;
+   --color-gold-bright: #ffd700;
+   --color-gold-dark: #b39700;
+   --border-color: #333333;
+
+   /* Kolory statusów / mechanik */
+   --color-success: #198754;
+   --color-success-light: #39e58a;
+   --color-danger: #dc3545;
+   --color-danger-light: #ff6b7b;
+
+   /* Kolory tekstów */
+   --text-main: #FAFAFA;
+   --text-muted: #CCCCCC;
+   --text-gray: #888888;
+   --text-dark: #111111;
+
+   /* Poziomy rzadkości (Tiers) */
+   --color-classic: #198754;
+   --color-classic-light: #39e58a;
+   --color-classic-bg: rgba(25, 135, 84, 0.15);
+
+   --color-gold-tier: #d4af37;
+   --color-gold-tier-light: #ffd700;
+   --color-gold-tier-bg: rgba(212, 175, 55, 0.15);
+
+   --color-extreme: #ff007f;
+   --color-extreme-light: #ff4fa3;
+   --color-extreme-bg: rgba(255, 0, 127, 0.15);
+   --color-extreme-purple: #8a2be2;
+
+   /* Stół gry felt (Ruletka) */
+   --color-felt: #0b3d1b;
+   --color-felt-highlight: rgba(255, 255, 255, 0.25);
+}
 
 /* ==========================================================================
    1. RESET & STYLE GLOBALNE
@@ -10,31 +62,17 @@
    box-sizing: border-box;
 }
 
-/* Reset marginesów i border-box dla stabilnego layoutu */
-
 body {
-   font: 14px/1.8 'Open Sans', sans-serif;
-   /* Skrócony zapis fontu, rozmiaru i line-height */
-   background: #1A1A1A;
-   color: #FAFAFA;
+   font: 14px/1.8 var(--font-main);
+   background: var(--bg-main);
+   color: var(--text-main);
    -webkit-font-smoothing: antialiased;
-   /* Wygładzanie czcionek dla silników WebKit (Safari/Chrome) */
    -moz-osx-font-smoothing: grayscale;
-   /* Wygładzanie czcionek dla Firefoxa na macOS */
 }
 
 svg {
    display: block;
 }
-
-/* Usunięcie domyślnego światła (inline-gap) pod ikonami SVG */
-
-img:hover {
-   transform: rotate(90deg);
-   transition: 4s;
-}
-
-/* Obrót obrazka o 90 stopni w 4 sekundy */
 
 /* ==========================================================================
    2. UKŁAD STRONY & NAWIGACJA
@@ -44,8 +82,6 @@ img:hover {
    flex-direction: column;
 }
 
-/* Główny kontener pionowy aplikacji */
-
 header {
    display: flex;
    flex-direction: row;
@@ -54,50 +90,39 @@ header {
    height: auto;
 }
 
-/* Górny pasek techniczny */
-
 .nav {
    display: flex;
    justify-content: space-between;
-   /* Logo na lewo, linki na prawo */
    align-items: center;
-   /* Centrowanie elementów w pionie */
    padding: 24px 128px;
    gap: 20px;
    line-height: 20px;
 }
 
 .logo {
-   font: bold 20px 'Poppins', sans-serif;
-   color: #79BAFC;
+   font: bold 20px var(--font-heading);
+   color: var(--color-primary);
 }
 
-/* Nazwa/logo serwisu */
 .nav-text {
    font-size: 14px;
    opacity: 0.9;
 }
 
-/* Tekst pomocniczy w navie */
-
 .link {
-   color: #FAFAFA;
+   color: var(--text-main);
    text-decoration: none;
    font-weight: 600;
    font-size: 16px;
    margin-left: 24px;
-   /* Margines lewy tworzy równe odstępy między kolejnymi linkami */
    transition: color 0.3s, opacity 0.3s;
-   /* Płynne przejście koloru i przezroczystości */
    opacity: 0.8;
 }
 
 .link:hover {
-   color: #79BAFC;
+   color: var(--color-primary);
    opacity: 1;
 }
-
-/* Rozjaśnienie i zmiana koloru linku po najechaniu */
 
 .wallet {
    display: flex;
@@ -106,7 +131,6 @@ header {
    line-height: 20px;
 }
 
-/* Kontener stanu konta/portfela */
 .wallet p {
    margin: 0;
 }
@@ -132,10 +156,9 @@ header {
 }
 
 .hero-text h1 {
-   font: 48px/1.2 'Poppins', sans-serif;
+   font: 48px/1.2 var(--font-heading);
 }
 
-/* Skrócony zapis czcionki i wysokości linii */
 .hero-text p {
    margin-top: 20px;
    font-size: 20px;
@@ -157,7 +180,7 @@ header {
 }
 
 .games h2 {
-   font: 36px 'Poppins', sans-serif;
+   font: 36px var(--font-heading);
    margin-bottom: 40px;
 }
 
@@ -167,15 +190,19 @@ header {
    gap: 32px;
 }
 
-/* Siatka 3-kolumnowa */
-
 .card {
    position: relative;
    border-radius: 16px;
    overflow: hidden;
+   cursor: pointer;
+   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Nadpisanie obcinania rogu dla border-radius */
+.card:hover {
+   transform: translateY(-5px);
+   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
 .card img {
    width: 100%;
    display: block;
@@ -191,12 +218,11 @@ header {
    padding: 24px;
    width: 100%;
    height: 100%;
-   background: linear-gradient(to top, rgba(0, 0, 0, .85), transparent);
-   /* Ciemny gradient pod tekstem na karcie */
+   background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
 }
 
 .card-content h3 {
-   font-family: 'Poppins', sans-serif;
+   font-family: var(--font-heading);
    font-size: 24px;
 }
 
@@ -215,7 +241,7 @@ header {
 }
 
 .cta h2 {
-   font: 30px 'Poppins', sans-serif;
+   font: 30px var(--font-heading);
    margin-bottom: 24px;
 }
 
@@ -224,15 +250,28 @@ header {
 }
 
 button {
-   background: #79BAFC;
+   background: var(--color-primary);
+   color: var(--text-dark);
+   font-weight: 700;
    border: none;
    padding: 16px 40px;
    font-size: 20px;
    border-radius: 14px;
    cursor: pointer;
    margin: 20px auto;
-   /* Wycentrowanie przycisku w pionie i poziomie */
    display: inline-block;
+   transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+   background: var(--color-primary-hover);
+   transform: translateY(-2px);
+   box-shadow: 0 5px 15px rgba(121, 186, 252, 0.4);
+}
+
+button:disabled {
+   opacity: 0.6;
+   cursor: not-allowed;
 }
 
 /* ==========================================================================
@@ -248,7 +287,6 @@ button {
    gap: 20px;
 }
 
-/* Slot Machine - wersja stara (Pixel-perfect na obrazku) */
 .slot-machine-new {
    background: url("./nvcasino.png") no-repeat;
    position: relative;
@@ -275,22 +313,22 @@ button {
    left: 380px;
 }
 
-/* Slot Machine - wersja nowa (Flexbox) */
 .slot-machine {
    width: 630px;
    height: 400px;
    margin: auto;
-   background: #333;
-   border: 5px solid black;
+   background: #333333;
+   border: 5px solid #000000;
    border-radius: 3px;
    display: flex;
+   gap: 10px;
    padding: 15px;
    overflow: hidden;
    z-index: 2;
 }
 
 .slot-machine__slot {
-   background: white;
+   background: #ffffff;
    outline: 3px solid dimgray;
    height: 219px;
    width: 167px;
@@ -306,21 +344,16 @@ button {
    object-fit: contain;
 }
 
-/* Animacje i stany bębnów */
 .reel-inner {
    display: flex;
    flex-direction: column;
    transition: transform 0.2s linear;
 }
 
-/* Domyślny ruch bębna */
 .reel-inner.stopping {
    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Efekt łagodnego zatrzymania (ease-out) */
-
-/* Panel zakładów */
 .bet-layout {
    display: flex;
    margin: auto;
@@ -332,11 +365,13 @@ button {
    border: 2px solid gray;
    text-align: center;
    font-size: 20px;
+   background: #252525;
+   color: var(--text-main);
 }
 
 .change-bet {
    all: unset;
-   color: white;
+   color: var(--text-main);
    background: gray;
    padding: 10px;
    width: 20px;
@@ -346,9 +381,13 @@ button {
    font-size: 25px;
    border-radius: 3px;
    cursor: pointer;
+   transition: background-color 0.2s;
 }
 
-/* Efekty przejść (Fade) */
+.change-bet:hover {
+   background: #a9a9a9;
+}
+
 .fade-out {
    opacity: 0;
    transition: opacity 0.1s ease;
@@ -366,7 +405,7 @@ button {
    left: 0;
    width: 100%;
    height: 100%;
-   background: rgba(0, 0, 0, 0.6);
+   background: var(--bg-modal-overlay);
    display: flex;
    justify-content: center;
    align-items: center;
@@ -374,21 +413,34 @@ button {
 }
 
 .modal-content {
-   background: black;
+   background: #000000;
    padding: 30px;
    border-radius: 10px;
    text-align: center;
    min-width: 300px;
+   border: 1px solid var(--border-color);
 }
 
 .modal-content h2 {
    margin-bottom: 20px;
+   font-family: var(--font-heading);
 }
 
 .modal-content button {
    padding: 10px 20px;
    font-size: 16px;
    cursor: pointer;
+}
+
+.modal-message {
+   margin: 10px 0;
+   font-size: 14px;
+   opacity: 0.8;
+}
+
+.modal-close-btn {
+   display: block;
+   margin: 20px auto 0;
 }
 
 /* ==========================================================================
@@ -402,15 +454,15 @@ button {
 }
 
 .page-content h2 {
-   font: 32px 'Poppins', sans-serif;
-   color: #79BAFC;
+   font: 32px var(--font-heading);
+   color: var(--color-primary);
    margin-bottom: 24px;
 }
 
 .page-content p {
    font-size: 18px;
    margin-bottom: 20px;
-   color: #CCCCCC;
+   color: var(--text-muted);
 }
 
 .mission-grid {
@@ -420,16 +472,15 @@ button {
    margin-top: 40px;
 }
 
-/* Dwukolumnowa siatka misji */
 .mission-item {
-   background: #252525;
+   background: var(--bg-light);
    padding: 30px;
    border-radius: 12px;
-   border-left: 4px solid #79BAFC;
+   border-left: 4px solid var(--color-primary);
 }
 
 .contact-info {
-   background: #252525;
+   background: var(--bg-light);
    padding: 40px;
    border-radius: 20px;
    text-align: center;
@@ -444,22 +495,22 @@ button {
 
 .rule-box,
 .faq-item {
-   background: #212121;
+   background: var(--bg-card);
    padding: 24px;
    border-radius: 12px;
-   border: 1px solid #333;
+   border: 1px solid var(--border-color);
 }
 
 .rule-box h4,
 .faq-item h4 {
-   font: 20px 'Poppins', sans-serif;
-   color: #79BAFC;
+   font: 20px var(--font-heading);
+   color: var(--color-primary);
    margin-bottom: 10px;
 }
 
 .terms-container h3 {
-   font: 22px 'Poppins', sans-serif;
-   color: #FAFAFA;
+   font: 22px var(--font-heading);
+   color: var(--text-main);
    margin-top: 30px;
    margin-bottom: 12px;
 }
@@ -468,15 +519,16 @@ button {
    8. FOOTER
    ========================================================================== */
 .footer {
-   background: #212121;
+   background: var(--bg-card);
    display: flex;
    gap: 80px;
    padding: 60px 128px;
    flex-wrap: wrap;
+   border-top: 1px solid var(--border-color);
 }
 
 .footer h4 {
-   font-family: 'Poppins', sans-serif;
+   font-family: var(--font-heading);
    margin-bottom: 16px;
 }
 
@@ -486,23 +538,21 @@ button {
 }
 
 .footer-link {
-   color: #FAFAFA;
+   color: var(--text-main);
    text-decoration: none;
    opacity: 0.8;
-   transition: opacity 0.3s;
+   transition: opacity 0.3s, color 0.3s;
 }
 
-/* Link dedykowany dla stopki */
 .footer-link:hover {
    opacity: 1;
-   color: #79BAFC;
+   color: var(--color-primary);
 }
 
 /* ==========================================================================
    9. MEDIA QUERIES (Responsywność)
    ========================================================================== */
 @media (max-width: 1024px) {
-
    .nav,
    .hero,
    .games,
@@ -524,7 +574,6 @@ button {
       grid-template-columns: repeat(2, 1fr);
    }
 
-   /* Zmiana siatki gier na 2 kolumny na tabletach */
    .page-content {
       padding: 40px;
    }
@@ -560,7 +609,6 @@ button {
       grid-template-columns: 1fr;
    }
 
-   /* Zmiana siatki gier na 1 kolumnę na telefonach */
    button {
       width: 100%;
       max-width: 320px;

@@ -81,7 +81,7 @@ type CardState =
   | { type: "gold"; data: GoldCardState }
   | { type: "extreme"; data: ExtremeCardState };
 
-export const Scratch = ({ balance, setBalance }: ScratchProps) => {
+export const Scratch = ({ balance: _, setBalance }: ScratchProps) => {
   const [gameState, setGameState] = useState<"lobby" | "playing" | "revealing" | "complete">("lobby");
   const [activeCard, setActiveCard] = useState<CardConfig | null>(null);
   const [cardState, setCardState] = useState<CardState | null>(null);

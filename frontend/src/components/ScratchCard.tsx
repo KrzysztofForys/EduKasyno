@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { audio } from "../utils/audio";
-import { useBalance } from "../context/BalanceContext.tsx"
+import styles from "./ScratchCard.module.css";
 
 interface ScratchCardProps {
   cartCost: number;
@@ -25,7 +25,6 @@ interface Particle {
 }
 
 export const ScratchCard: React.FC<ScratchCardProps> = ({
-  cartCost,
   width,
   height,
   theme,
@@ -33,7 +32,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   onComplete,
   children,
 }) => {
-  const { balance, tryToChangeBalance } = useBalance()
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -401,44 +399,24 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     fadeOut();
   };
 
+  const themeClass = 
+    theme === "classic" 
+      ? styles.classicCard 
+      : theme === "gold" 
+        ? styles.goldCard 
+        : styles.extremeCard;
+
   return (
     <div
       ref={containerRef}
+      className={`${styles.scratchCard} ${themeClass}`}
       style={{
-        position: "relative",
         width: `${width}px`,
         height: `${height}px`,
-        borderRadius: "16px",
-        overflow: "hidden",
-        boxShadow:
-          theme === "gold"
-            ? "0 8px 32px rgba(197, 155, 39, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.15)"
-            : theme === "classic"
-              ? "0 8px 32px rgba(25, 135, 84, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.1)"
-              : "0 8px 32px rgba(138, 43, 226, 0.45), inset 0 0 15px rgba(255, 79, 240, 0.15)",
-        border:
-          theme === "gold"
-            ? "2px solid #c59b27"
-            : theme === "classic"
-              ? "2px solid #198754"
-              : "2px solid #8a2be2",
-        backgroundColor: "#161618",
-        touchAction: "none",
-        userSelect: "none",
       }}
     >
       {/* Underlying items to reveal */}
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 1,
-        }}
-      >
+      <div className={styles.childrenContainer}>
         {children}
       </div>
 
@@ -452,47 +430,20 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
         onTouchStart={handleStart}
         onTouchMove={handleMove}
         onTouchEnd={handleEnd}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 3,
-          cursor: fullyRevealed ? "default" : "crosshair",
-          transition: "opacity 0.5s ease-out",
-          pointerEvents: fullyRevealed ? "none" : "auto",
-        }}
+        className={`${styles.scratchCanvas} ${
+          fullyRevealed ? styles.scratchCanvasComplete : styles.scratchCanvasActive
+        }`}
       />
 
       {/* Canvas particle effect layer */}
       <canvas
         ref={particleCanvasRef}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 4,
-          pointerEvents: "none",
-        }}
+        className={styles.particleCanvas}
       />
 
       {/* Little Scratch progress counter floating overlay */}
       {!fullyRevealed && scratchPercent > 0 && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "8px",
-            right: "12px",
-            backgroundColor: "rgba(0, 0, 0, 0.75)",
-            color: "#FFF",
-            fontSize: "10px",
-            padding: "2px 6px",
-            borderRadius: "10px",
-            zIndex: 5,
-            pointerEvents: "none",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            fontFamily: "monospace",
-          }}
-        >
+        <div className={styles.progressOverlay}>
           Zdrapano: {scratchPercent}%
         </div>
       )}

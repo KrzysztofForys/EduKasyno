@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState } from "react";
 import { Reel } from "../components/Reel";
 import { useBalance } from "../context/BalanceContext.tsx"
 
@@ -56,7 +56,7 @@ export default function Slots() {
 
   return (
     <div className="slots-container">
-      <div className="slot-machine" style={{ display: "flex", gap: "10px" }}>
+      <div className="slot-machine">
         <Reel spinning={spinning} stopDelay={0} onStop={handleStop} />
         <Reel spinning={spinning} stopDelay={300} onStop={handleStop} />
         <Reel spinning={spinning} stopDelay={600} onStop={handleStop} />
@@ -89,11 +89,11 @@ export default function Slots() {
         <div className="modal">
           <div className="modal-content">
             <h2>{message}</h2>
-            <p style={{ margin: "10px 0", fontSize: "14px", opacity: 0.8 }}>
+            <p className="modal-message">
               Wylosowane symbole: {results.join(" | ")}
             </p>
             Aktualny stan konta: {balance} &#x1FA99;
-            <button onClick={() => setMessage(null)} style={{ display: "block", margin: "20px auto 0" }}>
+            <button onClick={() => setMessage(null)} className="modal-close-btn">
               OK
             </button>
           </div>

@@ -1,0 +1,75 @@
+/* ScratchCard.module.css */
+.scratchCard {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: var(--bg-darker);
+  touch-action: none;
+  user-select: none;
+}
+
+.classicCard {
+  border: 2px solid var(--color-classic);
+  box-shadow: 0 8px 32px rgba(25, 135, 84, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.goldCard {
+  border: 2px solid var(--color-gold-tier);
+  box-shadow: 0 8px 32px rgba(197, 155, 39, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+.extremeCard {
+  border: 2px solid var(--color-extreme-purple);
+  box-shadow: 0 8px 32px rgba(138, 43, 226, 0.45), inset 0 0 15px rgba(255, 79, 240, 0.15);
+}
+
+.childrenContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.scratchCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  transition: opacity 0.5s ease-out;
+}
+
+.scratchCanvasActive {
+  cursor: crosshair;
+  pointer-events: auto;
+}
+
+.scratchCanvasComplete {
+  cursor: default;
+  pointer-events: none;
+}
+
+.particleCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.progressOverlay {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #FFF;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-family: monospace;
+}

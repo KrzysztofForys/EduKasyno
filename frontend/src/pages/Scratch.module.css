@@ -9,8 +9,8 @@
   flex-direction: column;
   align-items: center;
   gap: 30px;
-  font-family: 'Poppins', sans-serif;
-  color: #FAFAFA;
+  font-family: var(--font-heading);
+  color: var(--text-main);
 }
 
 .header {
@@ -21,7 +21,7 @@
 .title {
   font-size: 42px;
   font-weight: 800;
-  background: linear-gradient(135deg, #79BAFC 0%, #B588F7 50%, #FF65B6 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-extreme-purple) 50%, var(--color-extreme) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 4px 20px rgba(121, 186, 252, 0.15);
@@ -30,7 +30,7 @@
 
 .subtitle {
   font-size: 16px;
-  color: #B0B0B0;
+  color: var(--text-muted);
   font-weight: 300;
 }
 
@@ -84,24 +84,23 @@
   pointer-events: none;
 }
 
-/* Hover effects based on tier */
 .choiceCard:hover {
   transform: translateY(-8px) scale(1.02);
   background: rgba(35, 35, 42, 0.8);
 }
 
 .classicTier:hover {
-  border-color: #198754;
+  border-color: var(--color-classic);
   box-shadow: 0 10px 30px rgba(25, 135, 84, 0.25), inset 0 0 15px rgba(25, 135, 84, 0.1);
 }
 
 .goldTier:hover {
-  border-color: #d4af37;
+  border-color: var(--color-gold-tier);
   box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25), inset 0 0 15px rgba(212, 175, 55, 0.1);
 }
 
 .extremeTier:hover {
-  border-color: #ff007f;
+  border-color: var(--color-extreme);
   box-shadow: 0 10px 30px rgba(255, 0, 127, 0.25), inset 0 0 15px rgba(255, 0, 127, 0.1);
 }
 
@@ -116,20 +115,20 @@
 }
 
 .classicTag {
-  background: rgba(25, 135, 84, 0.15);
-  color: #39e58a;
+  background: var(--color-classic-bg);
+  color: var(--color-classic-light);
   border: 1px solid rgba(25, 135, 84, 0.3);
 }
 
 .goldTag {
-  background: rgba(212, 175, 55, 0.15);
-  color: #ffd700;
+  background: var(--color-gold-tier-bg);
+  color: var(--color-gold-tier-light);
   border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .extremeTag {
-  background: rgba(255, 0, 127, 0.15);
-  color: #ff4fa3;
+  background: var(--color-extreme-bg);
+  color: var(--color-extreme-light);
   border: 1px solid rgba(255, 0, 127, 0.3);
 }
 
@@ -161,7 +160,7 @@
 
 .cardDesc {
   font-size: 13px;
-  color: #A0A0A0;
+  color: var(--text-muted);
   line-height: 1.6;
   margin-bottom: 24px;
   height: 60px;
@@ -191,7 +190,7 @@
 
 .playButton {
   all: unset;
-  background: linear-gradient(135deg, #79BAFC 0%, #4D8BFF 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
   color: #FFF;
   font-weight: 600;
   padding: 12px 36px;
@@ -212,7 +211,7 @@
 
 .playButton:disabled {
   background: #333338;
-  color: #777;
+  color: var(--text-gray);
   box-shadow: none;
   cursor: not-allowed;
 }
@@ -244,7 +243,7 @@
   all: unset;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #FAFAFA;
+  color: var(--text-main);
   font-weight: 600;
   padding: 10px 20px;
   border-radius: 10px;
@@ -268,9 +267,10 @@
 }
 
 .scratchAllBtn {
-  background: linear-gradient(135deg, #FF65B6 0%, #B588F7 100%);
+  background: linear-gradient(135deg, var(--color-extreme) 0%, var(--color-extreme-purple) 100%);
   border: none;
   box-shadow: 0 4px 15px rgba(181, 136, 247, 0.3);
+  color: #FFF;
 }
 
 .scratchAllBtn:hover:not(:disabled) {
@@ -285,20 +285,20 @@
   grid-template-rows: repeat(3, 1fr);
   width: 100%;
   height: 100%;
-  background: #111112;
+  background: var(--bg-darker);
   padding: 16px;
   gap: 12px;
 }
 
 .classicScratchField {
   background: radial-gradient(circle at center, #1b2820 0%, #0d1410 100%);
-  border: 1px solid #198754;
+  border: 1px solid var(--color-classic);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #FAFAFA;
+  color: var(--text-main);
   font-weight: 700;
   font-size: 18px;
   transition: all 0.3s ease;
@@ -309,8 +309,8 @@
 .classicScratchField.winning {
   animation: goldPulse 1.5s infinite alternate;
   background: radial-gradient(circle at center, #2e4a37 0%, #152b1b 100%);
-  border-color: #39e58a;
-  color: #39e58a;
+  border-color: var(--color-classic-light);
+  color: var(--color-classic-light);
   transform: scale(1.02);
   box-shadow: 0 0 15px rgba(57, 229, 138, 0.4);
 }
@@ -326,7 +326,7 @@
 .fieldLabel {
   font-size: 9px;
   text-transform: uppercase;
-  color: #888;
+  color: var(--text-gray);
   margin-top: 4px;
   letter-spacing: 0.5px;
 }
@@ -356,7 +356,7 @@
 .goldWinLabel {
   font-size: 11px;
   letter-spacing: 1px;
-  color: #c59b27;
+  color: var(--color-gold);
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -367,8 +367,8 @@
 }
 
 .goldWinNumberBox {
-  background: #ffd700;
-  color: #111;
+  background: var(--color-gold-tier-light);
+  color: var(--text-dark);
   font-weight: 800;
   font-size: 20px;
   width: 44px;
@@ -402,7 +402,7 @@
 }
 
 .goldPlayerBox.winning {
-  border-color: #ffd700;
+  border-color: var(--color-gold-tier-light);
   background: radial-gradient(circle at center, #3d2f14 0%, #171207 100%);
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
   animation: goldPulse 1.5s infinite alternate;
@@ -415,7 +415,7 @@
 }
 
 .goldPlayerBox.winning .goldNumber {
-  color: #ffd700;
+  color: var(--color-gold-tier-light);
   text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
@@ -461,14 +461,14 @@
 
 .extremeMultLabel {
   font-size: 10px;
-  color: #ff4fa3;
+  color: var(--color-extreme-light);
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
 .extremeMultValue {
-  background: linear-gradient(135deg, #ff007f 0%, #8a2be2 100%);
+  background: linear-gradient(135deg, var(--color-extreme) 0%, var(--color-extreme-purple) 100%);
   color: #FFF;
   font-weight: 800;
   font-size: 16px;
@@ -499,7 +499,7 @@
 }
 
 .extremeBox.winning {
-  border-color: #ff007f;
+  border-color: var(--color-extreme);
   background: radial-gradient(circle at center, #3d0c2b 0%, #12020d 100%);
   box-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
   animation: neonPulse 1.5s infinite alternate;
@@ -512,7 +512,7 @@
 .extremeBoxValue {
   font-size: 13px;
   font-weight: 800;
-  color: #ff4fa3;
+  color: var(--color-extreme-light);
   display: flex;
   align-items: center;
   gap: 2px;
@@ -520,7 +520,7 @@
 
 .extremeBox.winning .extremeBoxValue {
   color: #FFF;
-  text-shadow: 0 0 8px #ff007f;
+  text-shadow: 0 0 8px var(--color-extreme);
 }
 
 .extremeBoxIcon {
@@ -568,7 +568,7 @@
 }
 
 .modalContent {
-  background: #17171c;
+  background: var(--bg-card);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
   padding: 40px;
@@ -586,9 +586,9 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-.modalThemeClassic { border-color: #198754; box-shadow: 0 0 40px rgba(25, 135, 84, 0.2); }
-.modalThemeGold { border-color: #d4af37; box-shadow: 0 0 40px rgba(212, 175, 55, 0.2); }
-.modalThemeExtreme { border-color: #ff007f; box-shadow: 0 0 40px rgba(255, 0, 127, 0.2); }
+.modalThemeClassic { border-color: var(--color-classic); box-shadow: 0 0 40px rgba(25, 135, 84, 0.2); }
+.modalThemeGold { border-color: var(--color-gold-tier); box-shadow: 0 0 40px rgba(212, 175, 55, 0.2); }
+.modalThemeExtreme { border-color: var(--color-extreme); box-shadow: 0 0 40px rgba(255, 0, 127, 0.2); }
 
 .modalIcon {
   font-size: 64px;
@@ -608,7 +608,7 @@
 }
 
 .modalTitleWin {
-  background: linear-gradient(135deg, #ffd700 0%, #ff4fa3 100%);
+  background: linear-gradient(135deg, var(--color-gold-tier-light) 0%, var(--color-extreme-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -634,15 +634,15 @@
 
 .modalText {
   font-size: 14px;
-  color: #A0A0A0;
+  color: var(--text-muted);
   margin-bottom: 24px;
   line-height: 1.6;
 }
 
 .modalButton {
   all: unset;
-  background: linear-gradient(135deg, #79BAFC 0%, #4D8BFF 100%);
-  color: #FFF;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: var(--text-dark);
   font-weight: 700;
   padding: 14px 36px;
   border-radius: 14px;
@@ -658,7 +658,6 @@
   filter: brightness(1.1);
 }
 
-/* Background sparkling star animation */
 .sparkles {
   position: absolute;
   width: 100%;

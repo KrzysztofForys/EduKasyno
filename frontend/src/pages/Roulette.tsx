@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import styles from "./Roulette.module.css";
 
 // Definicja typów dla koloru pól w ruletce
 type RouletteColor = "black" | "red" | "green";
@@ -536,7 +537,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
   const highlightedNumbers = hoveredBetKey ? getTargetedNumbers(hoveredBetKey) : [];
 
   return (
-    <div className="page-content" style={{ maxWidth: "1400px", padding: "40px 20px" }}>
+    <div className={`page-content ${styles.rouletteContainer}`}>
       
       {/* Nagłówek */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
@@ -831,7 +832,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                 onContextMenu={(e) => handleRemoveBet(e, "straight-0")}
                 onMouseEnter={() => setHoveredBetKey("straight-0")}
                 onMouseLeave={() => setHoveredBetKey(null)}
-                style={{ cursor: "pointer" }}
+                className={styles.pointer}
               >
                 <path
                   d="M 70 10 L 70 205 L 10 107.5 Z"
@@ -881,7 +882,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                         width={CELL_W}
                         height={CELL_H}
                         fill="transparent"
-                        style={{ cursor: "pointer" }}
+                        className={styles.pointer}
                         onMouseMove={(e) => handleMouseMoveOnGrid(e, colIndex, rowIndex)}
                         onMouseLeave={() => setHoveredBetKey(null)}
                         onClick={() => hoveredBetKey && handlePlaceBet(hoveredBetKey)}
@@ -924,7 +925,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                     onContextMenu={(e) => handleRemoveBet(e, betKey)}
                     onMouseEnter={() => setHoveredBetKey(betKey)}
                     onMouseLeave={() => setHoveredBetKey(null)}
-                    style={{ cursor: "pointer" }}
+                    className={styles.pointer}
                   >
                     <rect
                       x={x}
@@ -969,7 +970,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                     onContextMenu={(e) => handleRemoveBet(e, betKey)}
                     onMouseEnter={() => setHoveredBetKey(betKey)}
                     onMouseLeave={() => setHoveredBetKey(null)}
-                    style={{ cursor: "pointer" }}
+                    className={styles.pointer}
                   >
                     <rect
                       x={x}
@@ -1016,7 +1017,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                     onContextMenu={(e) => handleRemoveBet(e, bet.key)}
                     onMouseEnter={() => setHoveredBetKey(bet.key)}
                     onMouseLeave={() => setHoveredBetKey(null)}
-                    style={{ cursor: "pointer" }}
+                    className={styles.pointer}
                   >
                     <rect
                       x={x}
@@ -1144,7 +1145,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                 }
 
                 return (
-                  <g key={betKey} filter="url(#chipShadow)" style={{ pointerEvents: "none" }}>
+                  <g key={betKey} filter="url(#chipShadow)" className={styles.peNone}>
                     {/* Korpus żetonu */}
                     <circle
                       cx={cx}

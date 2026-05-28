@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { audio } from "../utils/audio";
 import styles from "./ScratchCard.module.css";
+import { useBalance } from "../context/BalanceContext";
 
 interface ScratchCardProps {
   cartCost: number;
@@ -26,6 +27,7 @@ interface Particle {
 }
 
 export const ScratchCard: React.FC<ScratchCardProps> = ({
+  cartCost,
   width,
   height,
   theme,
@@ -421,13 +423,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     setIsBought(false);
     onBought(false);
   };
-
-  const themeClass =
-    theme === "classic"
-      ? styles.classicCard
-      : theme === "gold"
-        ? styles.goldCard
-        : styles.extremeCard;
 
   const themeClass =
     theme === "classic"

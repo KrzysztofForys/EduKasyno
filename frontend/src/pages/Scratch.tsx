@@ -2,11 +2,7 @@ import { useState } from "react";
 import styles from "./Scratch.module.css";
 import { ScratchCard } from "../components/ScratchCard";
 import { audio } from "../utils/audio";
-
-type ScratchProps = {
-  balance: number;
-  setBalance: React.Dispatch<React.SetStateAction<number>>;
-};
+import { useBalance } from "../context/BalanceContext";
 
 // Define Card configurations for Lobby
 interface CardConfig {
@@ -81,11 +77,13 @@ type CardState =
   | { type: "gold"; data: GoldCardState }
   | { type: "extreme"; data: ExtremeCardState };
 
-export const Scratch = ({ balance, setBalance }: ScratchProps) => {
+export const Scratch = () => {
+  const { tryToChangeBalance } = useBalance()
   const [gameState, setGameState] = useState<"lobby" | "playing" | "revealing" | "complete">("lobby");
   const [activeCard, setActiveCard] = useState<CardConfig | null>(null);
   const [cardState, setCardState] = useState<CardState | null>(null);
   const [isCanvasRevealed, setIsCanvasRevealed] = useState(false);
+  const [isBought, setIsBought] = useState(false);
   const [payout, setPayout] = useState(0);
   const [showResultModal, setShowResultModal] = useState(false);
 
@@ -187,8 +185,8 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
       if (roll > 0.98) return 2500;
       if (roll > 0.92) return 500;
       if (roll > 0.8) return 200;
-      if (roll > 0.6) return 100;
-      if (roll > 0.3) return 50;
+      if (roll > 0.5) return 100;
+      if (roll > 0.25) return 50;
       return Math.random() < 0.5 ? 20 : 10;
     };
 
@@ -235,8 +233,8 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
     // Weighted multipliers
     const multRoll = Math.random();
     let multiplier = 1;
-    if (multRoll > 0.97) multiplier = 10;
-    else if (multRoll > 0.9) multiplier = 5;
+    if (multRoll > 0.95) multiplier = 10;
+    else if (multRoll > 0.85) multiplier = 5;
     else if (multRoll > 0.7) multiplier = 2;
 
     const boxes: { prize: number; isWinning: boolean }[] = Array(16).fill(null);
@@ -244,11 +242,11 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
     const getPrize = () => {
       const roll = Math.random();
       if (roll > 0.99) return 5000;
-      if (roll > 0.95) return 500;
-      if (roll > 0.85) return 100;
-      if (roll > 0.6) return 50;
-      if (roll > 0.3) return 20;
-      return 10;
+      if (roll > 0.95) return 1000;
+      if (roll > 0.90) return 500;
+      if (roll > 0.7) return 200;
+      if (roll > 0.5) return 50;
+      return 20;
     };
 
     if (isWin) {
@@ -324,7 +322,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
 
     // Update user balance if there's a payout
     if (totalWin > 0) {
-      setBalance((prev) => prev + totalWin);
+      tryToChangeBalance(totalWin);
     }
 
     // Trigger visual/sound feedback
@@ -340,6 +338,13 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
   };
 
   const handleScratchAll = () => {
+    if (!isBought) {
+      if (!tryToChangeBalance(-activeCard!.cost)) {
+        return;
+      } else {
+        audio.playCoinSound();
+      }
+    }
     setIsCanvasRevealed(true);
   };
 
@@ -402,6 +407,7 @@ export const Scratch = ({ balance, setBalance }: ScratchProps) => {
             theme={activeCard.id}
             isRevealed={isCanvasRevealed}
             onComplete={handleScratchComplete}
+            onBought={(isBought) => { setIsBought(isBought); }}
           >
             {/* UNDERLYING CONTENTS RENDERED DYNAMICALLY BASED ON CARD TYPE */}
 

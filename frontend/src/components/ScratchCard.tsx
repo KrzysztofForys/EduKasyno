@@ -9,6 +9,7 @@ interface ScratchCardProps {
   theme: "classic" | "gold" | "extreme";
   isRevealed: boolean;
   onComplete: () => void;
+  onBought: (isBought: boolean) => void;
   children: React.ReactNode;
 }
 
@@ -31,9 +32,11 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   theme,
   isRevealed,
   onComplete,
+  onBought,
   children,
 }) => {
-  const { balance, tryToChangeBalance } = useBalance()
+  const { tryToChangeBalance } = useBalance()
+  const [isBought, setIsBought] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -44,7 +47,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   const [scratchPercent, setScratchPercent] = useState(0);
 
   const lastPosRef = useRef<{ x: number; y: number } | null>(null);
-  const checkThrottleRef = useRef<number>(0);
   const particlesRef = useRef<Particle[]>([]);
   const animationFrameRef = useRef<number>(0);
 
@@ -265,9 +267,18 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   };
 
   const handleStart = (
-    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+    isMouseEnter = false
   ) => {
-    {/* dodac tu to ze sprawdza koszt dopiero jaK ZACZNIESZ ZMAZYWAC */ }
+    // Only start scratching if the left mouse button is pressed or it's a touch event
+    if (isMouseEnter && "buttons" in e && e.buttons !== 1) return;
+
+    if (!isBought) {
+      if (!tryToChangeBalance(-cartCost)) return;
+      setIsBought(true);
+      onBought(true);
+      audio.playCoinSound();
+    }
     if (fullyRevealed) return;
     const coords = getMouseCoords(e);
     if (!coords) return;
@@ -292,35 +303,44 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     const { x, y } = coords;
     const { x: lx, y: ly } = lastPosRef.current;
 
-    // Draw transparent brush line to clear layer
     ctx.save();
     ctx.globalCompositeOperation = "destination-out";
-    ctx.lineWidth = 32; // scratch thickness
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.beginPath();
-    ctx.moveTo(lx, ly);
-    ctx.lineTo(x, y);
-    ctx.stroke();
+
+    // Reset shadow and transparency
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+    ctx.globalAlpha = 1.0;
+
+    // Calculate distance and angle between points
+    const dx = x - lx;
+    const dy = y - ly;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const angle = Math.atan2(dy, dx);
+
+    // Draw path with circles along the path (every 2 pixels)
+    const radius = 25;
+    for (let i = 0; i < distance; i += 2) {
+      const cx = lx + Math.cos(angle) * i;
+      const cy = ly + Math.sin(angle) * i;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
     ctx.restore();
 
     // Particles at current scratch location
     spawnParticles(x, y);
 
     // Calculate speed of drag for scratch sound pitch adjustment
-    const dx = x - lx;
-    const dy = y - ly;
     const speed = Math.sqrt(dx * dx + dy * dy);
     audio.updateScratch(speed * 2);
 
     lastPosRef.current = { x, y };
 
-    // Throttle pixel counting to optimize performance
-    const now = Date.now();
-    if (now - checkThrottleRef.current > 120) {
-      checkThrottleRef.current = now;
-      checkScratchPercentage();
-    }
+    checkScratchPercentage();
+
   };
 
   const handleEnd = () => {
@@ -340,11 +360,11 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     let transparentCount = 0;
 
     // Read alpha values (every 4th byte is alpha in RGBA buffer)
-    // To speed up we sample every 4th pixel (step of 16 bytes)
+    // To speed up we sample every 2nd pixel (step of 8 bytes)
     const totalPixels = pixels.length / 4;
-    for (let i = 3; i < pixels.length; i += 16) {
+    for (let i = 3; i < pixels.length; i += 8) {
       if (pixels[i] === 0) {
-        transparentCount += 4;
+        transparentCount += 2;
       }
     }
 
@@ -399,6 +419,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       }
     };
     fadeOut();
+    setIsBought(false);
+    onBought(false);
   };
 
   return (
@@ -445,7 +467,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       {/* Canvas scratchable surface */}
       <canvas
         ref={canvasRef}
-        onMouseDown={handleStart}
+        onMouseDown={(e) => handleStart(e, false)}
+        onMouseEnter={(e) => handleStart(e, true)}
         onMouseMove={handleMove}
         onMouseUp={handleEnd}
         onMouseLeave={handleEnd}

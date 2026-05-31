@@ -148,8 +148,15 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .cardName {
@@ -227,8 +234,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .gameControls {
@@ -236,7 +250,7 @@
   gap: 16px;
   width: 100%;
   max-width: 500px;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .actionButton {
@@ -253,6 +267,11 @@
   align-items: center;
   gap: 8px;
   font-size: 14px;
+}
+
+.backButton {
+  width: 24px;
+  height: 24px;
 }
 
 .actionButton:hover:not(:disabled) {
@@ -534,6 +553,7 @@
     border-color: rgba(255, 215, 0, 0.4);
     box-shadow: 0 0 5px rgba(255, 215, 0, 0.1);
   }
+
   to {
     border-color: rgba(255, 215, 0, 1);
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
@@ -545,6 +565,7 @@
     border-color: rgba(255, 0, 127, 0.4);
     box-shadow: 0 0 5px rgba(255, 0, 127, 0.1);
   }
+
   to {
     border-color: rgba(255, 0, 127, 1);
     box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
@@ -582,13 +603,31 @@
 }
 
 @keyframes zoomIn {
-  from { transform: scale(0.85); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-.modalThemeClassic { border-color: var(--color-classic); box-shadow: 0 0 40px rgba(25, 135, 84, 0.2); }
-.modalThemeGold { border-color: var(--color-gold-tier); box-shadow: 0 0 40px rgba(212, 175, 55, 0.2); }
-.modalThemeExtreme { border-color: var(--color-extreme); box-shadow: 0 0 40px rgba(255, 0, 127, 0.2); }
+.modalThemeClassic {
+  border-color: var(--color-classic);
+  box-shadow: 0 0 40px rgba(25, 135, 84, 0.2);
+}
+
+.modalThemeGold {
+  border-color: var(--color-gold-tier);
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
+}
+
+.modalThemeExtreme {
+  border-color: var(--color-extreme);
+  box-shadow: 0 0 40px rgba(255, 0, 127, 0.2);
+}
 
 .modalIcon {
   font-size: 64px;
@@ -597,8 +636,13 @@
 }
 
 @keyframes bounce {
-  from { transform: translateY(0); }
-  to { transform: translateY(-10px); }
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-10px);
+  }
 }
 
 .modalTitle {

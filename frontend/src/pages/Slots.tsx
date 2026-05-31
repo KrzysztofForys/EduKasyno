@@ -60,16 +60,16 @@ export default function Slots() {
           else if (s1 === s2 || s1 === s3) {
             // s1 jest parą
             const mult = Math.max(0.5, SYMBOL_MULTIPLIERS[s1] * 0.6);
-            setWinAmount(Math.floor(bet * mult));
+            setWinAmount(Math.round(bet * mult));
             setMessage(`Para! Wygrana x${mult.toFixed(1)}`);
-            tryToChangeBalance(Math.floor(bet * mult));
+            tryToChangeBalance(Math.round(bet * mult));
           }
           else if (s2 === s3) {
             // s2 jest parą
             const mult = Math.max(0.5, SYMBOL_MULTIPLIERS[s2] * 0.6);
-            setWinAmount(Math.floor(bet * mult));
+            setWinAmount(Math.round(bet * mult));
             setMessage(`Para! Wygrana x${mult.toFixed(1)}`);
-            tryToChangeBalance(Math.floor(bet * mult));
+            tryToChangeBalance(Math.round(bet * mult));
           }
           // 3. PRZEGRANA
           else {

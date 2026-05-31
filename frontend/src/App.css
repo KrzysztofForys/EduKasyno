@@ -88,6 +88,7 @@ header {
    padding: 10px;
    gap: 20px;
    height: auto;
+   background-color: var(--bg-darker);
 }
 
 .nav {
@@ -553,6 +554,7 @@ button:disabled {
    9. MEDIA QUERIES (Responsywność)
    ========================================================================== */
 @media (max-width: 1024px) {
+
    .nav,
    .hero,
    .games,

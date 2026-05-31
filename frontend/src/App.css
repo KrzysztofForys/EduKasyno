@@ -74,10 +74,29 @@ svg {
    display: block;
 }
 
+/* Ukrywa strzałki dla Chrome, Safari, Edge i Opera */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+   -webkit-appearance: none;
+   margin: 0;
+}
+
+/* Ukrywa strzałki dla Firefox */
+input[type=number] {
+   -moz-appearance: textfield;
+}
+
 /* ==========================================================================
    2. UKŁAD STRONY & NAWIGACJA
    ========================================================================== */
 .layout-container {
+   display: flex;
+   flex-direction: column;
+   min-height: 100vh;
+}
+
+main {
+   flex: 1;
    display: flex;
    flex-direction: column;
 }
@@ -288,71 +307,12 @@ button:disabled {
    gap: 20px;
 }
 
-.slot-machine-new {
-   background: url("./nvcasino.png") no-repeat;
-   position: relative;
-   width: 530px;
-   height: 300px;
-   margin: auto;
-}
-
-.slot1 {
-   position: absolute;
-   top: 90px;
-   left: 35px;
-}
-
-.slot2 {
-   position: absolute;
-   top: 90px;
-   left: 215px;
-}
-
-.slot3 {
-   position: absolute;
-   top: 90px;
-   left: 380px;
-}
-
 .slot-machine {
-   width: 630px;
-   height: 400px;
-   margin: auto;
-   background: #333333;
-   border: 5px solid #000000;
-   border-radius: 3px;
    display: flex;
-   gap: 10px;
-   padding: 15px;
-   overflow: hidden;
-   z-index: 2;
-}
-
-.slot-machine__slot {
-   background: #ffffff;
-   outline: 3px solid dimgray;
-   height: 219px;
-   width: 167px;
-   margin: 70px 15px;
-   border-radius: 5px;
-   z-index: 1;
-   overflow: hidden;
-}
-
-.slot-machine__slot img {
-   height: 219px;
-   width: 100%;
-   object-fit: contain;
-}
-
-.reel-inner {
-   display: flex;
-   flex-direction: column;
-   transition: transform 0.2s linear;
-}
-
-.reel-inner.stopping {
-   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+   flex-direction: row;
+   align-items: center;
+   justify-content: center;
+   gap: 20px;
 }
 
 .bet-layout {

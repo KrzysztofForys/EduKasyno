@@ -1,0 +1,109 @@
+:root {
+    --tile-height: 150px;
+    /* Wysokość jednego kafelka z symbolem */
+    --tile-width: 150px;
+    /* Szerokość kafelka (kwadrat 1:1) */
+
+    /* Paleta neonowego złota */
+    --gold-primary: #d4af37;
+    --gold-dark: #6e470b;
+    --gold-light: #f7e7a6;
+    --border-color: #4a3203;
+
+    /* Nowe kolory żywego blasku (Glow) */
+    --neon-glow: rgba(255, 215, 0, 0.6);
+    --neon-glow-intense: rgba(255, 223, 0, 0.9);
+}
+
+/* Animacja pulsowania światła dla bębna */
+@keyframes goldPulse {
+    0% {
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.5),
+            0 0 20px var(--neon-glow),
+            /* Zewnętrzna łuna */
+            inset 0 0 15px rgba(110, 71, 11, 0.5);
+    }
+
+    100% {
+        box-shadow:
+            0 10px 35px rgba(0, 0, 0, 0.6),
+            0 0 35px var(--neon-glow-intense),
+            /* Mocniejsza łuna na szczycie pulsu */
+            inset 0 0 20px rgba(110, 71, 11, 0.7);
+    }
+}
+
+.reelContainer {
+    display: inline-block;
+    background: #FFECA1;
+    border: 4px solid var(--border-color);
+    border-radius: 16px;
+    padding: 12px;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.6),
+        0 0 35px var(--neon-glow-intense),
+        /* Mocniejsza łuna na szczycie pulsu */
+        inset 0 0 20px rgba(110, 71, 11, 0.7);
+
+}
+
+.reelWindow {
+    height: var(--tile-height);
+    width: var(--tile-width);
+    background-image: linear-gradient(45deg, var(--gold-dark), var(--gold-primary), var(--gold-light), var(--gold-primary), var(--gold-dark));
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    /* Rozświetlona, złota krawędź wewnętrzna */
+
+    /* Połączenie głębokiego cienia z neonowym podświetleniem od środka */
+    box-shadow:
+        inset 0 0 30px rgba(0, 0, 0, 0.8),
+        inset 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.reelStrip {
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+}
+
+.slotTile {
+    height: var(--tile-height);
+    width: var(--tile-width);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Efekt błyszczącej, szklanej szyby z flarą */
+.reelWindow::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Dodany mocniejszy refleks świetlny ścięty pod kątem */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.05) 40%, rgba(255, 255, 255, 0) 41%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.slotTile img {
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+
+    /* Magia dla obrazka: podwójny drop-shadow. 
+       Pierwszy (czarny) daje głębię, a drugi (złoty) tworzy wokół symbolu neonową poświatę. */
+    filter:
+        drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.7)) drop-shadow(0px 0px 12px rgba(255, 230, 100, 0.8));
+
+    z-index: 1;
+}

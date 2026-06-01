@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { useState } from "react"
 import { MainLayout } from "./layout/MainLayout.tsx"
-import { ProtectedRoute } from "./components/ProtectedRoute.tsx" // Import guard'a
+import { ProtectedRoute } from "./components/ProtectedRoute.tsx"
 
-// Import Twojego nowego kontenera logowania
+// Import kontenera logowania
 import { LoginContainer } from "./pages/LoginContainer.tsx"
 
 import { Home } from "./pages/Home.tsx"
@@ -17,13 +17,15 @@ import { Team } from "./pages/Team.tsx"
 import { ResponsibleGaming } from "./pages/ResponsibleGaming.tsx"
 import { Terms } from "./pages/Terms.tsx"
 import { Help } from "./pages/Help.tsx"
+// POPRAWIONY IMPORT PROFILU Z FOLDERU PAGES
+import Profile from "./components/Profile.tsx"
+
 import "./App.css"
 
 export const App = () => {
   const [tokens, setTokens] = useState<number>(1000)
 
-  // Stan autoryzacji (wartość początkowa: false)
-  // Przekaż funkcję setIsAuthenticated do komponentu logowania, aby zmienić ją na true po sukcesie
+  // Stan autoryzacji
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
 
   return (
@@ -43,8 +45,9 @@ export const App = () => {
             <Route path="/sloty" element={<Slots />} />
             <Route path="/ruletka" element={<Roulette balance={tokens} setBalance={setTokens} />} />
             <Route path="/zdrapki" element={<Scratch />} />
+            <Route path="/profil" element={<Profile/>}/>
 
-            {/* Nowe ścieżki */}
+            {/* Pozostałe ścieżki */}
             <Route path="/o-nas" element={<About />} />
             <Route path="/misja" element={<Mission />} />
             <Route path="/kontakt" element={<Contact />} />
@@ -56,7 +59,7 @@ export const App = () => {
 
         </Route>
 
-        {/* Catch-all: jeśli ktoś wpisze bzdurę w URL, przekieruje go do głównej strony (którą i tak sprawdzi Guard) */}
+        {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

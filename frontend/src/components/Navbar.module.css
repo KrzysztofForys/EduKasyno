@@ -1,0 +1,85 @@
+.navbar {
+  background-color: #11111b;
+  border-bottom: 1px solid #2f2f4f;
+  padding: 0 20px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.navContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.navLinks {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.navLink {
+  color: #8a8a9e;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  font-size: 1rem;
+}
+
+.navLink:hover {
+  color: #ffffff;
+}
+
+/* Wyróżniony link do profilu */
+.profileLink {
+  color: #7289da;
+  font-weight: 600;
+  border-left: 1px solid #2f2f4f;
+  padding-left: 20px;
+}
+
+.profileLink:hover {
+  color: #99aab5;
+}
+
+/* Sekcja Salda */
+.balanceSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #1e1e2f;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #2f2f4f;
+}
+
+.balanceLabel {
+  font-size: 0.85rem;
+  color: #8a8a9e;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.balanceValue {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #ffca28;
+}
+
+.tokenIcon {
+  width: 18px;
+  height: 18px;
+}

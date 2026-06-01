@@ -89,7 +89,6 @@ export const Scratch = () => {
 
   // Generate Card values on buy
   const handleSelectCard = (card: CardConfig) => {
-
     setActiveCard(card);
     setIsCanvasRevealed(false);
     setPayout(0);
@@ -116,8 +115,6 @@ export const Scratch = () => {
     const isWin = Math.random() < 0.42; // ~42% win rate
 
     if (isWin) {
-      // Choose winning amount
-      // Lower amounts are much more likely
       const roll = Math.random();
       let winAmt = 2;
       if (roll > 0.96) winAmt = 500;
@@ -128,7 +125,6 @@ export const Scratch = () => {
       else winAmt = 5;
 
       const fields = Array(9).fill(0);
-      // Place 3 winning amounts
       const winIndices = new Set<number>();
       while (winIndices.size < 3) {
         winIndices.add(Math.floor(Math.random() * 9));
@@ -138,7 +134,6 @@ export const Scratch = () => {
         fields[idx] = { amount: winAmt, isWinning: true };
       });
 
-      // Fill remaining 6 with random amounts, ensuring no other has 3 matches
       const counts: Record<number, number> = { [winAmt]: 3 };
       for (let i = 0; i < 9; i++) {
         if (fields[i] !== 0) continue;
@@ -153,7 +148,6 @@ export const Scratch = () => {
 
       return { fields };
     } else {
-      // Lose: Fill 9 spaces such that no value repeats 3 times
       const fields = Array(9).fill(null);
       const counts: Record<number, number> = {};
       for (let i = 0; i < 9; i++) {
@@ -179,7 +173,6 @@ export const Scratch = () => {
 
     const playerCards: { number: number; prize: number; isWinning: boolean }[] = [];
 
-    // Helper to get weighted prize
     const getPrize = () => {
       const roll = Math.random();
       if (roll > 0.98) return 2500;
@@ -191,7 +184,6 @@ export const Scratch = () => {
     };
 
     if (isWin) {
-      // Pick 1 or 2 matching indices
       const matchesCount = Math.random() < 0.15 ? 2 : 1;
       const matchIndices = new Set<number>();
       while (matchIndices.size < matchesCount) {
@@ -201,11 +193,9 @@ export const Scratch = () => {
       for (let i = 0; i < 6; i++) {
         const prize = getPrize();
         if (matchIndices.has(i)) {
-          // Matches one of the winning numbers
           const num = winningNumbers[Math.floor(Math.random() * winningNumbers.length)];
           playerCards.push({ number: num, prize, isWinning: true });
         } else {
-          // Generate a non-matching number
           let num = 0;
           do {
             num = Math.floor(Math.random() * 89) + 10;
@@ -214,7 +204,6 @@ export const Scratch = () => {
         }
       }
     } else {
-      // No matches
       for (let i = 0; i < 6; i++) {
         let num = 0;
         do {
@@ -230,7 +219,6 @@ export const Scratch = () => {
   const generateExtremeCard = (): ExtremeCardState => {
     const isWin = Math.random() < 0.28; // 28% win rate
 
-    // Weighted multipliers
     const multRoll = Math.random();
     let multiplier = 1;
     if (multRoll > 0.95) multiplier = 10;
@@ -250,7 +238,6 @@ export const Scratch = () => {
     };
 
     if (isWin) {
-      // Pick 1 to 4 boxes to have a cash prize
       const winsCount = Math.floor(Math.random() * 4) + 1;
       const winIndices = new Set<number>();
       while (winIndices.size < winsCount) {
@@ -265,7 +252,6 @@ export const Scratch = () => {
         }
       }
     } else {
-      // All boxes are empty
       for (let i = 0; i < 16; i++) {
         boxes[i] = { prize: 0, isWinning: false };
       }
@@ -274,16 +260,15 @@ export const Scratch = () => {
     return { multiplier, boxes };
   };
 
-  // --- SCRATCH COMPLETION LOGIC ---
+  // --- SCRATCH COMPLETION LOGIC (Zapis do bazy danych) ---
 
-  const handleScratchComplete = () => {
+  const handleScratchComplete = async () => {
     if (gameState !== "playing") return;
     setGameState("revealing");
 
     // Calculate payouts
     let totalWin = 0;
     if (cardState?.type === "classic") {
-      // Check for three matching amounts
       const amounts = cardState.data.fields.map((f) => f.amount);
       const counts = amounts.reduce((acc, val) => {
         acc[val] = (acc[val] || 0) + 1;
@@ -293,13 +278,11 @@ export const Scratch = () => {
       const matchAmt = Object.keys(counts).find((k) => counts[Number(k)] >= 3);
       if (matchAmt) {
         totalWin = Number(matchAmt);
-        // Mark fields as winning explicitly to animate them
         cardState.data.fields.forEach((f) => {
           if (f.amount === totalWin) f.isWinning = true;
         });
       }
     } else if (cardState?.type === "gold") {
-      // Check matching numbers
       cardState.data.playerCards.forEach((box) => {
         if (cardState.data.winningNumbers.includes(box.number)) {
           box.isWinning = true;
@@ -307,7 +290,6 @@ export const Scratch = () => {
         }
       });
     } else if (cardState?.type === "extreme") {
-      // Sum prizes * multiplier
       let sum = 0;
       cardState.data.boxes.forEach((box) => {
         if (box.prize > 0) {
@@ -320,9 +302,34 @@ export const Scratch = () => {
 
     setPayout(totalWin);
 
-    // Update user balance if there's a payout
-    if (totalWin > 0) {
-      tryToChangeBalance(totalWin);
+    // WYKONYWANIE ŻĄDANIA DO BACKENDU (Zapis wyniku rundy i update salda w PG)
+    try {
+      const response = await fetch("http://localhost:3001/api/games/scratch/result", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          wynik: totalWin,
+          koszt: activeCard!.cost,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Błąd sieciowy podczas zapisu gry w bazie.");
+      }
+
+      // Aktualizacja lokalnego salda w Context o czysty zysk/stratę z tej rundy
+      const roznicaSalda = totalWin - activeCard!.cost;
+      tryToChangeBalance(roznicaSalda);
+
+    } catch (err) {
+      console.error("Nie udało się zsynchronizować gry z bazą danych:", err);
+      alert("Problem z połączeniem z bazą. Wynik zapisany tylko tymczasowo (w trybie offline).");
+      
+      // Awaryjny fallback, gdyby backend leżał
+      const roznicaSalda = totalWin - activeCard!.cost;
+      tryToChangeBalance(roznicaSalda);
     }
 
     // Trigger visual/sound feedback
@@ -553,7 +560,7 @@ export const Scratch = () => {
                 </div>
                 <p className={styles.modalText}>
                   Zdrapka okazała się szczęśliwa! Twoja nagroda w wysokości {payout} żetonów
-                  została dodana do Twojego salda.
+                  wyszła z gry i została zaktualizowana w bazie danych.
                 </p>
               </>
             ) : (

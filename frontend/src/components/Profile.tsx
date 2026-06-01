@@ -1,128 +1,167 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useBalance } from "../context/BalanceContext";
-import styles from "./Profile.module.css"; // Musisz stworzyć ten plik CSS
 
-interface GraHistoryczna {
+interface ProfileData {
   id: number;
-  nazwa_gry: "Zdrapki" | "Ruletka" | "Sloty";
-  wynik: number;
-}
-
-interface ProfilData {
   login: string;
-  statystyki: {
-    lacznieGier: number;
-    sumaWygranych: number;
-  };
-  historia: GraHistoryczna[];
+  saldo: number;
+  lacznieGier: number;
+  wygraneGier: number;
+  sumaWygranych: number;
 }
 
-export const Profile = () => {
-  const { balance } = useBalance(); // Pobieramy aktualne saldo z Twojego kontekstu
-  const [profileData, setProfileData] = useState<ProfilData | null>(null);
+interface HistoryItem {
+  nazwa_gry: string;
+  wynik: number;
+  data_gry: string;
+}
+
+export const Profile: React.FC = () => {
+  const { balance, refreshBalance } = useBalance();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isResetting, setIsResetting] = useState<boolean>(false);
+
+  const fetchProfileData = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Brak tokenu autoryzacji w localStorage. Zaloguj się ponownie.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const profileRes = await fetch("http://localhost:3001/api/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const historyRes = await fetch("http://localhost:3001/api/profile/history", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (profileRes.ok && historyRes.ok) {
+        const profileData = await profileRes.json();
+        const historyData = await historyRes.json();
+        setProfile(profileData);
+        setHistory(historyData);
+        setError(null);
+      } else {
+        setError("Nie udało się pobrać danych z profilu.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Błąd połączenia z serwerem bazodanowym.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Pobieramy statystyki i historię z backendu
-    fetch("http://localhost:3001/api/profile")
-      .then((res) => {
-        if (!res.ok) throw new Error("Nie udało się pobrać danych profilu");
-        return res.json();
-      })
-      .then((data) => {
-        setProfileData(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+    fetchProfileData();
+  }, [balance]);
 
-  if (loading) return <div className={styles.centered}>Ładowanie profilu gracza...</div>;
-  if (error) return <div className={`${styles.centered} ${styles.error}`}>{error}</div>;
-  if (!profileData) return null;
+  const handleReset = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Brak autoryzacji sesji!");
+      return;
+    }
+
+    if (!window.confirm("Czy chcesz wyczyścić historię gier i zresetować stan konta do 5000 PLN?")) {
+      return;
+    }
+
+    setIsResetting(true);
+
+    try {
+      const res = await fetch("http://localhost:3001/api/profile/reset", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (res.ok) {
+        alert("Konto zresetowane pomyślnie!");
+        await refreshBalance();
+        await fetchProfileData();
+      } else {
+        alert("Błąd serwera podczas resetu.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Błąd sieciowy.");
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
+  if (loading) return <div style={{ color: "white", padding: "20px" }}>Wczytywanie statystyk...</div>;
+  if (error) return <div style={{ color: "red", padding: "20px" }}>{error}</div>;
 
   return (
-    <div className={styles.profileContainer}>
-      {/* NAGŁÓWEK PROFILU */}
-      <div className={styles.profileHeader}>
-        <div className={styles.avatar}>🎰</div>
-        <div>
-          <h1 className={styles.username}>{profileData.login}</h1>
-          <p className={styles.userRole}>Ranga: Edu-Gracz</p>
-        </div>
+    <div style={{ padding: "20px", color: "white", fontFamily: "sans-serif" }}>
+      <h1>Profil użytkownika: {profile?.login}</h1>
+      
+      <div style={{ background: "#1e1e1e", padding: "20px", borderRadius: "8px", marginBottom: "25px" }}>
+        <h3>Twoje dane finansowe:</h3>
+        <p>💰 Saldo konta: <strong>{balance} PLN</strong></p>
+        <p>🎮 Wszystkie gry: {profile?.lacznieGier}</p>
+        <p>🏆 Trafione wygrane: {profile?.wygraneGier}</p>
+        <p>📈 Łączny zysk z wygranych: {profile?.sumaWygranych} PLN</p>
+
+        {balance < 250 && (
+          <button 
+            onClick={handleReset} 
+            disabled={isResetting}
+            style={{
+              backgroundColor: "#e63946",
+              color: "white",
+              border: "none",
+              padding: "12px 24px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              marginTop: "10px"
+            }}
+          >
+            {isResetting ? "Przetwarzanie..." : "🔄 Resetuj finanse (Powrót do 5000 PLN)"}
+          </button>
+        )}
       </div>
 
-      {/* KARTY Z PODSUMOWANIEM STANTA KONTA I STATYSTYK */}
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <h3>Aktualne Saldo</h3>
-          <div className={styles.statValue}>
-            {balance} <img src="zeton-portfel.svg" alt="Żetony" className={styles.tokenIcon} />
-          </div>
-          <p className={styles.statDesc}>Środki dostępne do gry</p>
-        </div>
-
-        <div className={styles.statCard}>
-          <h3>Rozegrane Gry</h3>
-          <div className={styles.statValue}>{profileData.statystyki.lacznieGier}</div>
-          <p className={styles.statDesc}>Łączna liczba podejść</p>
-        </div>
-
-        <div className={styles.statCard}>
-          <h3>Suma Wygranych</h3>
-          <div className={styles.statValue} style={{ color: "#2ecc71" }}>
-            +{profileData.statystyki.sumaWygranych}
-          </div>
-          <p className={styles.statDesc}>Zysk ze wszystkich gier</p>
-        </div>
-      </div>
-
-      {/* TABELA Z HISTORIĄ GIER */}
-      <div className={styles.historySection}>
-        <h2>Ostatnia aktywność</h2>
-        {profileData.historia.length === 0 ? (
-          <p className={styles.emptyHistory}>Nie rozegrałeś jeszcze żadnej gry. Czas to zmienić w lobby!</p>
+      <div>
+        <h3>Ostatnie 10 gier:</h3>
+        {history.length === 0 ? (
+          <p style={{ color: "#888" }}>Brak rozegranych partii.</p>
         ) : (
-          <div className={styles.tableWrapper}>
-            <table className={styles.historyTable}>
-              <thead>
-                <tr>
-                  <th>ID Gry</th>
-                  <th>Gra</th>
-                  <th>Wynik (Żetony)</th>
-                  <th>Status</th>
+          <table style={{ width: "100%", textAlign: "left", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "2px solid #555" }}>
+                <th style={{ padding: "10px" }}>Gra</th>
+                <th style={{ padding: "10px" }}>Kwota końcowa</th>
+                <th style={{ padding: "10px" }}>Data rozegrania</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.map((item, index) => (
+                <tr key={index} style={{ borderBottom: "1px solid #2a2a2a" }}>
+                  <td style={{ padding: "10px" }}>{item.nazwa_gry}</td>
+                  <td style={{ padding: "10px", color: item.wynik > 0 ? "#4caf50" : "#f44336" }}>
+                    {item.wynik} PLN
+                  </td>
+                  <td style={{ padding: "10px", color: "#888" }}>
+                    {new Date(item.data_gry).toLocaleString()}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {profileData.historia.map((gra) => {
-                  const isWin = gra.wynik > 0;
-                  return (
-                    <tr key={gra.id}>
-                      <td>#{gra.id}</td>
-                      <td>
-                        <strong>{gra.nazwa_gry}</strong>
-                      </td>
-                      <td className={isWin ? styles.winText : styles.loseText}>
-                        {isWin ? `+${gra.wynik}` : gra.wynik}
-                      </td>
-                      <td>
-                        <span className={`${styles.badge} ${isWin ? styles.badgeWin : styles.badgeLose}`}>
-                          {isWin ? "Wygrana" : "Przegrana/Kupno"}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>
   );
 };
-
-export default Profile;

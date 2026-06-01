@@ -78,7 +78,7 @@ type CardState =
   | { type: "extreme"; data: ExtremeCardState };
 
 export const Scratch = () => {
-  const { tryToChangeBalance } = useBalance()
+  const { tryToChangeBalance } = useBalance();
   const [gameState, setGameState] = useState<"lobby" | "playing" | "revealing" | "complete">("lobby");
   const [activeCard, setActiveCard] = useState<CardConfig | null>(null);
   const [cardState, setCardState] = useState<CardState | null>(null);
@@ -260,7 +260,7 @@ export const Scratch = () => {
     return { multiplier, boxes };
   };
 
-  // --- SCRATCH COMPLETION LOGIC (Zapis do bazy danych) ---
+  // --- SCRATCH COMPLETION LOGIC (Zapis do bazy danych z poprawną autoryzacją) ---
 
   const handleScratchComplete = async () => {
     if (gameState !== "playing") return;
@@ -304,10 +304,17 @@ export const Scratch = () => {
 
     // WYKONYWANIE ŻĄDANIA DO BACKENDU (Zapis wyniku rundy i update salda w PG)
     try {
+      const token = localStorage.getItem("token"); // Pobranie tokenu z pamięci przeglądarki
+
+      if (!token) {
+        throw new Error("Brak tokenu autoryzacji w localStorage.");
+      }
+
       const response = await fetch("http://localhost:3001/api/games/scratch/result", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // <- DODANY NAGŁÓWEK DO AUTORYZACJI JWT
         },
         body: JSON.stringify({
           wynik: totalWin,
@@ -316,7 +323,7 @@ export const Scratch = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Błąd sieciowy podczas zapisu gry w bazie.");
+        throw new Error(`Serwer odpowiedział statusem błędu: ${response.status}`);
       }
 
       // Aktualizacja lokalnego salda w Context o czysty zysk/stratę z tej rundy

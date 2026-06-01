@@ -36,7 +36,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   onBought,
   children,
 }) => {
-  const { tryToChangeBalance } = useBalance()
+  const { tryToChangeBalance } = useBalance();
   const [isBought, setIsBought] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -51,7 +51,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
   const particlesRef = useRef<Particle[]>([]);
   const animationFrameRef = useRef<number>(0);
 
-  // Initialize Scratch Canvas Layer
   useEffect(() => {
     initScratchCanvas();
     initParticleEngine();
@@ -62,7 +61,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     };
   }, [theme, width, height]);
 
-  // Handle parent-driven full reveal (e.g. Scratch All clicked)
   useEffect(() => {
     if (isRevealed && !fullyRevealed) {
       revealCardFully();
@@ -75,40 +73,35 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
-    // Reset state
     setFullyRevealed(false);
     setScratchPercent(0);
     audio.stopScratch();
 
-    // Set high-DPI scaling support if needed, but standard width/height is fine for this size
     canvas.width = width;
     canvas.height = height;
 
-    // Draw main theme gradient
     let grad = ctx.createLinearGradient(0, 0, width, height);
     if (theme === "classic") {
-      grad.addColorStop(0, "#084024"); // deep forest green
-      grad.addColorStop(0.4, "#198754"); // vibrant emerald green
-      grad.addColorStop(0.7, "#146c43"); // medium mint green
+      grad.addColorStop(0, "#084024");
+      grad.addColorStop(0.4, "#198754");
+      grad.addColorStop(0.7, "#146c43");
       grad.addColorStop(1, "#084024");
     } else if (theme === "gold") {
-      grad.addColorStop(0, "#6e470b"); // metallic gold dark
-      grad.addColorStop(0.2, "#d4af37"); // bright gold
-      grad.addColorStop(0.5, "#f7e7a6"); // shimmer gold
-      grad.addColorStop(0.8, "#c59b27"); // bronze gold
+      grad.addColorStop(0, "#6e470b");
+      grad.addColorStop(0.2, "#d4af37");
+      grad.addColorStop(0.5, "#f7e7a6");
+      grad.addColorStop(0.8, "#c59b27");
       grad.addColorStop(1, "#6e470b");
     } else {
-      // extreme (cyberpunk synthwave)
-      grad.addColorStop(0, "#120224"); // dark cosmic void
-      grad.addColorStop(0.4, "#8a2be2"); // neon violet
-      grad.addColorStop(0.7, "#ff007f"); // hot pink
-      grad.addColorStop(1, "#4b0082"); // indigo neon
+      grad.addColorStop(0, "#120224");
+      grad.addColorStop(0.4, "#8a2be2");
+      grad.addColorStop(0.7, "#ff007f");
+      grad.addColorStop(1, "#4b0082");
     }
 
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
 
-    // Add metallic/grainy noise effect
     ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
     for (let i = 0; i < 400; i++) {
       ctx.fillRect(Math.random() * width, Math.random() * height, 2, 2);
@@ -118,7 +111,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       ctx.fillRect(Math.random() * width, Math.random() * height, 1.5, 1.5);
     }
 
-    // Elegant glowing frame
     ctx.strokeStyle =
       theme === "gold"
         ? "rgba(255, 255, 255, 0.7)"
@@ -128,7 +120,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     ctx.lineWidth = 6;
     ctx.strokeRect(5, 5, width - 10, height - 10);
 
-    // Subtle inner golden/silver/neon lining
     ctx.strokeStyle =
       theme === "gold"
         ? "rgba(212, 175, 55, 0.5)"
@@ -138,7 +129,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     ctx.lineWidth = 2;
     ctx.strokeRect(10, 10, width - 20, height - 20);
 
-    // Draw typography
     ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
     ctx.shadowBlur = 8;
     ctx.shadowOffsetX = 1;
@@ -147,7 +137,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    // Card Header
     ctx.font = "bold 20px 'Poppins', sans-serif";
     const headerText =
       theme === "gold"
@@ -157,7 +146,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
           : "⚡ NEONOWY JACKPOT ⚡";
     ctx.fillText(headerText, width / 2, height / 2 - 25);
 
-    // Call to Action
     ctx.font = "bold 12px 'Open Sans', sans-serif";
     ctx.fillStyle =
       theme === "gold"
@@ -171,7 +159,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
     ctx.fillText("Odkryj min. 60% aby zaliczyć wygraną", width / 2, height / 2 + 35);
 
-    // Reset shadow
     ctx.shadowBlur = 0;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
@@ -193,7 +180,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.15; // gravity
+        p.vy += 0.15;
         p.life -= 1;
         p.alpha = Math.max(0, p.life / p.maxLife);
 
@@ -260,7 +247,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       clientY = e.clientY;
     }
 
-    // Return exact coordinate scaling inside canvas bounding box
     return {
       x: ((clientX - rect.left) / rect.width) * canvas.width,
       y: ((clientY - rect.top) / rect.height) * canvas.height,
@@ -271,8 +257,13 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
     isMouseEnter = false
   ) => {
-    // Only start scratching if the left mouse button is pressed or it's a touch event
     if (isMouseEnter && "buttons" in e && e.buttons !== 1) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Musisz być zalogowany, aby kupić zdrapkę!");
+      return;
+    }
 
     if (!isBought) {
       if (!tryToChangeBalance(-cartCost)) return;
@@ -306,19 +297,15 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
 
     ctx.save();
     ctx.globalCompositeOperation = "destination-out";
-
-    // Reset shadow and transparency
     ctx.shadowBlur = 0;
     ctx.shadowColor = "transparent";
     ctx.globalAlpha = 1.0;
 
-    // Calculate distance and angle between points
     const dx = x - lx;
     const dy = y - ly;
     const distance = Math.sqrt(dx * dx + dy * dy);
     const angle = Math.atan2(dy, dx);
 
-    // Draw path with circles along the path (every 2 pixels)
     const radius = 25;
     for (let i = 0; i < distance; i += 2) {
       const cx = lx + Math.cos(angle) * i;
@@ -330,18 +317,13 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     }
 
     ctx.restore();
-
-    // Particles at current scratch location
     spawnParticles(x, y);
 
-    // Calculate speed of drag for scratch sound pitch adjustment
     const speed = Math.sqrt(dx * dx + dy * dy);
     audio.updateScratch(speed * 2);
 
     lastPosRef.current = { x, y };
-
     checkScratchPercentage();
-
   };
 
   const handleEnd = () => {
@@ -360,8 +342,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     const pixels = imgData.data;
     let transparentCount = 0;
 
-    // Read alpha values (every 4th byte is alpha in RGBA buffer)
-    // To speed up we sample every 2nd pixel (step of 8 bytes)
     const totalPixels = pixels.length / 4;
     for (let i = 3; i < pixels.length; i += 8) {
       if (pixels[i] === 0) {
@@ -388,7 +368,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Fade out scratch layer gracefully using Canvas clear
     let alpha = 1;
     const fadeOut = () => {
       alpha -= 0.15;
@@ -400,7 +379,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
         ctx.save();
         ctx.globalAlpha = alpha;
 
-        // Redraw canvas with opacity
         let grad = ctx.createLinearGradient(0, 0, width, height);
         if (theme === "classic") {
           grad.addColorStop(0, "#084024");
@@ -440,12 +418,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
         height: `${height}px`,
       }}
     >
-      {/* Underlying items to reveal */}
-      <div className={styles.childrenContainer}>
-        {children}
-      </div>
+      <div className={styles.childrenContainer}>{children}</div>
 
-      {/* Canvas scratchable surface */}
       <canvas
         ref={canvasRef}
         onMouseDown={(e) => handleStart(e, false)}
@@ -456,22 +430,16 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
         onTouchStart={handleStart}
         onTouchMove={handleMove}
         onTouchEnd={handleEnd}
-        className={`${styles.scratchCanvas} ${fullyRevealed ? styles.scratchCanvasComplete : styles.scratchCanvasActive
-          }`}
+        className={`${styles.scratchCanvas} ${
+          fullyRevealed ? styles.scratchCanvasComplete : styles.scratchCanvasActive
+        }`}
       />
 
-      {/* Canvas particle effect layer */}
-      <canvas
-        ref={particleCanvasRef}
-        className={styles.particleCanvas}
-      />
+      <canvas ref={particleCanvasRef} className={styles.particleCanvas} />
 
-      {/* Little Scratch progress counter floating overlay */}
       {!fullyRevealed && scratchPercent > 0 && (
-        <div className={styles.progressOverlay}>
-          Zdrapano: {scratchPercent}%
-        </div>
+        <div className={styles.progressOverlay}>Zdrapano: {scratchPercent}%</div>
       )}
     </div>
   );
-};
+}; 

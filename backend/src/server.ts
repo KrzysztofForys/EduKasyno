@@ -210,6 +210,7 @@ app.post("/api/games/scratch/result", autoryzacja, async (req: AuthenticatedRequ
 app.post("/api/games/slots/play", autoryzacja, async (req: AuthenticatedRequest, res: Response) => {
   const { bet } = req.body;
   const userId = req.userId;
+  const client = await pool.connect();
 
   if (!bet || bet <= 0) {
     return res.status(400).json({ error: "Nieprawidłowa stawka zakręcenia." });
@@ -227,7 +228,7 @@ app.post("/api/games/slots/play", autoryzacja, async (req: AuthenticatedRequest,
   };
 
   try {
-    const userRes = await pool.query("SELECT saldo FROM gracze WHERE id = $1", [userId]);
+    const userRes = await client.query("SELECT saldo FROM gracze WHERE id = $1 FOR UPDATE", [userId]);
     if (userRes.rows.length === 0) {
       return res.status(404).json({ error: "Nie znaleziono gracza" });
     }
@@ -236,6 +237,9 @@ app.post("/api/games/slots/play", autoryzacja, async (req: AuthenticatedRequest,
     if (aktualneSaldo < bet) {
       return res.status(400).json({ error: "Niewystarczające środki na koncie!" });
     }
+    await client.query("BEGIN");
+    await client.query("UPDATE gracze SET saldo = saldo - $1 WHERE id = $2", [bet, userId]);
+
 
     // 1. Losowanie symboli na backendzie
     const s1 = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
@@ -261,21 +265,19 @@ app.post("/api/games/slots/play", autoryzacja, async (req: AuthenticatedRequest,
       message = `Para! Wygrana x${mult.toFixed(1)}`;
     }
 
-    const zmianaSalda = winAmount - bet;
-
     // 3. Aktualizacja bazy danych (Zapis salda)
-    const updateRes = await pool.query(
+    const updateRes = await client.query(
       "UPDATE gracze SET saldo = saldo + $1 WHERE id = $2 RETURNING saldo",
-      [zmianaSalda, userId]
+      [winAmount, userId]
     );
     const noweSaldo = Number(updateRes.rows[0].saldo);
 
     // 4. Zapis do historii (Dokładnie jeden raz!)
-    await pool.query(
+    await client.query(
       "INSERT INTO historia_gier (id_gracza, nazwa_gry, wynik, data_gry) VALUES ($1, $2, $3, NOW())",
       [userId, "Sloty", winAmount]
     );
-
+    client.query("COMMIT");
     // 5. Zwracamy komplet danych do wyświetlenia animacji
     return res.json({
       success: true,
@@ -286,8 +288,12 @@ app.post("/api/games/slots/play", autoryzacja, async (req: AuthenticatedRequest,
     });
 
   } catch (err) {
+    client.query("ROLLBACK");
     console.error("Błąd serwera podczas gry w sloty:", err);
     return res.status(500).json({ error: "Błąd serwera" });
+  }
+  finally {
+    client.release();
   }
 });
 
@@ -409,18 +415,25 @@ app.post("/api/games/roulette/play", autoryzacja, async (req: AuthenticatedReque
     if (key === "outside-high") return Array.from({ length: 18 }, (_, i) => i + 19);
     return [];
   };
-
+  const client = await pool.connect();
   try {
+    await client.query("BEGIN");
     // Sprawdzamy czy gracz istnieje i ma fundusze
-    const userRes = await pool.query("SELECT saldo FROM gracze WHERE id = $1", [userId]);
+    const userRes = await client.query("SELECT saldo FROM gracze WHERE id = $1 FOR UPDATE", [userId]);
     if (userRes.rows.length === 0) {
+      await client.query("ROLLBACK");
       return res.status(404).json({ error: "Nie znaleziono gracza" });
     }
 
     const aktualneSaldo = Number(userRes.rows[0].saldo);
     if (aktualneSaldo < totalBetAmount) {
+      await client.query("ROLLBACK");
       return res.status(400).json({ error: "Niewystarczające środki na koncie na te zakłady!" });
     }
+    await client.query(
+      "UPDATE gracze SET saldo = saldo - $1 WHERE id = $2",
+      [totalBetAmount, userId]
+    );
 
     // 1. LOSOWANIE NUMERU NA BACKENDZIE
     const winningIdx = Math.floor(Math.random() * WHEEL_NUMBERS_DB.length);
@@ -444,22 +457,21 @@ app.post("/api/games/roulette/play", autoryzacja, async (req: AuthenticatedReque
       }
     });
 
-    const zmianaSalda = totalWinAmount - totalBetAmount;
-
     // 3. AKTUALIZACJA SALDA W BAZIE DANYCH
-    const updateRes = await pool.query(
+    const updateRes = await client.query(
       "UPDATE gracze SET saldo = saldo + $1 WHERE id = $2 RETURNING saldo",
-      [zmianaSalda, userId]
+      [totalWinAmount, userId]
     );
     const noweSaldo = Number(updateRes.rows[0].saldo);
 
     // 4. JEDNORAZOWY ZAPIS ROZGRYWKI DO HISTORII
-    await pool.query(
+    await client.query(
       "INSERT INTO historia_gier (id_gracza, nazwa_gry, wynik, data_gry) VALUES ($1, $2, $3, NOW())",
       [userId, "Ruletka", totalWinAmount]
     );
 
-    // 5. ZWRÓCENIE DANYCH DO FRONTENDU (Uruchomienie animacji koła z gotowym wynikiem)
+    await client.query("COMMIT");
+
     return res.json({
       success: true,
       winningIdx,
@@ -468,10 +480,14 @@ app.post("/api/games/roulette/play", autoryzacja, async (req: AuthenticatedReque
       totalBet: totalBetAmount,
       noweSaldo
     });
-
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("Błąd serwera podczas gry w ruletkę:", err);
+
     return res.status(500).json({ error: "Błąd serwera" });
+  }
+  finally {
+    client.release();
   }
 });
 

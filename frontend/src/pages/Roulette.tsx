@@ -17,7 +17,7 @@ import { ResultModal } from "../components/roulette/ResultModal";
 
 export const Roulette = () => {
   // Pobieramy globalne saldo i funkcje synchronizacji z bazą danych
-  const { balance, refreshBalance, tryToChangeBalance } = useBalance();
+  const { balance, setBalance, refreshBalance, tryToChangeBalance } = useBalance();
 
   // ─── STAN GRY ──────────────────────────────────────────────────────────────
   const [selectedChip, setSelectedChip] = useState<number>(5);
@@ -155,6 +155,7 @@ export const Roulette = () => {
         alert(data.error || "Wystąpił błąd podczas losowania ruletki.");
         return;
       }
+      setBalance(data.noweSaldo);
 
       // Zapisujemy wynik w referencji, aby funkcja animująca miała do niego stały bezpieczny dostęp
       serverResultRef.current = {
@@ -183,7 +184,7 @@ export const Roulette = () => {
 
       // Obliczanie docelowego kąta kulki w układzie współrzędnych koła
       const targetRelativeAngle = winningIdx * stepAngle + stepAngle / 2 - 90;
-      
+
       // Losowa liczba pełnych obrotów kulki względem koła dla naturalności (od 7.5 do 9.5)
       const relativeRotations = 7.5 + Math.random() * 2;
       const startRelativeAngle = targetRelativeAngle + 360 * relativeRotations;

@@ -2,6 +2,8 @@ import { createContext, useState, useContext, useEffect, type ReactNode } from '
 
 interface BalanceContextType {
     balance: number;
+    setBalance: (amount: number) => void;
+    updateBalance: (newBalance: number) => void;
     tryToChangeBalance: (amount: number) => boolean;
     refreshBalance: () => Promise<void>;
 }
@@ -14,7 +16,9 @@ interface BalanceProviderProps {
 
 export const BalanceProvider = ({ children }: BalanceProviderProps) => {
     const [balance, setBalance] = useState<number>(0);
-
+    const updateBalance = (newBalance: number) => {
+        setBalance(newBalance);
+    };
     const refreshBalance = async () => {
         const token = localStorage.getItem("token");
         if (!token) return;
@@ -27,7 +31,7 @@ export const BalanceProvider = ({ children }: BalanceProviderProps) => {
             });
             if (res.ok) {
                 const data = await res.json();
-                setBalance(Number(data.saldo)); 
+                setBalance(Number(data.saldo));
             }
         } catch (err) {
             console.error("Błąd pobierania salda z bazy:", err);
@@ -49,7 +53,7 @@ export const BalanceProvider = ({ children }: BalanceProviderProps) => {
     };
 
     return (
-        <BalanceContext.Provider value={{ balance, tryToChangeBalance, refreshBalance }}>
+        <BalanceContext.Provider value={{ balance, updateBalance, setBalance, tryToChangeBalance, refreshBalance }}>
             {children}
         </BalanceContext.Provider>
     );

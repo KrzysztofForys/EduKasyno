@@ -5,11 +5,12 @@ import { SlotReel } from "../components/SlotReel.tsx";
 import styles from "./Slots.module.css";
 
 export default function Slots() {
-  const { balance, refreshBalance, tryToChangeBalance } = useBalance();
+  const { balance, updateBalance } = useBalance();
   const [spinning, setSpinning] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [bet, setBet] = useState<number>(100);
   const [winAmount, setWinAmount] = useState<number>(0);
+  const [pendingBalance, setPendingBalance] = useState<number | null>(null);
 
   // Domyślne symbole startowe przed pierwszym kliknięciem
   const [serverSymbols, setServerSymbols] = useState<string[]>(["cytryna", "cytryna", "cytryna"]);
@@ -47,14 +48,13 @@ export default function Slots() {
         alert(data.error || "Wystąpił błąd podczas gry.");
         return;
       }
+      updateBalance(balance - bet);
+      setPendingBalance(data.noweSaldo);
 
-      // 1. Od razu odejmij zakład z licznika, żeby było widać, że gra ruszyła
-      tryToChangeBalance(-bet);
-
-      // 2. Wpisz symbole z bazy, resetując stary komunikat
       setServerSymbols(data.symbols);
       setWinAmount(data.winAmount);
       setServerMessage(data.message);
+
       setMessage(null);
 
       // 3. Odpal kręcenie Twojej taśmy
@@ -73,7 +73,10 @@ export default function Slots() {
 
       // HAJS I MODAL DODAJĄ SIĘ Z TIMEOUTEM (pół sekundy po pełnym wyhamowaniu maszyny)
       setTimeout(() => {
-        refreshBalance(); // Strzał do bazy po świeże saldo z wygraną
+        if (pendingBalance !== null) {
+          updateBalance(pendingBalance);
+          setPendingBalance(null);
+        }
         setMessage(serverMessage); // Pokazanie modala
       }, 500);
     }

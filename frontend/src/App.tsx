@@ -50,6 +50,7 @@ export const App = () => {
         <Route path="/register" element={
           isAuthenticated ? <Navigate to="/" replace /> : <RegisterContainer onSwitchToLogin={() => window.location.href = "/login"} />
         } />
+        <Route path="/register/terms" element={<Terms />} />
 
         {/* ========================================================================= */}
         {/* ŚCIEŻKI PRYWATNE (Wymagają zalogowania - ProtectedRoute)                   */}

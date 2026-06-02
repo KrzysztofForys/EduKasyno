@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./Terms.module.css";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface TermSection {
   id: number;
@@ -9,6 +10,9 @@ interface TermSection {
 }
 
 export const Terms: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isRegisterTerms = location.pathname === "/register/terms";
   const [activeSection, setActiveSection] = useState<number | null>(null);
 
   const toggleSection = (id: number) => {
@@ -99,7 +103,14 @@ export const Terms: React.FC = () => {
           );
         })}
       </section>
-
+      {isRegisterTerms && (
+        <button
+          onClick={() => navigate("/register")}
+          className={styles.backButton}
+        >
+          Wróć do rejestracji
+        </button>
+      )}
     </div>
   );
 };

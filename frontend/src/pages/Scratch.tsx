@@ -342,6 +342,7 @@ export const Scratch = () => {
       }
       setShowResultModal(true);
       setGameState("complete");
+      setIsBought(false);
     }, 800);
   };
 
@@ -490,7 +491,7 @@ export const Scratch = () => {
                 setActiveCard(null);
                 setCardState(null);
               }}
-              disabled={gameState === "revealing"}
+              disabled={gameState === "revealing" || isBought}
             >
               <img className={styles.backButton} src="back-button.png" alt="Back" /> Powrót do Lobby
             </button>
@@ -510,13 +511,12 @@ export const Scratch = () => {
       {showResultModal && activeCard && (
         <div className={styles.modal}>
           <div
-            className={`${styles.modalContent} ${
-              activeCard.id === "classic"
-                ? styles.modalThemeClassic
-                : activeCard.id === "gold"
+            className={`${styles.modalContent} ${activeCard.id === "classic"
+              ? styles.modalThemeClassic
+              : activeCard.id === "gold"
                 ? styles.modalThemeGold
                 : styles.modalThemeExtreme
-            }`}
+              }`}
           >
             {payout > 0 ? (
               <>

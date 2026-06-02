@@ -45,6 +45,7 @@ export const BalanceProvider = ({ children }: BalanceProviderProps) => {
     // Ta funkcja służy teraz WYŁĄCZNIE do szybkiej weryfikacji na froncie, czy użytkownik ma za co grać
     const tryToChangeBalance = (amount: number): boolean => {
         if (balance + amount >= 0) {
+            setBalance(prev => prev + amount)
             return true;
         } else {
             alert("Brak wystarczającej ilości żetonów na koncie!");

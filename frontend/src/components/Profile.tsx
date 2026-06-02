@@ -181,13 +181,14 @@ export const Profile: React.FC = () => {
             </div>
 
             <div className={styles.actionButtons}>
-              <button
+              {balance === 0 && <button
                 onClick={handleReset}
                 disabled={isResetting}
                 className={styles.resetButton}
               >
                 {isResetting ? "Przetwarzanie..." : "Resetuj saldo do 10k"}
               </button>
+              }
               <button
                 onClick={handleLogout}
                 className={styles.logoutButton}

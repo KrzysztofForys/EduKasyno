@@ -1,91 +1,178 @@
 .navbar {
-  background-color: #11111b;
-  border-bottom: 1px solid #2f2f4f;
-  padding: 0 20px;
-  height: 70px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  /* Zwiększona wysokość, żeby navbar był wyższy i solidniejszy */
+  background: rgba(16, 17, 26, 0.85);
+  /* Lekko podbita opaczność dla lepszego krycia */
+  backdrop-filter: blur(16px);
+  /* Mocniejsze rozmycie tła */
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+  /* Wyrazistsza złota krawędź */
+  z-index: 1000;
   display: flex;
   align-items: center;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
+/* Wewnętrzny kontener wyrównujący w pionie */
 .navContainer {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
+  padding: 0 24px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-}
-
-.logo {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #ffffff;
-  text-decoration: none;
-}
-
-.navLinks {
-  display: flex;
-  gap: 20px;
   align-items: center;
+  height: 100%;
+  /* Rozciągamy kontener na całą wysokość 80px */
 }
 
-.navLink {
-  color: #8a8a9e;
+/* LOGO / NAZWA KASYNA */
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-  font-size: 1rem;
+  background: linear-gradient(135deg, #ffd700, #ffb700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.2));
+  transition: filter 0.2s ease;
 }
 
-.navLink:hover {
-  color: #ffffff;
+.logo:hover {
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
 }
 
-/* Wyróżniony link do profilu */
-.profileLink {
-  color: #7289da;
-  font-weight: 600;
-  border-left: 1px solid #2f2f4f;
-  padding-left: 20px;
-}
-
-.profileLink:hover {
-  color: #99aab5;
-}
-
-/* Sekcja Salda */
-.balanceSection {
+/* LINKI NAWIGACYJNE */
+.navLinks {
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: #1e1e2f;
+}
+
+.navLink {
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
   padding: 8px 16px;
-  border-radius: 20px;
-  border: 1px solid #2f2f4f;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Zwykły hover na linki */
+.navLink:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Specjalny, wyróżniający się styl dla "Mój Profil" */
+.profileLink {
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  background: rgba(0, 240, 255, 0.03);
+  color: #00f0ff;
+}
+
+.profileLink:hover {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: #00f0ff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  color: #fff;
+}
+
+/* SEKCJA SALDA (Portfel) */
+.balanceSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 6px 14px;
+  border-radius: 30px;
+  user-select: none;
 }
 
 .balanceLabel {
-  font-size: 0.85rem;
-  color: #8a8a9e;
-  text-transform: uppercase;
-  font-weight: 600;
-  display: inline-flex;
-  line-height: 1;
-  line-height: 1;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
 }
 
 .balanceValue {
-  display: inline-flex;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #ffd700;
+  /* Złoty kolor kwoty */
+  display: flex;
   align-items: center;
-  gap: 4px;
-  font-weight: 700;
-  color: #ffca28;
-  line-height: 1;
+  gap: 6px;
+  cursor: help;
+  /* Kursor sugeruje podpowiedź po najechaniu (wyświetli pełne saldo z title) */
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
 }
 
 .tokenIcon {
   width: 18px;
   height: 18px;
-  display: block;
-  flex-shrink: 0;
+  object-fit: contain;
+}
+
+/* --- RESPONSYWNOŚĆ (Dostosowanie pod mniejsze ekrany) --- */
+@media (max-width: 768px) {
+  .navbar {
+    height: 60px;
+  }
+
+  .navContainer {
+    padding: 0 15px;
+  }
+
+  .logo {
+    font-size: 1.3rem;
+  }
+
+  /* Ukrywamy napisy menu lub zmniejszamy marginesy w zależności od potrzeb.
+       Na bardzo małych ekranach warto schować rzadziej używane podstrony 
+       lub zamienić je w hamburger menu, na razie optymalizujemy przestrzeń: */
+  .navLink {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+
+  .balanceSection {
+    padding: 4px 10px;
+  }
+
+  .balanceLabel {
+    display: none;
+    /* Chowamy napis "SALDO:" na mobile, zostaje sama ikona i kwota */
+  }
+
+  .balanceValue {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 520px) {
+
+  /* Skrajny przypadek: bardzo mały smartfon */
+  .navLinks {
+    gap: 2px;
+  }
+
+  .navLink {
+    padding: 4px 6px;
+  }
 }

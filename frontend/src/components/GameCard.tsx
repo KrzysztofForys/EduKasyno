@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom"
 import { type GameCardProps } from '../types/types.ts';
 
-export const GameCard = ({ title, desc, link }: GameCardProps) => {
+export const GameCard = ({ title, desc, link, image }: GameCardProps) => {
   const navigate = useNavigate();
 
   return (
     <div className="card" onClick={() => navigate(link)}>
-      <img src="https://picsum.photos/374/320" alt="" />
+      <img src={image} alt="" />
 
       <div className="card-content">
         <h3>{title}</h3>

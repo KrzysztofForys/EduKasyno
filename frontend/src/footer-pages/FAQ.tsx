@@ -17,8 +17,19 @@ export const FAQ: React.FC = () => {
         {
             id: 1,
             category: "rules",
-            question: "Na czym polega powiązanie gry z nauką?",
-            answer: "W EduKasynie każdy zakład lub spin wymaga wykazania się wiedzą. Aby odblokować bębny lub podwoić wygraną, system rzuca Ci wyzwanie w postaci pytania quizowego. Dobra odpowiedź to klucz do pomnażania punktów!"
+            question: "Czy mogę pobrac css przygotowany przez Oskara?",
+            answer: (
+                <>
+                    Tak, oczywiście! Wystarczy kliknąć w ten przycisk:{" "}
+                    <a
+                        href="/Oskar.css"
+                        download="oskarito-cyber-theme.css"
+                        className={styles.downloadBtn}
+                    >
+                        Pobierz plik
+                    </a>
+                </>
+            )
         },
         {
             id: 2,
@@ -47,19 +58,8 @@ export const FAQ: React.FC = () => {
         {
             id: 6,
             category: "rules",
-            question: "Czy mogę pobrac css przygotowany przez Oskara?",
-            answer: (
-                <>
-                    Tak, oczywiście! Wystarczy kliknąć w ten przycisk:{" "}
-                    <a
-                        href="/Oskar.css"
-                        download="oskarito-cyber-theme.css"
-                        className={styles.downloadBtn}
-                    >
-                        Pobierz plik
-                    </a>
-                </>
-            )
+            question: "Na czym polega powiązanie gry z nauką?",
+            answer: "W EduKasynie każdy zakład lub spin wymaga wykazania się wiedzą. Aby odblokować bębny lub podwoić wygraną, system rzuca Ci wyzwanie w postaci pytania quizowego. Dobra odpowiedź to klucz do pomnażania punktów!"
         }
     ];
 

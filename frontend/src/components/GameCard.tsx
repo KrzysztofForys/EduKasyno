@@ -1,19 +1,24 @@
-import { useNavigate } from "react-router-dom"
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { type GameCardProps } from '../types/types.ts';
+import styles from "./GameCard.module.css"; // Importujemy style modułowe
 
-export const GameCard = ({ title, desc, link, image }: GameCardProps) => {
+export const GameCard: React.FC<GameCardProps> = ({ title, desc, link, image }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="card" onClick={() => navigate(link)}>
-      <img src={image} alt="" />
+    <div className={styles.card} onClick={() => navigate(link)}>
+      {/* Kontener na obrazek, żeby kontrolować jego proporcje */}
+      <div className={styles.imageWrapper}>
+        <img src={image} alt={title} className={styles.cardImage} />
+      </div>
 
-      <div className="card-content">
-        <h3>{title}</h3>
-        <p>{desc}</p>
+      <div className={styles.cardContent}>
+        <h3 className={styles.cardTitle}>{title}</h3>
+        <p className={styles.cardDesc}>{desc}</p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default GameCard
+export default GameCard;

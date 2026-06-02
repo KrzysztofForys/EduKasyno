@@ -106,9 +106,12 @@
 }
 
 /* Podświetlenie tekstu nagłówka przy otwarciu lub hoverze */
-.itemOpen .accordionHeader h3,
-.accordionHeader:hover h3 {
+.itemOpen .accordionHeader h3 {
     color: var(--color-primary-hover);
+}
+
+.accordionHeader:hover h3 {
+    color: var(--text-dark);
 }
 
 /* Animowana strzałka */

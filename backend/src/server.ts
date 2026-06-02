@@ -60,9 +60,10 @@ app.post("/api/auth/register", async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const hashedHaslo = await bcrypt.hash(haslo, salt);
 
+    // Zapisujemy gracza od razu z kwotą 10000.00 PLN w bazie
     await pool.query(
-      "INSERT INTO gracze (login, haslo, saldo) VALUES ($1, $2, 10000)",
-      [login, hashedHaslo]
+      "INSERT INTO gracze (login, haslo, saldo) VALUES ($1, $2, $3)",
+      [login, hashedHaslo, 10000.00]
     );
 
     res.status(201).json({ message: "Konto utworzone pomyślnie! Otrzymujesz 10 000 żetonów na start. Możesz się zalogować." });

@@ -1,0 +1,27 @@
+/* BettingTable.module.css */
+
+.tableSection {
+  width: 100%;
+  background: #0b3d1b;
+  padding: 20px;
+  border-radius: 20px;
+  border: 4px solid #d4af37;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.tableSvg {
+  display: block;
+  margin: 0 auto;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.peNone {
+  pointer-events: none;
+}

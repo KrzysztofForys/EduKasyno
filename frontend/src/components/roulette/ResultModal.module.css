@@ -1,0 +1,154 @@
+/* ResultModal.module.css */
+
+.modalOverlay {
+  backdrop-filter: blur(5px);
+}
+
+.modalContentCustom {
+  background: #0d0d0f;
+  padding: 40px;
+  border-radius: 24px;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modalWin {
+  border: 3px solid #ffd700;
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.35);
+}
+
+.modalLose {
+  border: 3px solid #555;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.modalTitleWin {
+  color: #ffd700;
+  font-size: 32px;
+  margin: 0 0 10px;
+  font-family: Poppins, sans-serif;
+}
+
+.modalTitleLose {
+  color: #aaa;
+  font-size: 28px;
+  margin: 0 0 10px;
+  font-family: Poppins, sans-serif;
+}
+
+.modalLabel {
+  color: #888;
+  font-size: 14px;
+  margin: 0 0 25px;
+}
+
+.winningNumberContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.winningNumberCircle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  font-weight: bold;
+  color: #fff;
+  border: 4px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  transform: scale(1.15);
+}
+
+.red {
+  background: #cc0000;
+}
+
+.black {
+  background: #222222;
+}
+
+.green {
+  background: #008000;
+}
+
+.modalStatsBox {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid #222;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.modalStatsRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.statsLabel {
+  color: #888;
+  font-size: 14px;
+}
+
+.statsValue {
+  font-weight: bold;
+  color: #fff;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.statsValueWin {
+  font-weight: bold;
+  color: #ffd700;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.statsValueLose {
+  font-weight: bold;
+  color: #ff4d4d;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modalBtn {
+  margin: 0 auto;
+  display: block;
+  color: #000;
+  border: none;
+  padding: 12px 40px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.modalBtnWin {
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);
+}
+
+.modalBtnLose {
+  background: #fff;
+  box-shadow: none;
+}
+
+.modalBtn:hover {
+  transform: translateY(-2px);
+}

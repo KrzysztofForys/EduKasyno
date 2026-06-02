@@ -52,7 +52,7 @@ export const LoginContainer: React.FC<LoginContainerProps> = ({ setIsAuthenticat
 
   const handleSwitchToRegister = () => {
     // <- TERAZ LINK DZIAŁA I PRZEKIEROWUJE NA REJESTRACJĘ
-    navigate("/register"); 
+    navigate("/register");
   };
 
   return (

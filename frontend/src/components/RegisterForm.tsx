@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { RegisterFormData, RegisterErrors } from '../types/types';
-import styles from './LoginForm.module.css'; // Współdzielimy ten sam plik CSS!
+import styles from './RegisterForm.module.css';
 
 interface RegisterFormProps {
     onSubmit: (data: RegisterFormData) => Promise<void>;
@@ -76,7 +76,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     return (
         <div className={styles.loginCard}>
             <div className={styles.loginHeader}>
-                <h2 className={styles.loginHeaderTitle}>Zarejestruj się</h2>
+                <h2 className={styles.loginHeaderTitle}>ZAREJESTRUJ SIĘ</h2>
                 <p className={styles.loginSubtitle}>Stwórz darmowe konto i zgarnij bonus startowy</p>
             </div>
 

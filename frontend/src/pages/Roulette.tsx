@@ -123,9 +123,9 @@ function describeArc(cx: number, cy: number, r: number, startAngle: number, endA
   const y1 = cy + r * Math.sin(rad1);
   const x2 = cx + r * Math.cos(rad2);
   const y2 = cy + r * Math.sin(rad2);
-  
+
   const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-  
+
   return [
     `M ${cx} ${cy}`,
     `L ${x1} ${y1}`,
@@ -145,7 +145,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
   const [spinning, setSpinning] = useState<boolean>(false); // Flag określająca, czy koło wiruje
   const [wheelAngle, setWheelAngle] = useState<number>(0); // Kąt obrotu koła ruletki
   const [ballAngle, setBallAngle] = useState<number>(0); // Kąt obrotu kulki
-  const [ballRadius, setBallRadius] = useState<number>(180); // Promień orbity kulki (maleje podczas wirowania)
+  const [ballRadius, setBallRadius] = useState<number>(188); // Promień orbity kulki (maleje podczas wirowania)
   const [history, setHistory] = useState<RouletteNumber[]>([]); // Ostatnie 5 wylosowanych liczb
   const [hoveredBetKey, setHoveredBetKey] = useState<string | null>(null); // Obecnie podświetlony zakład (hover)
   const [showResultModal, setShowResultModal] = useState<boolean>(false); // Czy pokazać popup z wygraną
@@ -160,13 +160,13 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
   // Funkcja zwracająca listę liczb objętych danym zakładem na podstawie unikalnego klucza zakładu
   const getTargetedNumbers = (betKey: string): number[] => {
     if (!betKey) return [];
-    
+
     // Zakład na pojedynczą liczbę (Straight Up)
     if (betKey.startsWith("straight-")) {
       const val = parseInt(betKey.replace("straight-", ""), 10);
       return [val];
     }
-    
+
     // Zakład na parę w poziomie (Horizontal Split)
     if (betKey.startsWith("split-h-")) {
       const parts = betKey.replace("split-h-", "").split("-");
@@ -176,7 +176,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
       const num2 = BOARD_LAYOUT[row][col + 1].value;
       return [num1, num2];
     }
-    
+
     // Zakład na parę w pionie (Vertical Split)
     if (betKey.startsWith("split-v-")) {
       const parts = betKey.replace("split-v-", "").split("-");
@@ -186,14 +186,14 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
       const num2 = BOARD_LAYOUT[row + 1][col].value;
       return [num1, num2];
     }
-    
+
     // Zakład na parę z zerem (Zero Split)
     if (betKey.startsWith("split-zero-")) {
       const row = parseInt(betKey.replace("split-zero-", ""), 10);
       const num = BOARD_LAYOUT[row][0].value;
       return [0, num];
     }
-    
+
     // Zakład na czwórkę (Corner / Square)
     if (betKey.startsWith("corner-")) {
       const parts = betKey.replace("corner-", "").split("-");
@@ -206,7 +206,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
         BOARD_LAYOUT[row + 1][col + 1].value
       ];
     }
-    
+
     // Zakład na szóstkę (Six Line)
     if (betKey.startsWith("sixline-")) {
       const col = parseInt(betKey.replace("sixline-", ""), 10);
@@ -217,13 +217,13 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
       }
       return nums;
     }
-    
+
     // Zakład na rząd (Column)
     if (betKey.startsWith("column-")) {
       const row = parseInt(betKey.replace("column-", ""), 10);
       return BOARD_LAYOUT[row].map(item => item.value);
     }
-    
+
     // Zakład na tuzin (Dozen)
     if (betKey.startsWith("dozen-")) {
       const idx = parseInt(betKey.replace("dozen-", ""), 10); // 1, 2 lub 3
@@ -233,7 +233,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
       for (let i = start; i <= end; i++) nums.push(i);
       return nums;
     }
-    
+
     // Zakłady zewnętrzne proste
     if (betKey === "outside-red") {
       return WHEEL_NUMBERS.filter(num => num.color === "red").map(num => num.value);
@@ -253,7 +253,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
     if (betKey === "outside-high") {
       return Array.from({ length: 18 }, (_, i) => i + 19);
     }
-    
+
     return [];
   };
 
@@ -271,7 +271,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
   // Logika dodawania żetonu na wybrane pole stołu
   const handlePlaceBet = (betKey: string) => {
     if (spinning) return;
-    
+
     if (balance < selectedChip) {
       alert("Niewystarczające środki w portfelu!");
       return;
@@ -291,7 +291,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
 
     const currentBet = bets[betKey];
     const amountToRemove = Math.min(selectedChip, currentBet);
-    
+
     setBalance(prev => prev + amountToRemove);
     setBets(prev => {
       const updated = { ...prev };
@@ -307,11 +307,11 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
   // Przetwarzanie ruchów myszy nad siatką stołu w celu dynamicznego wyznaczania rodzaju zakładu (Split, Corner, Six Line itp.)
   const handleMouseMoveOnGrid = (e: React.MouseEvent<SVGRectElement>, col: number, row: number) => {
     if (spinning) return;
-    
+
     const rect = e.currentTarget.getBoundingClientRect();
     const localX = e.clientX - rect.left;
     const localY = e.clientY - rect.top;
-    
+
     const triggerMargin = 12; // Margines tolerancji w pikselach przy krawędzi komórki
 
     const isLeft = localX < triggerMargin;
@@ -391,7 +391,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
   // Uruchomienie spinu ruletki
   const handleSpin = () => {
     if (spinning) return;
-    
+
     if (totalBetAmount === 0) {
       alert("Najpierw postaw zakłady na stole!");
       return;
@@ -404,67 +404,131 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
     // Losowanie zwycięskiego przedziału
     const winningIdx = Math.floor(Math.random() * WHEEL_NUMBERS.length);
     const winningItem = WHEEL_NUMBERS[winningIdx];
-    
+
     // Parametry animacji
-    const animationDuration = 5000; // Czas trwania pełnego spinu w ms
+    const animationDuration = 7000; // Czas trwania pełnego spinu w ms
     const startTime = performance.now();
     const startWheelAngle = wheelAngle % 360;
-    const startBallAngle = ballAngle % 360;
-    
+
+    // Losowość startowa kulki dla uzyskania unikalnej trajektorii i zderzeń
+    const startBallAngleOffset = Math.random() * 360;
+    const startBallAngle = (ballAngle + startBallAngleOffset) % 360;
+    const ballSpeedMultiplier = 0.95 + Math.random() * 0.10;
+
     // Kąt pojedynczego przedziału koła
     const stepAngle = 360 / WHEEL_NUMBERS.length;
-    // Zwycięski przedział na obracającym się kole
+    // Kąt kieszeni na kole (początek)
     const winningPocketAngle = winningIdx * stepAngle;
-    
-    // Obliczenie końcowego kąta koła, by wygrany przedział wylądował dokładnie pod wskaźnikiem (0 stopni na samej górze)
-    // wheelRotationTarget = 360 * pełne_obroty - kąt_kieszeni
+
+    // Obliczenie końcowego kąta koła: wygrany przedział ląduje dokładnie u góry (0°)
     const fullWheelRotations = 6;
     const targetWheelAngle = startWheelAngle + 360 * fullWheelRotations - winningPocketAngle;
 
-    // Funkcje wygaszania (Easing functions)
+    const OUTER_RADIUS = 188;
+    const INNER_RADIUS = 120;
+    const radiusAt070 = OUTER_RADIUS - (OUTER_RADIUS - INNER_RADIUS) * Math.pow(0.70 / 0.85, 3);
+
+    // Środek wygrywającej kieszeni (kąt lokalny koła)
+    const pocketCenterLocal = winningPocketAngle + stepAngle / 2;
+
+    // Łączna rotacja kulki CCW w Fazie 1
+    const totalBallRotations = 9;
+    const ballAnglePhase1End = startBallAngle - totalBallRotations * 360 * ballSpeedMultiplier;
+
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    // Wyznaczenie kąta Fazy 3 dla t=0.85
+    const wheelAngleAt085 = startWheelAngle + (targetWheelAngle - startWheelAngle) * easeOutCubic(0.85);
+    let targetAnglePhase3Start = pocketCenterLocal + wheelAngleAt085 - 90;
+
+    // Dostosowanie targetAnglePhase3Start tak, aby kulka kontynuowała ruch CCW w Fazie 2
+    while (targetAnglePhase3Start > ballAnglePhase1End) {
+      targetAnglePhase3Start -= 360;
+    }
+    const diff = ballAnglePhase1End - targetAnglePhase3Start;
+    targetAnglePhase3Start -= Math.floor((diff - 360) / 360) * 360;
+
+
+    // =======================================================================
+    // PRE-GENEROWANE ZDERZENIA Z DEFLEKTORAMI
+    // Kulka wchodzi w strefę rombów (promień 176) stopniowo.
+    // baseRadius(t) = OUTER_RADIUS - 68 * (t/0.85)^3
+    // Strefa kolizji: promień między 170 a 184 → approx t=[0.28, 0.60]
+    // Generujemy 2-4 zdarzeń w tym przedziale, zamiast detekcji klatka-po-klatce.
+    // =======================================================================
+    const zoneEnter = 0.85 * Math.pow(4 / 68, 1 / 3);   // baseRadius≈184
+    const zoneExit = Math.min(0.67, 0.85 * Math.pow(18 / 68, 1 / 3)); // baseRadius≈170
+    const numBounces = 2 + Math.floor(Math.random() * 3); // 2-4 losowych zderzeń
+
+    type ActiveBounce = { hitP: number; kickDeg: number; radiusBump: number; };
+    const activeBounces: ActiveBounce[] = [];
+    for (let i = 0; i < numBounces; i++) {
+      // Równomierne rozmieszczenie z losowym przesunięciem
+      const hitFraction = (i + 0.25 + Math.random() * 0.5) / numBounces;
+      activeBounces.push({
+        hitP: zoneEnter + (zoneExit - zoneEnter) * hitFraction,
+        kickDeg: (Math.random() > 0.5 ? 1 : -1) * (10 + Math.random() * 15),
+        radiusBump: 7 + Math.random() * 7
+      });
+    }
+    // Sortowanie po czasie – gwarancja porządku chronologicznego
+    activeBounces.sort((a, b) => a.hitP - b.hitP);
+
 
     const animate = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
 
-      // 1. Obliczenie bieżącego obrotu koła
+      // 1. Obrót koła – płynne spowalnianie
       const currentWheelAngle = startWheelAngle + (targetWheelAngle - startWheelAngle) * easeOutCubic(progress);
       setWheelAngle(currentWheelAngle);
 
-      // 2. Obliczenie bieżącej pozycji kulki (kręci się przeciwnie do wskazówek zegara)
       let currentBallAngle = 0;
-      let currentBallRadius = 180;
+      let currentBallRadius = OUTER_RADIUS;
 
-      if (progress < 0.75) {
-        // Faza 1: Kulka kręci się szybko na zewnętrznym torze koła
-        const phaseProgress = progress / 0.75;
-        const totalBallRotations = 9;
-        currentBallAngle = startBallAngle - totalBallRotations * 360 * Math.pow(phaseProgress, 0.7);
-        currentBallRadius = 180 + Math.sin(progress * 100) * 1.5; // Delikatne nieregularne drgania toru
-      } else if (progress < 0.90) {
-        // Faza 2: Kulka zwalnia i spiralnie schodzi do przedziałów kieszeni
-        const phaseProgress = (progress - 0.75) / 0.15;
-        const startR = 180;
-        const endR = 138;
-        currentBallRadius = startR - (startR - endR) * phaseProgress;
+      if (progress < 0.70) {
+        // Faza 1: Szybki ruch po torze zewnętrznym z opadaniem
+        const baseRadius = OUTER_RADIUS - (OUTER_RADIUS - INNER_RADIUS) * Math.pow(progress / 0.85, 3);
+        const baseAngle = startBallAngle - totalBallRotations * 360 * Math.pow(progress / 0.70, 0.7) * ballSpeedMultiplier;
 
-        const totalBallRotations = 9;
-        const ballAnglePhase1End = startBallAngle - totalBallRotations * 360;
-        
-        // Kąt wylądowania na obracającym się kole w fazie 3
-        const targetAngleAtPhase3Start = winningPocketAngle + (startWheelAngle + (targetWheelAngle - startWheelAngle) * easeOutCubic(0.9));
-        currentBallAngle = ballAnglePhase1End + (targetAngleAtPhase3Start - ballAnglePhase1End) * phaseProgress;
+        // Logika odbić – aplikowanie pre-generowanych zdarzeń
+        let kickContrib = 0;
+        let radiusBump = 0;
+
+        activeBounces.forEach((bounce) => {
+          const evElapsed = progress - bounce.hitP;
+          if (evElapsed < 0) return;
+
+          // Kick: jednorazowy impuls z wygasaniem (nie oscylacje)
+          // Szczytowy efekt ~0.03 progress potem gaśnie wykładniczo
+          const kickDuration = 0.10;
+          if (evElapsed < kickDuration) {
+            const t = evElapsed / kickDuration;
+            kickContrib += bounce.kickDeg * Math.sin(t * Math.PI);
+          }
+
+          // Bump promieniowy: krótkie wybrzuszenie NA ZEWNĄTRZ, wygasa
+          const bumpDuration = 0.06;
+          if (evElapsed < bumpDuration) {
+            const t = evElapsed / bumpDuration;
+            radiusBump += bounce.radiusBump * Math.sin(t * Math.PI);
+          }
+        });
+
+        currentBallAngle = baseAngle + kickContrib;
+        currentBallRadius = baseRadius + radiusBump;
+      } else if (progress < 0.85) {
+        // Faza 2: Spiralne opadanie i dopasowanie kąta
+        const phaseProgress = (progress - 0.70) / 0.15;
+        currentBallRadius = radiusAt070 - (radiusAt070 - INNER_RADIUS) * phaseProgress;
+        currentBallAngle = ballAnglePhase1End + (targetAnglePhase3Start - ballAnglePhase1End) * phaseProgress;
       } else {
-        // Faza 3: Kulka bezpiecznie wylądowała w kieszeni i obraca się razem z kołem
-        currentBallRadius = 138;
-        const currentWheelAngleAtT = startWheelAngle + (targetWheelAngle - startWheelAngle) * easeOutCubic(progress);
-        currentBallAngle = winningPocketAngle + currentWheelAngleAtT;
-
-        // Dynamiczne odbicie kulki w kieszeni przy zderzeniu z separatorem (pierwsze 5% tej fazy)
-        if (progress < 0.94) {
-          const bounceProgress = (progress - 0.90) / 0.04;
-          currentBallRadius += Math.sin(bounceProgress * Math.PI) * 4.5;
+        // Faza 3: Spoczynek w kieszeni koła
+        currentBallRadius = INNER_RADIUS;
+        currentBallAngle = targetAnglePhase3Start + (currentWheelAngle - wheelAngleAt085);
+        if (progress < 0.93) {
+          const bounceT = (progress - 0.85) / 0.08;
+          currentBallRadius += Math.sin(bounceT * Math.PI) * 4.5;
         }
       }
 
@@ -476,7 +540,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
       } else {
         // Zakończenie animacji - rozliczenie i odblokowanie gry
         setSpinning(false);
-        
+
         // Obliczenie wygranej z zakładów
         let totalWin = 0;
         Object.entries(bets).forEach(([betKey, betValue]) => {
@@ -502,7 +566,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
 
         // Wypłata tokenów na konto gracza
         setBalance(prev => prev + totalWin);
-        
+
         // Zapamiętanie wylosowanej liczby
         setHistory(prev => [winningItem, ...prev.slice(0, 4)]);
         setPayoutInfo({
@@ -510,7 +574,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
           winAmount: totalWin,
           winningNum: winningItem
         });
-        
+
         // Wyczyszczenie zakładów i pokazanie okna z podsumowaniem
         setBets({});
         setShowResultModal(true);
@@ -530,15 +594,16 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
   }, []);
 
   // Obliczenie współrzędnych kulki na ekranie (środek koła w 250, 250)
-  const ballX = 250 + ballRadius * Math.cos(ballAngle * Math.PI / 180);
-  const ballY = 250 + ballRadius * Math.sin(ballAngle * Math.PI / 180);
+  // Kąt 0° = góra (12 o'clock), więc odejmujemy 90° przy przeliczaniu na radiany
+  const ballX = 250 + ballRadius * Math.cos((ballAngle) * Math.PI / 180);
+  const ballY = 250 + ballRadius * Math.sin((ballAngle) * Math.PI / 180);
 
   // Lista aktualnie podświetlonych pól podczas hoverowania stołu
   const highlightedNumbers = hoveredBetKey ? getTargetedNumbers(hoveredBetKey) : [];
 
   return (
     <div className={`page-content ${styles.rouletteContainer}`}>
-      
+
       {/* Nagłówek */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
         <div>
@@ -549,10 +614,10 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
 
       {/* Główna sekcja gry (Koło z lewej strony, Stół z prawej) */}
       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "30px", justifyContent: "center" }}>
-        
+
         {/* LEWA STRONA: KOŁO RULETKI 3D */}
         <div style={{ flex: "0 1 480px", textAlign: "center", background: "#111", padding: "20px", borderRadius: "20px", border: "1px solid #292929" }}>
-          
+
           <svg viewBox="0 0 500 500" width="100%" height="auto" style={{ maxWidth: "440px", filter: "drop-shadow(0px 15px 25px rgba(0,0,0,0.8))" }}>
             <defs>
               {/* Radialny gradient drewna mahoniowego obudowy */}
@@ -562,7 +627,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                 <stop offset="90%" stopColor="#260d00" />
                 <stop offset="100%" stopColor="#0d0400" />
               </radialGradient>
-              
+
               {/* Metaliczny gradient błyszczącego złota */}
               <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#ffeb99" />
@@ -605,16 +670,16 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
             {/* 1. Zewnętrzna drewniana obudowa koła */}
             <circle cx="250" cy="250" r="240" fill="url(#woodGrad)" stroke="#1a0a00" strokeWidth="6" />
             <circle cx="250" cy="250" r="218" fill="none" stroke="url(#goldGrad)" strokeWidth="4" />
-            
+
             {/* 2. Tory ślizgu kulki */}
             <circle cx="250" cy="250" r="208" fill="#141416" stroke="#000000" strokeWidth="2" />
-            <circle cx="250" cy="250" r="185" fill="none" stroke="#252528" strokeWidth="6" />
-            <circle cx="250" cy="250" r="182" fill="none" stroke="#0d0d0f" strokeWidth="2" />
+            <circle cx="250" cy="250" r="163" fill="none" stroke="#252528" strokeWidth="6" />
+            <circle cx="250" cy="250" r="160" fill="none" stroke="#0d0d0f" strokeWidth="2" />
 
             {/* 3. OBRACAJĄCY SIĘ RDZEŃ KOŁA */}
             <g transform={`rotate(${wheelAngle}, 250, 250)`}>
               {/* Czarna tarcza bazowa przedziałów */}
-              <circle cx="250" cy="250" r="172" fill="#0d0d10" />
+              <circle cx="250" cy="250" r="148" fill="#0d0d10" />
 
               {/* Rysowanie wycinków kieszeni (pockets) */}
               {WHEEL_NUMBERS.map((item, i) => {
@@ -622,29 +687,29 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                 const startA = i * step;
                 const endA = (i + 1) * step;
                 const midA = startA + step / 2;
-                
-                // Pozycja cyfry na tarczy
+
+                // Pozycja cyfry na tarczy (zmniejszony promień)
                 const textPos = {
-                  x: 250 + 148 * Math.cos((midA - 90) * Math.PI / 180),
-                  y: 250 + 148 * Math.sin((midA - 90) * Math.PI / 180)
+                  x: 250 + 126 * Math.cos((midA - 90) * Math.PI / 180),
+                  y: 250 + 126 * Math.sin((midA - 90) * Math.PI / 180)
                 };
 
                 return (
                   <g key={i}>
                     {/* Wycinek koła wypełniony kolorem przedziału */}
                     <path
-                      d={describeArc(250, 250, 172, startA, endA)}
+                      d={describeArc(250, 250, 148, startA, endA)}
                       fill={item.color === "red" ? "#cc0000" : item.color === "black" ? "#1e1e1e" : "#008000"}
                       stroke="url(#goldGrad)"
                       strokeWidth="0.8"
                     />
-                    
+
                     {/* Nakładka cieniująca kieszeń dla efektu 3D */}
                     <path
-                      d={describeArc(250, 250, 172, startA, endA)}
+                      d={describeArc(250, 250, 148, startA, endA)}
                       fill="url(#pocketShadow)"
                     />
-                    
+
                     {/* Wyświetlanie numeru kieszeni z odpowiednim obróceniem do środka */}
                     <text
                       x={textPos.x}
@@ -652,7 +717,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                       textAnchor="middle"
                       dominantBaseline="middle"
                       fill="#ffffff"
-                      fontSize="11"
+                      fontSize="10"
                       fontWeight="bold"
                       fontFamily="Outfit, Montserrat, sans-serif"
                       transform={`rotate(${midA}, ${textPos.x}, ${textPos.y})`}
@@ -664,18 +729,18 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
               })}
 
               {/* Wewnętrzny złoty pierścień oddzielający kieszenie od metalowego środka */}
-              <circle cx="250" cy="250" r="128" fill="none" stroke="url(#goldGrad)" strokeWidth="3.5" />
-              
+              <circle cx="250" cy="250" r="106" fill="none" stroke="url(#goldGrad)" strokeWidth="3.5" />
+
               {/* Stożkowy środek wrzeciona */}
-              <circle cx="250" cy="250" r="126" fill="#1c1d22" />
-              <circle cx="250" cy="250" r="60" fill="url(#spindleGold)" stroke="url(#goldGrad)" strokeWidth="1.5" />
-              <circle cx="250" cy="250" r="40" fill="url(#chromeGrad)" stroke="#666666" strokeWidth="0.8" />
-              
+              <circle cx="250" cy="250" r="104" fill="#1c1d22" />
+              <circle cx="250" cy="250" r="55" fill="url(#spindleGold)" stroke="url(#goldGrad)" strokeWidth="1.5" />
+              <circle cx="250" cy="250" r="36" fill="url(#chromeGrad)" stroke="#666666" strokeWidth="0.8" />
+
               {/* Cztery ramiona/uchwyty wrzeciona ruletki (spindle handles) */}
               {[0, 90, 180, 270].map((deg) => {
                 const angleRad = (deg - 90) * Math.PI / 180;
-                const spokeEndX = 250 + 55 * Math.cos(angleRad);
-                const spokeEndY = 250 + 55 * Math.sin(angleRad);
+                const spokeEndX = 250 + 50 * Math.cos(angleRad);
+                const spokeEndY = 250 + 50 * Math.sin(angleRad);
                 return (
                   <g key={deg}>
                     {/* Chromowane ramię */}
@@ -685,14 +750,14 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                       x2={spokeEndX}
                       y2={spokeEndY}
                       stroke="url(#chromeGrad)"
-                      strokeWidth="6"
+                      strokeWidth="5"
                       strokeLinecap="round"
                     />
                     {/* Złota ozdobna gałka na końcu ramienia */}
                     <circle
                       cx={spokeEndX}
                       cy={spokeEndY}
-                      r="8"
+                      r="7"
                       fill="url(#goldGrad)"
                       stroke="#805d00"
                       strokeWidth="1"
@@ -700,19 +765,19 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                   </g>
                 );
               })}
-              
+
               {/* 37 złotych przegródek łączących kieszenie ze środkiem wrzeciona */}
               {WHEEL_NUMBERS.map((_, i) => {
                 const step = 360 / WHEEL_NUMBERS.length;
                 const lineAngle = i * step;
                 const rad = (lineAngle - 90) * Math.PI / 180;
-                
-                // Linia biegnąca od wrzeciona (r=60) do zewnętrznej krawędzi kieszeni (r=172)
-                const x1 = 250 + 60 * Math.cos(rad);
-                const y1 = 250 + 60 * Math.sin(rad);
-                const x2 = 250 + 172 * Math.cos(rad);
-                const y2 = 250 + 172 * Math.sin(rad);
-                
+
+                // Linia biegnąca od wrzeciona (r=55) do zewnętrznej krawędzi kieszeni (r=148)
+                const x1 = 250 + 55 * Math.cos(rad);
+                const y1 = 250 + 55 * Math.sin(rad);
+                const x2 = 250 + 148 * Math.cos(rad);
+                const y2 = 250 + 148 * Math.sin(rad);
+
                 return (
                   <line
                     key={`divider-${i}`}
@@ -726,29 +791,30 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                   />
                 );
               })}
-              
+
               {/* Środkowy nit wrzeciona */}
-              <circle cx="250" cy="250" r="12" fill="url(#chromeGrad)" />
-              <circle cx="250" cy="250" r="6" fill="#0c0c0e" />
+              <circle cx="250" cy="250" r="10" fill="url(#chromeGrad)" />
+              <circle cx="250" cy="250" r="5" fill="#0c0c0e" />
             </g>
 
             {/* Przeszkody w kształcie rombów (deflektory) na nieruchomym torze kulki */}
             {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => {
               const rad = (deg - 90) * Math.PI / 180;
-              const cx = 250 + 196 * Math.cos(rad);
-              const cy = 250 + 196 * Math.sin(rad);
-              
+              // Deflektory umieszczone na torze kulki (r=172, między zewnętrzną krawędzią a kołem)
+              const cx = 250 + 176 * Math.cos(rad);
+              const cy = 250 + 176 * Math.sin(rad);
+
               return (
                 <g key={`deflector-${deg}`} transform={`rotate(${deg}, ${cx}, ${cy})`} filter="drop-shadow(0px 2px 3px rgba(0,0,0,0.65))">
                   {/* Trójwymiarowy, cieniowany złoty rombik (lewa strona ciemniejsza, prawa jaśniejsza) */}
                   <polygon
-                    points={`${cx - 5},${cy} ${cx},${cy - 8} ${cx},${cy + 8}`}
+                    points={`${cx - 6},${cy} ${cx},${cy - 9} ${cx},${cy + 9}`}
                     fill="#aa7c11"
                     stroke="#594008"
                     strokeWidth="0.5"
                   />
                   <polygon
-                    points={`${cx + 5},${cy} ${cx},${cy - 8} ${cx},${cy + 8}`}
+                    points={`${cx + 6},${cy} ${cx},${cy - 9} ${cx},${cy + 9}`}
                     fill="url(#goldGrad)"
                     stroke="#594008"
                     strokeWidth="0.5"
@@ -804,7 +870,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
 
         {/* PRAWA STRONA: ZIELONY STÓŁ ZAKŁADOWY (FELT TABLE) */}
         <div style={{ flex: "1 1 700px", minWidth: "300px", background: "#0b3d1b", padding: "20px", borderRadius: "20px", border: "4px solid #d4af37", boxShadow: "inset 0 0 50px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5)" }}>
-          
+
           <div style={{ overflowX: "auto" }}>
             <svg viewBox="0 0 920 340" width="100%" height="auto" style={{ display: "block", margin: "0 auto" }}>
               <defs>
@@ -812,12 +878,12 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                 <filter id="hoverGlow" x="-10%" y="-10%" width="120%" height="120%">
                   <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#ffffff" floodOpacity="0.8" />
                 </filter>
-                
+
                 {/* Cień dla żetonów */}
                 <filter id="chipShadow" x="-20%" y="-20%" width="140%" height="140%">
                   <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#000" floodOpacity="0.5" />
                 </filter>
-                
+
                 {/* Gradient metalowego złotego obramowania dla żetonu 50 */}
                 <linearGradient id="goldChipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#fff8db" />
@@ -874,7 +940,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                         stroke="#d4af37"
                         strokeWidth="1.5"
                       />
-                      
+
                       {/* Niewidzialna komórka detekcji precyzyjnych zakładów na krawędziach (Split, Corner, Six Line itp.) */}
                       <rect
                         x={x}
@@ -1025,18 +1091,18 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                       width={CELL_W * 2}
                       height={45}
                       fill={
-                        isHighlighted 
-                          ? "rgba(255,255,255,0.2)" 
-                          : bet.color === "red" 
-                          ? "#b31e1e" 
-                          : bet.color === "black" 
-                          ? "#1a1a1a" 
-                          : "#082612"
+                        isHighlighted
+                          ? "rgba(255,255,255,0.2)"
+                          : bet.color === "red"
+                            ? "#b31e1e"
+                            : bet.color === "black"
+                              ? "#1a1a1a"
+                              : "#082612"
                       }
                       stroke="#d4af37"
                       strokeWidth="2"
                     />
-                    
+
                     {/* Element graficzny rombu zamiast tekstu dla kolorów */}
                     {bet.color ? (
                       <polygon
@@ -1155,7 +1221,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                       stroke="#ffffff"
                       strokeWidth="1.5"
                     />
-                    
+
                     {/* Wewnętrzny ozdobny okrąg żetonu w prążki */}
                     <circle
                       cx={cx}
@@ -1167,7 +1233,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
                       strokeDasharray="3,3"
                       opacity="0.85"
                     />
-                    
+
                     {/* Wyświetlana wartość zakładu na żetonie */}
                     <text
                       x={cx}
@@ -1189,7 +1255,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
 
           {/* PASEK KONTROLI ZAKŁADÓW (WYBÓR NOMINAŁÓW I AKCJE) */}
           <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", marginTop: "20px", gap: "15px" }}>
-            
+
             {/* Wybór nominału żetonu */}
             <div>
               <span style={{ display: "block", fontSize: "12px", color: "#8bcf9a", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px", fontWeight: 700 }}>Nominał Żetonu:</span>
@@ -1312,7 +1378,7 @@ export const Roulette = ({ balance, setBalance }: RouletteProps) => {
             )}
 
             <p style={{ color: "#888", fontSize: "14px", margin: "0 0 25px" }}>Wylosowano liczbę:</p>
-            
+
             {/* Wyświetlenie wylosowanej liczby */}
             <div style={{ display: "flex", justifyContent: "center", marginBottom: "30px" }}>
               <div

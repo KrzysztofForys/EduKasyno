@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useBalance } from "../context/BalanceContext.tsx";
 import { BetLayout } from "../components/BetLayout.tsx";
 import { SlotReel } from "../components/SlotReel.tsx";
+import styles from "./Slots.module.css";
 
 export default function Slots() {
   const { balance, refreshBalance, tryToChangeBalance } = useBalance();
@@ -9,7 +10,7 @@ export default function Slots() {
   const [message, setMessage] = useState<string | null>(null);
   const [bet, setBet] = useState<number>(100);
   const [winAmount, setWinAmount] = useState<number>(0);
-  
+
   // Domyślne symbole startowe przed pierwszym kliknięciem
   const [serverSymbols, setServerSymbols] = useState<string[]>(["cytryna", "cytryna", "cytryna"]);
   const [serverMessage, setServerMessage] = useState<string | null>(null);
@@ -69,7 +70,7 @@ export default function Slots() {
     // Jeżeli zatrzymał się trzeci (ostatni) bębenek
     if (index === 2) {
       setSpinning(false);
-      
+
       // HAJS I MODAL DODAJĄ SIĘ Z TIMEOUTEM (pół sekundy po pełnym wyhamowaniu maszyny)
       setTimeout(() => {
         refreshBalance(); // Strzał do bazy po świeże saldo z wygraną
@@ -79,32 +80,34 @@ export default function Slots() {
   };
 
   return (
-    <div className="slots-container">
-      <div className="slot-machine">
+    <div className={styles.container}>
+      <div className={styles.headerLayout}>
+        <h1 className={styles.title}>Sloty</h1>
+        <p className={styles.subtitle}>Wybierz zakład i zakręć bębnami!</p>
+      </div>
+      <div className={styles.slotMachine}>
         {/* Przekazujemy wylosowane z serwera znaki do odpowiednich bębnów */}
         <SlotReel spinning={spinning} stopDelay={0} targetSymbol={serverSymbols[0]} onStop={() => handleStop(0)} />
         <SlotReel spinning={spinning} stopDelay={300} targetSymbol={serverSymbols[1]} onStop={() => handleStop(1)} />
         <SlotReel spinning={spinning} stopDelay={600} targetSymbol={serverSymbols[2]} onStop={() => handleStop(2)} />
       </div>
-      
-      <BetLayout bet={bet} setBet={setBet} />
-      
-      <button onClick={handleSpin} disabled={spinning} className="slots-btn">
-        Zakręć
+      <div className={styles.betContainer}>
+        <BetLayout bet={bet} setBet={setBet} />
+      </div>
+
+
+      <button onClick={handleSpin} disabled={spinning} className={styles.slotsBtn}>
+        {spinning ? "Losuję..." : "Zakręć"}
       </button>
 
       {message && (
         <div className="modal">
           <div className="modal-content">
             <h2>{message}</h2>
-            <p className="modal-message">Wylosowane symbole:</p>
-            <p style={{ fontSize: "24px", letterSpacing: "8px", margin: "10px 0", fontWeight: "bold" }}>
-              {serverSymbols.join(" | ")}
-            </p>
             {winAmount > 0 && (
-              <p style={{ color: "#4caf50", fontWeight: "bold", fontSize: "18px" }}>
-                Wygrana: +{winAmount} &#x1FA99;
-              </p>
+              <div className={styles.modalWinBody}>
+                <div>Wygrana: +{winAmount}</div><img src="zeton-portfel.svg" className={styles.modalWinBodyImg} />
+              </div>
             )}
             <button onClick={() => setMessage(null)} className="modal-close-btn">
               OK

@@ -11,17 +11,18 @@
 }
 
 .headerLayout {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 30px;
+  text-align: center;
 }
 
 .title {
-  font-size: 36px;
-  color: var(--color-primary);
-  font-family: var(--font-heading);
-  margin: 0;
+  font-size: 42px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-extreme-purple) 50%, var(--color-extreme) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 4px 20px rgba(121, 186, 252, 0.15);
+  text-align: center;
 }
 
 .subtitle {

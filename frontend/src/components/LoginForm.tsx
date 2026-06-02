@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { LoginFormData, LoginErrors } from '../types/types';
 import styles from './LoginForm.module.css';
+import { useBalance } from "../context/BalanceContext";
 
 interface LoginFormProps {
     onSubmit: (data: LoginFormData) => Promise<void>;
@@ -15,7 +16,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading, exter
         password: '',
         rememberMe: false,
     });
-
+      const { balance, refreshBalance } = useBalance();
     const [errors, setErrors] = useState<LoginErrors>({});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +56,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading, exter
         e.preventDefault();
         if (validateForm() && !isLoading) {
             await onSubmit(formData);
+            await refreshBalance();
         }
+        
     };
 
     // Łączymy błędy lokalne z błędami z API

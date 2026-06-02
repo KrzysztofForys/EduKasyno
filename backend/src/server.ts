@@ -311,6 +311,169 @@ app.post("/api/profile/reset", autoryzacja, async (req: AuthenticatedRequest, re
   }
 });
 
+// NOWY BEZPIECZNY ENDPOINT RULETKI (Losowanie i rozliczanie na serwerze)
+app.post("/api/games/roulette/play", autoryzacja, async (req: AuthenticatedRequest, res: Response) => {
+  const { bets } = req.body; // bets to obiekt typu Record<string, number> np. { "straight-14": 10, "outside-red": 25 }
+  const userId = req.userId;
+
+  if (!bets || Object.keys(bets).length === 0) {
+    return res.status(400).json({ error: "Brak postawionych zakładów na stole." });
+  }
+
+  // Obliczamy łączną kwotę wszystkich zakładów na stole
+  const totalBetAmount = Object.values(bets).reduce((acc: number, val: any) => acc + Number(val), 0);
+
+  if (totalBetAmount <= 0) {
+    return res.status(400).json({ error: "Nieprawidłowa stawka zakładów." });
+  }
+
+  // Definicja koła ruletki (Układ europejski) do weryfikacji koloru
+  const WHEEL_NUMBERS_DB = [
+    { value: 0, color: "green" }, { value: 32, color: "red" }, { value: 15, color: "black" },
+    { value: 19, color: "red" }, { value: 4, color: "black" }, { value: 21, color: "red" },
+    { value: 2, color: "black" }, { value: 25, color: "red" }, { value: 17, color: "black" },
+    { value: 34, color: "red" }, { value: 6, color: "black" }, { value: 27, color: "red" },
+    { value: 13, color: "black" }, { value: 36, color: "red" }, { value: 11, color: "black" },
+    { value: 30, color: "red" }, { value: 8, color: "black" }, { value: 23, color: "red" },
+    { value: 10, color: "black" }, { value: 5, color: "red" }, { value: 24, color: "black" },
+    { value: 16, color: "red" }, { value: 33, color: "black" }, { value: 1, color: "red" },
+    { value: 20, color: "black" }, { value: 14, color: "red" }, { value: 31, color: "black" },
+    { value: 9, color: "red" }, { value: 22, color: "black" }, { value: 18, color: "red" },
+    { value: 29, color: "black" }, { value: 7, color: "red" }, { value: 28, color: "black" },
+    { value: 12, color: "red" }, { value: 35, color: "black" }, { value: 3, color: "red" },
+    { value: 26, color: "black" }
+  ];
+
+  // Układ planszy (3 wiersze, 12 kolumn) do wyznaczania numerów w zakładach złożonych
+  const BOARD_LAYOUT_DB = [
+    [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
+    [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35],
+    [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
+  ];
+
+  // Funkcja pomocnicza serwera do sprawdzenia jakie numery pokrywa dany betKey
+  const getNumbersForBetKey = (key: string): number[] => {
+    if (key.startsWith("straight-")) {
+      return [parseInt(key.replace("straight-", ""), 10)];
+    }
+    if (key.startsWith("split-h-")) {
+      const parts = key.replace("split-h-", "").split("-");
+      const col = parseInt(parts[0], 10);
+      const row = parseInt(parts[1], 10);
+      return [BOARD_LAYOUT_DB[row][col], BOARD_LAYOUT_DB[row][col + 1]];
+    }
+    if (key.startsWith("split-v-")) {
+      const parts = key.replace("split-v-", "").split("-");
+      const col = parseInt(parts[0], 10);
+      const row = parseInt(parts[1], 10);
+      return [BOARD_LAYOUT_DB[row][col], BOARD_LAYOUT_DB[row + 1][col]];
+    }
+    if (key.startsWith("split-zero-")) {
+      const row = parseInt(key.replace("split-zero-", ""), 10);
+      return [0, BOARD_LAYOUT_DB[row][0]];
+    }
+    if (key.startsWith("corner-")) {
+      const parts = key.replace("corner-", "").split("-");
+      const col = parseInt(parts[0], 10);
+      const row = parseInt(parts[1], 10);
+      return [
+        BOARD_LAYOUT_DB[row][col], BOARD_LAYOUT_DB[row][col + 1],
+        BOARD_LAYOUT_DB[row + 1][col], BOARD_LAYOUT_DB[row + 1][col + 1]
+      ];
+    }
+    if (key.startsWith("sixline-")) {
+      const col = parseInt(key.replace("sixline-", ""), 10);
+      const nums: number[] = [];
+      for (let r = 0; r < 3; r++) {
+        nums.push(BOARD_LAYOUT_DB[r][col], BOARD_LAYOUT_DB[r][col + 1]);
+      }
+      return nums;
+    }
+    if (key.startsWith("column-")) {
+      const row = parseInt(key.replace("column-", ""), 10);
+      return BOARD_LAYOUT_DB[row];
+    }
+    if (key.startsWith("dozen-")) {
+      const idx = parseInt(key.replace("dozen-", ""), 10);
+      const start = (idx - 1) * 12 + 1;
+      const nums: number[] = [];
+      for (let i = start; i <= idx * 12; i++) nums.push(i);
+      return nums;
+    }
+    if (key === "outside-red") return WHEEL_NUMBERS_DB.filter(n => n.color === "red").map(n => n.value);
+    if (key === "outside-black") return WHEEL_NUMBERS_DB.filter(n => n.color === "black").map(n => n.value);
+    if (key === "outside-even") return Array.from({ length: 36 }, (_, i) => i + 1).filter(n => n % 2 === 0);
+    if (key === "outside-odd") return Array.from({ length: 36 }, (_, i) => i + 1).filter(n => n % 2 !== 0);
+    if (key === "outside-low") return Array.from({ length: 18 }, (_, i) => i + 1);
+    if (key === "outside-high") return Array.from({ length: 18 }, (_, i) => i + 19);
+    return [];
+  };
+
+  try {
+    // Sprawdzamy czy gracz istnieje i ma fundusze
+    const userRes = await pool.query("SELECT saldo FROM gracze WHERE id = $1", [userId]);
+    if (userRes.rows.length === 0) {
+      return res.status(404).json({ error: "Nie znaleziono gracza" });
+    }
+
+    const aktualneSaldo = Number(userRes.rows[0].saldo);
+    if (aktualneSaldo < totalBetAmount) {
+      return res.status(400).json({ error: "Niewystarczające środki na koncie na te zakłady!" });
+    }
+
+    // 1. LOSOWANIE NUMERU NA BACKENDZIE
+    const winningIdx = Math.floor(Math.random() * WHEEL_NUMBERS_DB.length);
+    const winningItem = WHEEL_NUMBERS_DB[winningIdx];
+
+    // 2. OBLICZANIE WYGRANEJ
+    let totalWinAmount = 0;
+
+    Object.entries(bets).forEach(([betKey, betValue]) => {
+      const val = Number(betValue);
+      if (val <= 0) return;
+
+      const coveredNums = getNumbersForBetKey(betKey);
+      if (coveredNums.includes(winningItem.value)) {
+        if (betKey.startsWith("straight-")) totalWinAmount += val * 36;
+        else if (betKey.startsWith("split-")) totalWinAmount += val * 18;
+        else if (betKey.startsWith("corner-")) totalWinAmount += val * 9;
+        else if (betKey.startsWith("sixline-")) totalWinAmount += val * 6;
+        else if (betKey.startsWith("column-") || betKey.startsWith("dozen-")) totalWinAmount += val * 3;
+        else totalWinAmount += val * 2; // zakłady zewnętrzne (kolory, parzyste/nieparzyste itp.)
+      }
+    });
+
+    const zmianaSalda = totalWinAmount - totalBetAmount;
+
+    // 3. AKTUALIZACJA SALDA W BAZIE DANYCH
+    const updateRes = await pool.query(
+      "UPDATE gracze SET saldo = saldo + $1 WHERE id = $2 RETURNING saldo",
+      [zmianaSalda, userId]
+    );
+    const noweSaldo = Number(updateRes.rows[0].saldo);
+
+    // 4. JEDNORAZOWY ZAPIS ROZGRYWKI DO HISTORII
+    await pool.query(
+      "INSERT INTO historia_gier (id_gracza, nazwa_gry, wynik, data_gry) VALUES ($1, $2, $3, NOW())",
+      [userId, "Ruletka", totalWinAmount]
+    );
+
+    // 5. ZWRÓCENIE DANYCH DO FRONTENDU (Uruchomienie animacji koła z gotowym wynikiem)
+    return res.json({
+      success: true,
+      winningIdx,
+      winningItem,
+      winAmount: totalWinAmount,
+      totalBet: totalBetAmount,
+      noweSaldo
+    });
+
+  } catch (err) {
+    console.error("Błąd serwera podczas gry w ruletkę:", err);
+    return res.status(500).json({ error: "Błąd serwera" });
+  }
+});
+
 app.listen(3001, () => {
   console.log(`Backend działający na http://localhost:3001`);
 });

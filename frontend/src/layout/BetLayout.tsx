@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import type { ChangeEvent } from "react";
 import { formatBalance } from "../utils/format.ts";
+import styles from "./BetLayout.module.css";
 
 interface BetLayoutProps {
     bet: number;
@@ -49,9 +50,9 @@ export const BetLayout: React.FC<BetLayoutProps> = ({ bet, setBet }) => {
     };
 
     return (
-        <div className="bet-layout">
+        <div className={styles.betLayout}>
             <button
-                className="change-bet"
+                className={styles.changeBet}
                 onMouseDown={() => startTimer("decrement")}
                 onMouseUp={stopTimer}
                 onMouseLeave={stopTimer}
@@ -70,10 +71,11 @@ export const BetLayout: React.FC<BetLayoutProps> = ({ bet, setBet }) => {
                 onChange={handleInputChange}
                 onFocus={() => setIsEditing(true)}
                 onBlur={() => setIsEditing(false)}
+                className={styles.betInput}
             />
 
             <button
-                className="change-bet"
+                className={styles.changeBet}
                 onMouseDown={() => startTimer("increment")}
                 onMouseUp={stopTimer}
                 onMouseLeave={stopTimer}

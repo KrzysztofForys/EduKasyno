@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useBalance } from "../context/BalanceContext.tsx";
-import { BetLayout } from "../components/BetLayout.tsx";
+import { BetLayout } from "../layout/BetLayout.tsx";
 import { SlotReel } from "../components/SlotReel.tsx";
 import styles from "./Slots.module.css";
 
@@ -88,31 +88,34 @@ export default function Slots() {
         <h1 className={styles.title}>Sloty</h1>
         <p className={styles.subtitle}>Wybierz zakład i zakręć bębnami!</p>
       </div>
+
       <div className={styles.slotMachine}>
         {/* Przekazujemy wylosowane z serwera znaki do odpowiednich bębnów */}
         <SlotReel spinning={spinning} stopDelay={0} targetSymbol={serverSymbols[0]} onStop={() => handleStop(0)} />
         <SlotReel spinning={spinning} stopDelay={300} targetSymbol={serverSymbols[1]} onStop={() => handleStop(1)} />
         <SlotReel spinning={spinning} stopDelay={600} targetSymbol={serverSymbols[2]} onStop={() => handleStop(2)} />
       </div>
+
       <div className={styles.betContainer}>
         <BetLayout bet={bet} setBet={setBet} />
       </div>
-
 
       <button onClick={handleSpin} disabled={spinning} className={styles.slotsBtn}>
         {spinning ? "Losuję..." : "Zakręć"}
       </button>
 
+      {/* Poprawiony Modal na CSS Modules */}
       {message && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>{message}</h2>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h2 className={styles.modalMessage}>{message}</h2>
             {winAmount > 0 && (
               <div className={styles.modalWinBody}>
-                <div>Wygrana: +{winAmount}</div><img src="zeton-portfel.svg" className={styles.modalWinBodyImg} />
+                <div>Wygrana: <span>+{winAmount}</span></div>
+                <img src="zeton-portfel.svg" alt="Żetony" className={styles.modalWinBodyImg} />
               </div>
             )}
-            <button onClick={() => setMessage(null)} className="modal-close-btn">
+            <button onClick={() => setMessage(null)} className={styles.modalCloseBtn}>
               OK
             </button>
           </div>

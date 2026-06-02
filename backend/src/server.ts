@@ -45,6 +45,8 @@ const autoryzacja = (req: AuthenticatedRequest, res: Response, next: NextFunctio
 
 // REJESTRACJA
 app.post("/api/auth/register", async (req: Request, res: Response) => {
+  console.log("REGISTER BODY:", req.body);
+
   try {
     const { login, haslo } = req.body;
 
@@ -161,7 +163,7 @@ app.get("/api/profile/history", autoryzacja, async (req: AuthenticatedRequest, r
 
 // Endpoint obsługujący wynik zdrapki
 app.post("/api/games/scratch/result", autoryzacja, async (req: AuthenticatedRequest, res: Response) => {
-  const { koszt, wynik } = req.body; 
+  const { koszt, wynik } = req.body;
   const userId = req.userId;
 
   if (koszt === undefined || wynik === undefined) {
@@ -193,10 +195,10 @@ app.post("/api/games/scratch/result", autoryzacja, async (req: AuthenticatedRequ
       [userId, "Zdrapka", wynik]
     );
 
-    return res.json({ 
-      success: true, 
+    return res.json({
+      success: true,
       noweSaldo: Number(noweSaldo),
-      message: "Wynik zdrapki zapisany pomyślnie" 
+      message: "Wynik zdrapki zapisany pomyślnie"
     });
 
   } catch (err) {
@@ -222,7 +224,7 @@ app.post("/api/games/slots/play", autoryzacja, async (req: AuthenticatedRequest,
     "pomarancza": 2,
     "winogrono": 3,
     "bar": 5,
-    "siedem": 10 
+    "siedem": 10
   };
 
   try {

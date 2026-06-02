@@ -1,15 +1,34 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
+import { type Response, type Request, type NextFunction } from "express";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { pool } from "./db";
+import dotenv from "dotenv";
+import { Pool } from "pg";
+dotenv.config();
+
+const pool = new Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: Number(process.env.DB_PORT) || 5432
+})
+const JWT_SECRET = "super_tajny_klucz_kasyna_123!"; 
+const requiredEnv = [
+  "DB_USER",
+  "DB_HOST",
+  "DB_NAME",
+  "DB_PASSWORD",
+  "DB_PORT",
+];
+
+for (const key of requiredEnv) if (!process.env[key]) throw new Error(`Brak zmiennej środowiskowej ${key}`);
 
 const app = express();
-const PORT = 3001;
-const JWT_SECRET = "super_tajny_klucz_kasyna_123!"; 
-
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: 'http://localhost:5173' }))
 app.use(express.json());
+
 
 interface AuthenticatedRequest extends Request {
   userId?: number;
@@ -213,6 +232,6 @@ app.post("/api/profile/reset", autoryzacja, async (req: AuthenticatedRequest, re
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend działający na http://localhost:${PORT}`);
+app.listen(3001, () => {
+  console.log(`Backend działający na http://localhost:3001`);
 });

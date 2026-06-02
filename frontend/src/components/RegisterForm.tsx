@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { RegisterFormData, RegisterErrors } from '../types/types';
 import styles from './RegisterForm.module.css';
+import { Link } from 'react-router-dom';
 
 interface RegisterFormProps {
     onSubmit: (data: RegisterFormData) => Promise<void>;
@@ -142,7 +143,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                             disabled={isLoading}
                         />
                         <span className={styles.checkmark}></span>
-                        <span>Akceptuję <a href="/regulamin" target="_blank" rel="noreferrer" className={styles.forgotPasswordLink}>Regulamin</a> oraz politykę prywatności</span>
+                        <span>Akceptuję <Link to='/register/terms' className={styles.forgotPasswordLink}>Regulamin</Link> oraz politykę prywatności</span>
                     </label>
                     {combinedErrors.acceptTerms && <span className={styles.errorText}>{combinedErrors.acceptTerms}</span>}
                 </div>

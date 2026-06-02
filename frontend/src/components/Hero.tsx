@@ -1,14 +1,18 @@
-import {type HeroProps} from '../types/types.ts';
+import React from "react";
+import { type HeroProps } from '../types/types.ts';
+import styles from "./Hero.module.css"; // Import stylów modułowych
 
-export const Hero = ({ title, description, image }: HeroProps) =>{
+export const Hero: React.FC<HeroProps> = ({ title, description, image }) => {
   return (
-    <section className="hero">
-      <div className="hero-text">
-        <h1>{title}</h1>
-        <p>{description}</p>
+    <section className={styles.hero}>
+      <div className={styles.heroText}>
+        <h1 className={styles.heroTitle}>{title}</h1>
+        <p className={styles.heroDescription}>{description}</p>
       </div>
 
-      <img src={image} alt="Grafika edukacyjna" />
+      <div className={styles.imageWrapper}>
+        <img src={image} alt="Grafika edukacyjna" className={styles.heroImage} />
+      </div>
     </section>
-  )
-}
+  );
+};

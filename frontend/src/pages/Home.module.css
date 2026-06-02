@@ -1,0 +1,62 @@
+.homeContainer {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* Sekcja z kartami gier */
+.gamesSection {
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 80px 20px;
+}
+
+/* Główny nagłówek sekcji gier */
+.sectionTitle {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 50px;
+    letter-spacing: -0.5px;
+    color: var(--text-main);
+    position: relative;
+}
+
+/* Subtelny neonowy akcent pod napisem "Odkryj nasze gry..." */
+.sectionTitle::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: var(--color-primary);
+    margin: 15px auto 0 auto;
+    border-radius: 2px;
+    box-shadow: 0 0 10px var(--color-primary);
+}
+
+/* Inteligentna siatka kart - automatycznie dostosowuje układ do ekranu */
+.cardsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    align-items: stretch;
+}
+
+/* Ustawienia dla mniejszych ekranów (smartfony) */
+@media (max-width: 768px) {
+    .gamesSection {
+        padding: 40px 15px;
+    }
+
+    .sectionTitle {
+        font-size: 1.8rem;
+    }
+
+    .cardsGrid {
+        grid-template-columns: 1fr;
+        /* Na telefonach karty będą jedna pod drugą */
+        gap: 20px;
+    }
+}

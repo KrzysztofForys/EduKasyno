@@ -398,8 +398,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
       }
     };
     fadeOut();
-    setIsBought(false);
-    onBought(false);
   };
 
   const themeClass =
@@ -430,9 +428,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({
         onTouchStart={handleStart}
         onTouchMove={handleMove}
         onTouchEnd={handleEnd}
-        className={`${styles.scratchCanvas} ${
-          fullyRevealed ? styles.scratchCanvasComplete : styles.scratchCanvasActive
-        }`}
+        className={`${styles.scratchCanvas} ${fullyRevealed ? styles.scratchCanvasComplete : styles.scratchCanvasActive
+          }`}
       />
 
       <canvas ref={particleCanvasRef} className={styles.particleCanvas} />

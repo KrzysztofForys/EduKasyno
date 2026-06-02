@@ -4,17 +4,9 @@ import cors from "cors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { Pool } from "pg";
+import { pool } from "./db";
 dotenv.config();
-
-const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: Number(process.env.DB_PORT) || 5432
-})
-const JWT_SECRET = "super_tajny_klucz_kasyna_123!"; 
+const JWT_SECRET = "super_tajny_klucz_kasyna_123!";
 const requiredEnv = [
   "DB_USER",
   "DB_HOST",
@@ -37,7 +29,7 @@ interface AuthenticatedRequest extends Request {
 // MIDDLEWARE: Weryfikacja tokenu JWT
 const autoryzacja = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.split(" ")[1];
-  
+
   if (!token) {
     return res.status(401).json({ message: "Brak dostępu. Zaloguj się." });
   }
@@ -113,7 +105,7 @@ app.get("/api/profile", autoryzacja, async (req: AuthenticatedRequest, res: Resp
     const idGracza = req.userId;
 
     const userResult = await pool.query(
-      "SELECT id, login, saldo FROM gracze WHERE id = $1", 
+      "SELECT id, login, saldo FROM gracze WHERE id = $1",
       [idGracza]
     );
 
@@ -157,7 +149,7 @@ app.get("/api/profile/history", autoryzacja, async (req: AuthenticatedRequest, r
        FROM historia_gier 
        WHERE id_gracza = $1 
        ORDER BY data_gry DESC 
-       LIMIT 10`, 
+       LIMIT 10`,
       [idGracza]
     );
     res.json(result.rows);

@@ -206,3 +206,91 @@
   margin: 40px auto;
   max-width: 600px;
 }
+
+.profileInfoWithToken {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+.profileInfoWithTokenImg {
+  width: 20px;
+  height: 20px;
+}
+
+.profilePage {
+  padding: 20px;
+  color: white;
+  font-family: sans-serif;
+}
+
+.loadingState {
+  color: white;
+  padding: 20px;
+}
+
+.errorState {
+  color: red;
+  padding: 20px;
+}
+
+.financeCard {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.resetButton {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.resetButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.tableHeaderRow {
+  border-bottom: 2px solid #555;
+}
+
+.tableRow {
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.tableCell {
+  padding: 10px;
+}
+
+.winCell {
+  padding: 10px;
+  color: #4caf50;
+}
+
+.loseCell {
+  padding: 10px;
+  color: #f44336;
+}
+
+.dateCell {
+  padding: 10px;
+  color: #888;
+}
+
+.emptyHistory {
+  color: #888;
+}

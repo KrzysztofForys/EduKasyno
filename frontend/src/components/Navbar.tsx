@@ -21,7 +21,7 @@ export const Navbar = () => {
       <div className={styles.navContainer}>
         {/* LOGO / NAZWA KASYNA */}
         <Link to="/" className={styles.logo}>
-          🎰 EduKasyno
+          EduKasyno
         </Link>
 
         {/* LINKI NAWIGACYJNE */}

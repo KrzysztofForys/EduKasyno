@@ -23,6 +23,10 @@ export const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isResetting, setIsResetting] = useState<boolean>(false);
+    const handleLogout = () => {
+    localStorage.removeItem("token"); 
+    window.location.href = "/login"; // <--- Czysty JS, przekieruje bez użycia navigate
+  };
 
   const fetchProfileData = async () => {
     const token = localStorage.getItem("token");
@@ -112,7 +116,23 @@ export const Profile: React.FC = () => {
         <p>🎮 Wszystkie gry: {profile?.lacznieGier}</p>
         <p>🏆 Trafione wygrane: {profile?.wygraneGier}</p>
         <p>📈 Łączny zysk z wygranych: {profile?.sumaWygranych} żetonów</p>
-
+        
+        <button 
+          onClick={handleLogout} 
+          className="logout-btn"
+          style={{ 
+            padding: "8px 16px", 
+            backgroundColor: "#f44336", 
+            color: "#fff", 
+            border: "none", 
+            borderRadius: "4px", 
+            cursor: "pointer", 
+            fontWeight: "bold" 
+          }}
+        >
+        Wyloguj się
+      </button>
+          <br></br>
         <button 
           onClick={handleReset} 
           disabled={isResetting}

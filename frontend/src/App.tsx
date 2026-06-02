@@ -43,7 +43,6 @@ export const App = () => {
         <Route path="/login" element={
           isAuthenticated ? <Navigate to="/" replace /> : <LoginContainer setIsAuthenticated={setIsAuthenticated} />
         } />
-        <Route path="/regulamin" element={<Terms />} />
 
         {/* TUTAJ BYŁ BŁĄD - DODAJEMY PUBLICZNĄ ŚCIEŻKĘ REJESTRACJI */}
         <Route path="/register" element={
@@ -63,6 +62,7 @@ export const App = () => {
             <Route path="/zdrapki" element={<Scratch />} />
             <Route path="/profil" element={<Profile />} />
 
+
             {/* Pozostałe ścieżki */}
             <Route path="/o-nas" element={<About />} />
             <Route path="/misja" element={<Mission />} />
@@ -70,6 +70,7 @@ export const App = () => {
             <Route path="/zespol" element={<Team />} />
             <Route path="/odpowiedzialna-gra" element={<ResponsibleGaming />} />
             <Route path="/pomoc" element={<Help />} />
+            <Route path="/regulamin" element={<Terms />} />
           </Route>
 
         </Route>

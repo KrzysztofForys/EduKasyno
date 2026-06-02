@@ -518,7 +518,7 @@ export const Scratch = () => {
               }}
               disabled={gameState === "revealing"}
             >
-              ⬅ Powrót do Lobby
+              <img className={styles.backButton} src="back-button.png" alt="Back" /> Powrót do Lobby
             </button>
 
             <button

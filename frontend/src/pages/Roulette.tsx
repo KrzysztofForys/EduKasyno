@@ -46,13 +46,14 @@ export const Roulette = () => {
   const totalBetAmount = Object.values(bets).reduce((acc, val) => acc + val, 0);
   const highlightedNumbers = hoveredBetKey ? getTargetedNumbers(hoveredBetKey) : [];
 
+  // Współrzędne kulki (środek koła: 250, 250)
   const ballX = 250 + ballRadius * Math.cos(ballAngle * Math.PI / 180);
   const ballY = 250 + ballRadius * Math.sin(ballAngle * Math.PI / 180);
 
   // ─── HANDLERY ZAKŁADÓW ─────────────────────────────────────────────────────
   const handlePlaceBet = (betKey: string) => {
     if (spinning) return;
-    
+
     // Weryfikacja za pomocą funkcji z BalanceContext
     if (!tryToChangeBalance(-selectedChip)) {
       return;
@@ -64,7 +65,7 @@ export const Roulette = () => {
     e.preventDefault();
     if (spinning || !bets[betKey]) return;
     const amountToRemove = Math.min(selectedChip, bets[betKey]);
-    
+
     // Zwracamy żetony do salda w kontekście
     tryToChangeBalance(amountToRemove);
     setBets(prev => {
@@ -100,11 +101,13 @@ export const Roulette = () => {
     const isTop = localY < margin;
     const isBottom = localY > CELL_H - margin;
 
+    // Corners
     if (isLeft && isTop && col > 0 && row > 0) { setHoveredBetKey(`corner-${col - 1}-${row - 1}`); return; }
     if (isRight && isTop && col < 11 && row > 0) { setHoveredBetKey(`corner-${col}-${row - 1}`); return; }
     if (isLeft && isBottom && col > 0 && row < 2) { setHoveredBetKey(`corner-${col - 1}-${row}`); return; }
     if (isRight && isBottom && col < 11 && row < 2) { setHoveredBetKey(`corner-${col}-${row}`); return; }
 
+    // Six Lines
     if (isBottom && row === 2) {
       if (isLeft && col > 0) { setHoveredBetKey(`sixline-${col - 1}`); return; }
       if (isRight && col < 11) { setHoveredBetKey(`sixline-${col}`); return; }
@@ -114,6 +117,7 @@ export const Roulette = () => {
       if (isRight && col < 11) { setHoveredBetKey(`sixline-${col}`); return; }
     }
 
+    // Splits
     if (isLeft) {
       setHoveredBetKey(col === 0 ? `split-zero-${row}` : `split-h-${col - 1}-${row}`);
       return;
@@ -122,6 +126,7 @@ export const Roulette = () => {
     if (isTop && row > 0) { setHoveredBetKey(`split-v-${col}-${row - 1}`); return; }
     if (isBottom && row < 2) { setHoveredBetKey(`split-v-${col}-${row}`); return; }
 
+    // Straight Up — odczyt numeru bezpośrednio z BOARD_LAYOUT
     setHoveredBetKey(`straight-${BOARD_LAYOUT[row][col].value}`);
   };
 
@@ -172,7 +177,7 @@ export const Roulette = () => {
 
       const startBallAngleOffset = Math.random() * 360;
       const startBallAngle = (ballAngle + startBallAngleOffset) % 360;
-      
+
       setBallAngle(startBallAngle);
       setBallRadius(20);
       const ballSpeedMultiplier = 0.95 + Math.random() * 0.10;
@@ -291,39 +296,6 @@ export const Roulette = () => {
     }
   };
 
-      if (progress < 1) {
-        animationFrameId.current = requestAnimationFrame(animate);
-      } else {
-        // Zakończenie animacji — rozliczenie wygranych
-        setSpinning(false);
-
-        let totalWin = 0;
-        Object.entries(bets).forEach(([betKey, betValue]) => {
-          const coveredNums = getTargetedNumbers(betKey);
-          if (coveredNums.includes(winningItem.value)) {
-            if (betKey.startsWith("straight-")) totalWin += betValue * 36;
-            else if (betKey.startsWith("split-")) totalWin += betValue * 18;
-
-            // Deflector rendering removed – handled in collision detection
-
-            else if (betKey.startsWith("corner-")) totalWin += betValue * 9;
-            else if (betKey.startsWith("sixline-")) totalWin += betValue * 6;
-            else if (betKey.startsWith("column-") || betKey.startsWith("dozen-")) totalWin += betValue * 3;
-            else totalWin += betValue * 2;
-          }
-        });
-
-        setBalance(prev => prev + totalWin);
-        setHistory(prev => [winningItem, ...prev.slice(0, 4)]);
-        setPayoutInfo({ totalBet: totalBetAmount, winAmount: totalWin, winningNum: winningItem });
-        setBets({});
-        setShowResultModal(true);
-      }
-    };
-
-    animationFrameId.current = requestAnimationFrame(animate);
-  };
-
   // Sprzątanie referencji animacji po odmontowaniu
   useEffect(() => {
     return () => {
@@ -333,6 +305,7 @@ export const Roulette = () => {
 
   return (
     <div className={`page-content ${styles.rouletteContainer}`}>
+      {/* Nagłówek */}
       <div className={styles.headerLayout}>
         <div>
           <h1 className={styles.title}>Ruletka Królewska</h1>
@@ -340,22 +313,8 @@ export const Roulette = () => {
         </div>
       </div>
 
-      <div className={styles.gameLayout}>
-  // ─── RENDER ────────────────────────────────────────────────────────────────
-  return (
-    <div className={`page-content ${styles.rouletteContainer}`}>
-
-      {/* Nagłówek */}
-      <div className={styles.headerLayout}>
-        <div>
-          <h1 className={styles.title}>Ruletka Królewska</h1>
-          <p className={styles.subtitle}>Puść kulkę w ruch i przetestuj swoje szczęście!</p>
-        </div>
-      </div>
-
       {/* Główna sekcja gry */}
       <div className={styles.gameLayout}>
-
         {/* LEWA STRONA: Koło ruletki */}
         <RouletteWheel
           wheelAngle={wheelAngle}
@@ -363,49 +322,6 @@ export const Roulette = () => {
           ballY={ballY}
           history={history}
         />
-
-        <div className={styles.rightColumn}>
-          <BettingTable
-            bets={bets}
-            hoveredBetKey={hoveredBetKey}
-            highlightedNumbers={highlightedNumbers}
-            spinning={spinning}
-            onPlaceBet={handlePlaceBet}
-            onRemoveBet={handleRemoveBet}
-            onHoverChange={setHoveredBetKey}
-            onMouseMoveOnGrid={handleMouseMoveOnGrid}
-            selectedChip={selectedChip}
-            onSelectChip={setSelectedChip}
-            onClearBets={handleClearBets}
-          />
-        </div>
-      </div>
-
-      <div className={styles.spinContainer}>
-        <div className={styles.totalBetLabel}>
-          Suma na stole:{" "}
-          <span className={styles.totalBetAmount}>
-            {totalBetAmount}
-            <img src="zeton-portfel.svg" alt="Żeton" style={{ width: "18px", height: "18px" }} />
-          </span>
-        </div>
-        <button
-          onClick={handleSpin}
-          disabled={spinning || totalBetAmount === 0}
-          className={styles.spinBtn}
-        >
-          {spinning ? "Losowanie..." : "Zakręć kołem!"}
-        </button>
-        <p className={styles.helpText}>
-          * Kliknij lewym przyciskiem, aby postawić żeton. Użyj prawego przycisku myszy na polu, aby go zdjąć.
-        </p>
-      </div>
-
-      <ResultModal
-        show={showResultModal}
-        payoutInfo={payoutInfo}
-        onClose={() => setShowResultModal(false)}
-      />
 
         {/* PRAWA STRONA: Stół zakładowy */}
         <div className={styles.rightColumn}>
@@ -452,7 +368,6 @@ export const Roulette = () => {
         payoutInfo={payoutInfo}
         onClose={() => setShowResultModal(false)}
       />
-
     </div>
   );
 };

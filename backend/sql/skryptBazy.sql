@@ -12,7 +12,7 @@ CREATE TABLE gracze (
 CREATE TABLE historia_gier (
     id SERIAL PRIMARY KEY,
     id_gracza INT NOT NULL,
-    nazwa_gry VARCHAR(7) NOT NULL,
+    nazwa_gry VARCHAR(50) NOT NULL,
     wynik INT NOT NULL,
     data_gry TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

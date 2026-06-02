@@ -17,7 +17,9 @@ import { Contact } from "./footer-pages/Contact.tsx"
 import { Team } from "./footer-pages/Team.tsx"
 import { ResponsibleGaming } from "./footer-pages/ResponsibleGaming.tsx"
 import { Terms } from "./footer-pages/Terms.tsx"
-import { Help } from "./footer-pages/Help.tsx"
+import { HelpCenter } from "./footer-pages/HelpCenter.tsx"
+import { PrivacyPolicy } from "./footer-pages/PrivacyPolicy.tsx";
+import { FAQ } from "./footer-pages/FAQ.tsx"
 
 import "./App.css"
 
@@ -69,8 +71,10 @@ export const App = () => {
             <Route path="/kontakt" element={<Contact />} />
             <Route path="/zespol" element={<Team />} />
             <Route path="/odpowiedzialna-gra" element={<ResponsibleGaming />} />
-            <Route path="/pomoc" element={<Help />} />
+            <Route path="/prywatnosc" element={<PrivacyPolicy />} />
+            <Route path="/pomoc" element={<HelpCenter />} />
             <Route path="/regulamin" element={<Terms />} />
+            <Route path="/faq" element={<FAQ />} />
           </Route>
 
         </Route>

@@ -1,0 +1,276 @@
+.contactPage {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    font-family: var(--font-main);
+    color: var(--text-main);
+}
+
+/* Header */
+.headerSection {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.badge {
+    display: inline-block;
+    color: var(--color-gold-bright);
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid var(--color-gold);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.title span {
+    color: var(--color-primary);
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Layout Grid */
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+/* Kolumna kart */
+.cardsColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contactCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 25px 30px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.contactCard:hover {
+    transform: scale(1.02);
+}
+
+.cardIcon {
+    font-size: 2.5rem;
+    background: var(--bg-light);
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+}
+
+.cardBody {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cardBody h3 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+}
+
+.cardBody p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.cardAction {
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    transition: color 0.2s;
+}
+
+/* Indywidualne neonowe poświaty dla konkretnych platform */
+.cardMail:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 8px 25px rgba(0, 240, 255, 0.15);
+}
+
+.cardMail .cardAction {
+    color: var(--color-primary);
+}
+
+.cardDiscord:hover {
+    border-color: #5865F2;
+    /* Kolor Discordowy */
+    box-shadow: 0 8px 25px rgba(88, 101, 242, 0.2);
+}
+
+.cardDiscord .cardAction {
+    color: #5865F2;
+}
+
+.cardBusiness:hover {
+    border-color: var(--color-gold);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.15);
+}
+
+.businessHours {
+    font-size: 0.85rem;
+    color: var(--color-gold-bright);
+    font-weight: bold;
+}
+
+/* Prawa kolumna i Stylizowana mapa science-fiction */
+.infoColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.mapContainer {
+    background: var(--bg-darker);
+    border: 2px dashed var(--border-color);
+    border-radius: 24px;
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+}
+
+.mapPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #022329 0%, var(--bg-darker) 70%);
+    position: relative;
+}
+
+/* Pulsujący punkt na mapie sci-fi */
+.radarPing {
+    width: 14px;
+    height: 14px;
+    background: var(--color-success);
+    border-radius: 50%;
+    position: relative;
+    margin-bottom: 15px;
+    box-shadow: 0 0 15px var(--color-success);
+}
+
+.radarPing::after {
+    content: '';
+    position: absolute;
+    top: -18px;
+    left: -18px;
+    bottom: -18px;
+    right: -18px;
+    border: 2px solid var(--color-success-light);
+    border-radius: 50%;
+    animation: pulseRadar 2s linear infinite;
+    opacity: 0;
+}
+
+@keyframes pulseRadar {
+    0% {
+        transform: scale(0.2);
+        opacity: 0.8;
+    }
+
+    80% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+.mapText {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    color: var(--text-gray);
+}
+
+.mapCoordinates {
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    color: var(--color-primary);
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.hqDetails h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin: 0 0 10px 0;
+}
+
+.hqDetails p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+}
+
+/* Zielona kropka statusu live */
+.statusIndicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.statusDot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-success);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--color-success);
+}
+
+/* Responsywność */
+@media (max-width: 850px) {
+    .layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .title {
+        font-size: 2.2rem;
+    }
+}

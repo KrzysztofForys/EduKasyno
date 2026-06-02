@@ -1,0 +1,184 @@
+.privacyPage {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    font-family: var(--font-main);
+    color: var(--text-main);
+}
+
+/* Header */
+.headerSection {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.badge {
+    display: inline-block;
+    color: var(--color-primary);
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid var(--color-primary);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.title span {
+    color: var(--color-extreme-light);
+    text-shadow: 0 0 20px rgba(229, 139, 250, 0.4);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 750px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Układ z Sidebarem (Flexbox / Grid) */
+.layoutWrapper {
+    display: flex;
+    gap: 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Sidebar */
+.sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-right: 1px solid var(--border-color);
+    padding-right: 30px;
+}
+
+.tabButton {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 14px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-main);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.tabButton:hover {
+    color: var(--text-main);
+    background: var(--bg-light);
+}
+
+/* Aktywna zakładka z neonowym cyjanem i wysunięciem */
+.tabActive {
+    color: var(--color-primary) !important;
+    background: rgba(0, 240, 255, 0.05) !important;
+    border-color: rgba(0, 240, 255, 0.3);
+    box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.05);
+    font-weight: bold;
+    transform: translateX(5px);
+}
+
+/* Wyświetlacz Treści */
+.contentDisplay {
+    flex: 3;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    animation: fadeIn 0.3s ease-in-out;
+    /* Delikatne wejście przy przełączaniu */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contentTitle {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.contentText {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.contentText p {
+    margin: 0 0 15px 0;
+}
+
+.contentText ul {
+    padding-left: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contentText li strong {
+    color: var(--color-gold-bright);
+}
+
+/* Responsywność na mobile – menu ląduje nad treścią */
+@media (max-width: 820px) {
+    .layoutWrapper {
+        flex-direction: column;
+        padding: 25px;
+        gap: 30px;
+    }
+
+    .sidebar {
+        border-right: none;
+        padding-right: 0;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 20px;
+        flex-direction: row;
+        overflow-x: auto;
+        /* Przewijanie zakładek w poziomie na smartfonach */
+        white-space: nowrap;
+    }
+
+    .tabButton {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .tabActive {
+        transform: translateY(-2px);
+        /* Na mobile podbijamy w górę zamiast w prawo */
+    }
+
+    .title {
+        font-size: 2.2rem;
+    }
+}

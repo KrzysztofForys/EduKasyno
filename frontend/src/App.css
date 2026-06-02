@@ -478,7 +478,7 @@ button:disabled {
 
 /* ==========================================================================
    8. FOOTER
-   ========================================================================== */
+   ========================================================================== 
 .footer {
    background: var(--bg-card);
    display: flex;
@@ -508,7 +508,7 @@ button:disabled {
 .footer-link:hover {
    opacity: 1;
    color: var(--color-primary);
-}
+}*/
 
 /* ==========================================================================
    9. MEDIA QUERIES (Responsywność)
@@ -518,8 +518,7 @@ button:disabled {
    .nav,
    .hero,
    .games,
-   .cta,
-   .footer {
+   .cta {
       padding: 48px;
    }
 
@@ -574,11 +573,5 @@ button:disabled {
    button {
       width: 100%;
       max-width: 320px;
-   }
-
-   .footer {
-      flex-direction: column;
-      gap: 32px;
-      text-align: center;
    }
 }

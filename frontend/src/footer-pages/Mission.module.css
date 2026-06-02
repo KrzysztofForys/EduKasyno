@@ -1,0 +1,195 @@
+.missionPage {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    font-family: var(--font-main);
+    color: var(--text-main);
+}
+
+/* Hero Section (Split Screen) */
+.heroSection {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    margin-bottom: 100px;
+}
+
+.heroContent {
+    flex: 1;
+}
+
+.badge {
+    display: inline-block;
+    color: var(--color-primary);
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid var(--color-primary);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: 3.2rem;
+    margin-bottom: 25px;
+    letter-spacing: -1px;
+    line-height: 1.1;
+}
+
+.title span {
+    color: var(--color-extreme-light);
+    text-shadow: 0 0 20px rgba(229, 139, 250, 0.4);
+}
+
+.description {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+/* Wizualizacja - Świecąca Orbita */
+.heroVisual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.coreOrb {
+    width: 160px;
+    height: 160px;
+    background: var(--bg-light);
+    border: 3px solid var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 0 40px var(--color-primary);
+}
+
+.orbIcon {
+    font-size: 3.5rem;
+    z-index: 2;
+    filter: drop-shadow(0 0 10px var(--color-primary-hover));
+}
+
+.orbPulse {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px dashed var(--color-extreme-light);
+    border-radius: 50%;
+    animation: rotateOrb 12s linear infinite;
+}
+
+@keyframes rotateOrb {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Sekcja Filarów */
+.pillarsSection {
+    margin-top: 60px;
+}
+
+.sectionTitle {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.pillarsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.pillarCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 40px 30px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Kolorowe paski na górze każdej karty dające neonowy akcent */
+.pillarLine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.lineCyjan {
+    background: var(--color-primary);
+    box-shadow: 0 2px 15px var(--color-primary);
+}
+
+.lineGold {
+    background: var(--color-gold);
+    box-shadow: 0 2px 15px var(--color-gold);
+}
+
+.linePurple {
+    background: var(--color-extreme);
+    box-shadow: 0 2px 15px var(--color-extreme);
+}
+
+.pillarNumber {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 900;
+    opacity: 0.15;
+    color: var(--text-main);
+    line-height: 1;
+}
+
+.pillarCard h3 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--text-main);
+}
+
+.pillarCard p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Responsywność */
+@media (max-width: 968px) {
+    .heroSection {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .title {
+        font-size: 2.4rem;
+    }
+
+    .heroVisual {
+        min-height: auto;
+    }
+}

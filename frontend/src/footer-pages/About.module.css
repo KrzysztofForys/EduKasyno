@@ -1,0 +1,134 @@
+.aboutPage {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    font-family: var(--font-main);
+    color: var(--text-main);
+}
+
+/* Hero Section */
+.aboutHero {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.aboutTitle {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.aboutTitle span {
+    color: var(--color-primary);
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.aboutSubtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Grid z kartami */
+.aboutGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 80px;
+}
+
+.aboutCard {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 40px 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.aboutCard:hover {
+    transform: translateY(-5px);
+}
+
+.cardIcon {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+}
+
+.aboutCard h3 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+}
+
+.aboutCard p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Personalizowane neonowe podświetlenia dla każdej z kart po najechaniu */
+.cardGlowCyan:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 30px rgba(0, 240, 255, 0.15);
+}
+
+.cardGlowGold:hover {
+    border-color: var(--color-gold);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15);
+}
+
+.cardGlowPurple:hover {
+    border-color: var(--color-extreme);
+    box-shadow: 0 10px 30px rgba(204, 0, 255, 0.15);
+}
+
+/* Sekcja Statystyk */
+.aboutStats {
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 40px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.statItem {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.statNumber {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-gold-bright);
+    text-shadow: 0 0 15px rgba(255, 245, 0, 0.3);
+}
+
+.statLabel {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .aboutTitle {
+        font-size: 2.2rem;
+    }
+
+    .aboutStats {
+        flex-direction: column;
+        gap: 40px;
+    }
+}

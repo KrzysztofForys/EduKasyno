@@ -11,19 +11,17 @@ import { Home } from "./pages/Home.tsx"
 import Slots from "./pages/Slots.tsx"
 import { Roulette } from "./pages/Roulette"
 import { Scratch } from "./pages/Scratch.tsx"
-import { About } from "./pages/About.tsx"
-import { Mission } from "./pages/Mission.tsx"
-import { Contact } from "./pages/Contact.tsx"
-import { Team } from "./pages/Team.tsx"
-import { ResponsibleGaming } from "./pages/ResponsibleGaming.tsx"
-import { Terms } from "./pages/Terms.tsx"
-import { Help } from "./pages/Help.tsx"
+import { About } from "./footer-pages/About.tsx"
+import { Mission } from "./footer-pages/Mission.tsx"
+import { Contact } from "./footer-pages/Contact.tsx"
+import { Team } from "./footer-pages/Team.tsx"
+import { ResponsibleGaming } from "./footer-pages/ResponsibleGaming.tsx"
+import { Terms } from "./footer-pages/Terms.tsx"
+import { Help } from "./footer-pages/Help.tsx"
 
 import "./App.css"
 
 export const App = () => {
-  const [tokens, setTokens] = useState<number>(1000)
-
   // Sprawdzamy przy uruchomieniu aplikacji, czy token istnieje w pamięci podręcznej
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return localStorage.getItem("token") !== null;
@@ -45,7 +43,8 @@ export const App = () => {
         <Route path="/login" element={
           isAuthenticated ? <Navigate to="/" replace /> : <LoginContainer setIsAuthenticated={setIsAuthenticated} />
         } />
-        
+        <Route path="/regulamin" element={<Terms />} />
+
         {/* TUTAJ BYŁ BŁĄD - DODAJEMY PUBLICZNĄ ŚCIEŻKĘ REJESTRACJI */}
         <Route path="/register" element={
           isAuthenticated ? <Navigate to="/" replace /> : <RegisterContainer onSwitchToLogin={() => window.location.href = "/login"} />
@@ -60,9 +59,9 @@ export const App = () => {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/sloty" element={<Slots />} />
-            <Route path="/ruletka" element={<Roulette balance={tokens} setBalance={setTokens} />} />
+            <Route path="/ruletka" element={<Roulette />} />
             <Route path="/zdrapki" element={<Scratch />} />
-            <Route path="/profil" element={<Profile/>}/>
+            <Route path="/profil" element={<Profile />} />
 
             {/* Pozostałe ścieżki */}
             <Route path="/o-nas" element={<About />} />
@@ -70,7 +69,6 @@ export const App = () => {
             <Route path="/kontakt" element={<Contact />} />
             <Route path="/zespol" element={<Team />} />
             <Route path="/odpowiedzialna-gra" element={<ResponsibleGaming />} />
-            <Route path="/regulamin" element={<Terms />} />
             <Route path="/pomoc" element={<Help />} />
           </Route>
 

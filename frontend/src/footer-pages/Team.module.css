@@ -1,0 +1,199 @@
+.teamPage {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    font-family: var(--font-main);
+    color: var(--text-main);
+}
+
+/* Header */
+.headerSection {
+    text-align: center;
+    margin-bottom: 70px;
+}
+
+.badge {
+    display: inline-block;
+    color: var(--color-gold-bright);
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid var(--color-gold);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.title span {
+    color: var(--color-primary);
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 750px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Grid */
+.teamGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+    justify-content: center;
+}
+
+/* Główny styl karty (Retro-gaming card) */
+.memberCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.memberCard:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+/* Kontener na Awatar / Emoji */
+.avatarContainer {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: var(--bg-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+    border: 2px solid var(--border-color);
+    transition: transform 0.3s ease;
+}
+
+.memberCard:hover .avatarContainer {
+    transform: scale(1.1);
+}
+
+.avatarEmoji {
+    font-size: 3rem;
+}
+
+/* Sekcja informacji */
+.infoContainer {
+    flex-grow: 1;
+    /* Pycha resztę karty w dół, żeby badge na dole były równo */
+    margin-bottom: 25px;
+}
+
+.memberName {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    color: var(--text-main);
+}
+
+.memberRole {
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.memberDescription {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Statystyka / Perk na dole karty */
+.specialtyBadge {
+    width: 100%;
+    background: var(--bg-darker);
+    border-radius: 12px;
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+}
+
+.specialtyLabel {
+    color: var(--color-gold-bright);
+    font-weight: bold;
+}
+
+/* --- MODYFIKATORY DLA KLAS RZADKOŚCI (TIERS) --- */
+
+/* 1. Cyjanowy / Klasyczny */
+.tierCyjan:hover {
+    border-color: var(--color-classic);
+    box-shadow: 0 15px 35px var(--color-classic-bg);
+}
+
+.tierCyjan .memberRole {
+    color: var(--color-classic);
+}
+
+.tierCyjan .avatarContainer {
+    border-color: var(--color-classic);
+    box-shadow: 0 0 15px var(--color-classic-bg);
+}
+
+/* 2. Złoty / Ekspert */
+.tierGold:hover {
+    border-color: var(--color-gold-tier);
+    box-shadow: 0 15px 35px var(--color-gold-tier-bg);
+}
+
+.tierGold .memberRole {
+    color: var(--color-gold-tier);
+}
+
+.tierGold .avatarContainer {
+    border-color: var(--color-gold-tier);
+    box-shadow: 0 0 15px var(--color-gold-tier-bg);
+}
+
+/* 3. Fioletowy / Extreme */
+.tierExtreme:hover {
+    border-color: var(--color-extreme);
+    box-shadow: 0 15px 35px var(--color-extreme-bg);
+}
+
+.tierExtreme .memberRole {
+    color: var(--color-extreme-light);
+}
+
+.tierExtreme .avatarContainer {
+    border-color: var(--color-extreme);
+    box-shadow: 0 0 15px var(--color-extreme-bg);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.2rem;
+    }
+
+    .teamGrid {
+        gap: 25px;
+    }
+}

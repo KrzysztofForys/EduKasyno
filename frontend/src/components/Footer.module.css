@@ -1,0 +1,147 @@
+.footer {
+    background-color: var(--bg-card);
+    border-top: 2px solid var(--border-color);
+    padding: 60px 20px 20px 20px;
+    font-family: var(--font-main);
+    color: var(--text-muted);
+}
+
+.footerContainer {
+    max-width: 80%;
+    margin: 0 auto;
+    display: grid;
+    /* 4 kolumny: szeroka brandowa i 3 równe dla linków */
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+}
+
+/* Kolumna z opisem i logo */
+.footerBrand {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.footerLogo {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--text-main);
+    letter-spacing: 1px;
+}
+
+.footerLogo span {
+    color: var(--color-primary);
+    /* Nasz elektryczny cyjan */
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.footerDescription {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-gray);
+    max-width: 300px;
+}
+
+/* Kolumny z linkami */
+.footerColumn h4 {
+    color: var(--text-main);
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Mała neonowa kreska pod nagłówkiem kolumny */
+.footerColumn h4::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 30px;
+    height: 20px;
+    border-bottom: 2px solid var(--color-gold);
+    /* Złoty akcent pod nagłówkiem */
+}
+
+.footerColumn ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footerLink {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.2s ease-in-out;
+    display: inline-block;
+}
+
+/* Żywy, świecący hover na linki */
+.footerLink:hover {
+    color: var(--color-primary);
+    transform: translateX(4px);
+    /* Delikatne wysunięcie w prawo */
+    text-shadow: 0 0 8px var(--color-primary-hover);
+}
+
+/* Dolna sekcja */
+.footerBottom {
+    max-width: 80%;
+    margin: 40px auto 0 auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-gray);
+}
+
+.footerBadge {
+    background: var(--bg-light);
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold-dark);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.15);
+}
+
+/* Pełna responsywność na telefony/tablety */
+@media (max-width: 768px) {
+    .footer {
+        padding: 40px 15px 20px 15px;
+    }
+
+    .footerContainer {
+        grid-template-columns: 1fr;
+        /* Na telefonie wszystko leci w jednej kolumnie */
+        gap: 30px;
+    }
+
+    .footerBrand {
+        align-items: center;
+        text-align: center;
+    }
+
+    .footerColumn {
+        text-align: center;
+    }
+
+    .footerColumn h4::after {
+        left: 50%;
+        transform: translateX(-50%);
+        /* Wyśrodkowanie złotej kreski na mobile */
+    }
+
+    .footerBottom {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}

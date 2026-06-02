@@ -17,7 +17,7 @@ interface HistoryItem {
 }
 
 export const Profile: React.FC = () => {
-  const { balance, refreshBalance } = useBalance();
+  const { balance, refreshBalance } = useBalance(); // Pobieramy z kontekstu funkcję odświeżania salda
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -69,7 +69,7 @@ export const Profile: React.FC = () => {
       return;
     }
 
-    if (!window.confirm("Czy chcesz wyczyścić historię gier i zresetować stan konta do 5000 PLN?")) {
+    if (!window.confirm("Czy chcesz wyczyścić historię gier i zresetować stan konta do 10000 żetonów?")) {
       return;
     }
 
@@ -85,9 +85,9 @@ export const Profile: React.FC = () => {
       });
 
       if (res.ok) {
-        alert("Konto zresetowane pomyślnie!");
-        await refreshBalance();
-        await fetchProfileData();
+        alert("Konto zresetowane pomyślnie! Przywrócono stan 10000 żetonów.");
+        await refreshBalance(); // Wymuszamy natychmiastową aktualizację salda w Navbarze
+        await fetchProfileData(); // Przeładowujemy tabelę historii i statystyki użytkownika
       } else {
         alert("Błąd serwera podczas resetu.");
       }
@@ -108,29 +108,27 @@ export const Profile: React.FC = () => {
       
       <div style={{ background: "#1e1e1e", padding: "20px", borderRadius: "8px", marginBottom: "25px" }}>
         <h3>Twoje dane finansowe:</h3>
-        <p>💰 Saldo konta: <strong>{balance} PLN</strong></p>
+        <p>🪙 Saldo konta: <strong>{balance} żetonów</strong></p>
         <p>🎮 Wszystkie gry: {profile?.lacznieGier}</p>
         <p>🏆 Trafione wygrane: {profile?.wygraneGier}</p>
-        <p>📈 Łączny zysk z wygranych: {profile?.sumaWygranych} PLN</p>
+        <p>📈 Łączny zysk z wygranych: {profile?.sumaWygranych} żetonów</p>
 
-        {balance < 250 && (
-          <button 
-            onClick={handleReset} 
-            disabled={isResetting}
-            style={{
-              backgroundColor: "#e63946",
-              color: "white",
-              border: "none",
-              padding: "12px 24px",
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              marginTop: "10px"
-            }}
-          >
-            {isResetting ? "Przetwarzanie..." : "🔄 Resetuj finanse (Powrót do 5000 PLN)"}
-          </button>
-        )}
+        <button 
+          onClick={handleReset} 
+          disabled={isResetting}
+          style={{
+            backgroundColor: "#e63946",
+            color: "white",
+            border: "none",
+            padding: "12px 24px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            marginTop: "10px"
+          }}
+        >
+          {isResetting ? "Przetwarzanie..." : "🔄 Resetuj finanse (Powrót do 10000 żetonów)"}
+        </button>
       </div>
 
       <div>
@@ -151,7 +149,7 @@ export const Profile: React.FC = () => {
                 <tr key={index} style={{ borderBottom: "1px solid #2a2a2a" }}>
                   <td style={{ padding: "10px" }}>{item.nazwa_gry}</td>
                   <td style={{ padding: "10px", color: item.wynik > 0 ? "#4caf50" : "#f44336" }}>
-                    {item.wynik} PLN
+                    {item.wynik > 0 ? `+${item.wynik}` : item.wynik} żetonów
                   </td>
                   <td style={{ padding: "10px", color: "#888" }}>
                     {new Date(item.data_gry).toLocaleString()}

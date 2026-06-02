@@ -1,28 +1,20 @@
 import { useState } from "react";
-import { useBalance } from "../context/BalanceContext.tsx"
-import { BetLayout } from "../components/BetLayout.tsx"
+import { useBalance } from "../context/BalanceContext.tsx";
+import { BetLayout } from "../components/BetLayout.tsx";
 import { SlotReel } from "../components/SlotReel.tsx";
 
-
 export default function Slots() {
-  const { balance, tryToChangeBalance } = useBalance()
+  const { balance, refreshBalance, tryToChangeBalance } = useBalance();
   const [spinning, setSpinning] = useState(false);
-  const [results, setResults] = useState<string[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [bet, setBet] = useState<number>(100);
   const [winAmount, setWinAmount] = useState<number>(0);
+  
+  // Domyślne symbole startowe przed pierwszym kliknięciem
+  const [serverSymbols, setServerSymbols] = useState<string[]>(["cytryna", "cytryna", "cytryna"]);
+  const [serverMessage, setServerMessage] = useState<string | null>(null);
 
-  const SYMBOL_MULTIPLIERS: Record<string, number> = {
-    "czeresnia": 1,
-    "cytryna": 1.5,
-    "arbuz": 2,
-    "pomarancza": 2,
-    "winogrono": 3,
-    "bar": 5,
-    "siedem": 10 // Najtrudniejszy do zdobycia zysk
-  };
-
-  const handleSpin = () => {
+  const handleSpin = async () => {
     if (bet <= 0) {
       alert("Ustaw zakład większy niż 0!");
       return;
@@ -32,64 +24,71 @@ export default function Slots() {
       return;
     }
 
-    // Deduct bet from balance
-    if (tryToChangeBalance(-bet)) {
-      setResults([]);
-      setSpinning(true);
-      setWinAmount(0);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Błąd autoryzacji. Zaloguj się ponownie.");
+      return;
     }
-  }
-  const handleStop = (symbol: string) => {
-    setResults((prev) => {
-      const updated = [...prev, symbol];
 
-      if (updated.length === 3) {
-        setSpinning(false);
+    try {
+      const response = await fetch("http://localhost:3001/api/games/slots/play", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ bet })
+      });
 
-        setTimeout(() => {
-          const [s1, s2, s3] = updated;
+      const data = await response.json();
 
-          // 1. JACKPOT (3 takie same) -> Mnożnik bazowy symbolu x 5
-          if (s1 === s2 && s2 === s3) {
-            const mult = SYMBOL_MULTIPLIERS[s1] * 5;
-            setWinAmount(bet * mult);
-            setMessage(`SUPER JACKPOT x${mult}!`);
-            tryToChangeBalance(bet * mult);
-          }
-          // 2. MAŁA WYGRANA (2 takie same) -> Wypłacamy ułamek wartości symbolu, np. 40% wartości
-          else if (s1 === s2 || s1 === s3) {
-            // s1 jest parą
-            const mult = Math.max(0.5, SYMBOL_MULTIPLIERS[s1] * 0.6);
-            setWinAmount(Math.round(bet * mult));
-            setMessage(`Para! Wygrana x${mult.toFixed(1)}`);
-            tryToChangeBalance(Math.round(bet * mult));
-          }
-          else if (s2 === s3) {
-            // s2 jest parą
-            const mult = Math.max(0.5, SYMBOL_MULTIPLIERS[s2] * 0.6);
-            setWinAmount(Math.round(bet * mult));
-            setMessage(`Para! Wygrana x${mult.toFixed(1)}`);
-            tryToChangeBalance(Math.round(bet * mult));
-          }
-          // 3. PRZEGRANA
-          else {
-            setMessage("Spróbuj ponownie.");
-          }
-        }, 500);
+      if (!response.ok || !data.success) {
+        alert(data.error || "Wystąpił błąd podczas gry.");
+        return;
       }
 
-      return updated;
-    });
+      // 1. Od razu odejmij zakład z licznika, żeby było widać, że gra ruszyła
+      tryToChangeBalance(-bet);
+
+      // 2. Wpisz symbole z bazy, resetując stary komunikat
+      setServerSymbols(data.symbols);
+      setWinAmount(data.winAmount);
+      setServerMessage(data.message);
+      setMessage(null);
+
+      // 3. Odpal kręcenie Twojej taśmy
+      setSpinning(true);
+
+    } catch (err) {
+      console.error("Błąd połączenia ze slotami:", err);
+      alert("Błąd połączenia z serwerem kasyna.");
+    }
+  };
+
+  const handleStop = (index: number) => {
+    // Jeżeli zatrzymał się trzeci (ostatni) bębenek
+    if (index === 2) {
+      setSpinning(false);
+      
+      // HAJS I MODAL DODAJĄ SIĘ Z TIMEOUTEM (pół sekundy po pełnym wyhamowaniu maszyny)
+      setTimeout(() => {
+        refreshBalance(); // Strzał do bazy po świeże saldo z wygraną
+        setMessage(serverMessage); // Pokazanie modala
+      }, 500);
+    }
   };
 
   return (
     <div className="slots-container">
       <div className="slot-machine">
-        <SlotReel spinning={spinning} stopDelay={0} onStop={handleStop} />
-        <SlotReel spinning={spinning} stopDelay={300} onStop={handleStop} />
-        <SlotReel spinning={spinning} stopDelay={600} onStop={handleStop} />
+        {/* Przekazujemy wylosowane z serwera znaki do odpowiednich bębnów */}
+        <SlotReel spinning={spinning} stopDelay={0} targetSymbol={serverSymbols[0]} onStop={() => handleStop(0)} />
+        <SlotReel spinning={spinning} stopDelay={300} targetSymbol={serverSymbols[1]} onStop={() => handleStop(1)} />
+        <SlotReel spinning={spinning} stopDelay={600} targetSymbol={serverSymbols[2]} onStop={() => handleStop(2)} />
       </div>
+      
       <BetLayout bet={bet} setBet={setBet} />
+      
       <button onClick={handleSpin} disabled={spinning} className="slots-btn">
         Zakręć
       </button>
@@ -98,13 +97,15 @@ export default function Slots() {
         <div className="modal">
           <div className="modal-content">
             <h2>{message}</h2>
-            <p className="modal-message">
-              Wylosowane symbole:
+            <p className="modal-message">Wylosowane symbole:</p>
+            <p style={{ fontSize: "24px", letterSpacing: "8px", margin: "10px 0", fontWeight: "bold" }}>
+              {serverSymbols.join(" | ")}
             </p>
-            <p>
-              {results.join(" | ")}
-            </p>
-            {winAmount > 0 && <p>Wygrana: {winAmount} &#x1FA99;</p>}
+            {winAmount > 0 && (
+              <p style={{ color: "#4caf50", fontWeight: "bold", fontSize: "18px" }}>
+                Wygrana: +{winAmount} &#x1FA99;
+              </p>
+            )}
             <button onClick={() => setMessage(null)} className="modal-close-btn">
               OK
             </button>

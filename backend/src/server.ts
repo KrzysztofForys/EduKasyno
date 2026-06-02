@@ -60,10 +60,10 @@ app.post("/api/auth/register", async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const hashedHaslo = await bcrypt.hash(haslo, salt);
 
-    // Zapisujemy gracza od razu z kwotą 5000.00 PLN w bazie
+    // Zapisujemy gracza od razu z kwotą 10000.00 PLN w bazie
     await pool.query(
       "INSERT INTO gracze (login, haslo, saldo) VALUES ($1, $2, $3)",
-      [login, hashedHaslo, 5000.00]
+      [login, hashedHaslo, 10000.00]
     );
 
     res.status(201).json({ message: "Konto utworzone pomyślnie z kwotą 5000 PLN!" });
@@ -211,7 +211,7 @@ app.post("/api/profile/reset", autoryzacja, async (req: AuthenticatedRequest, re
 
     await client.query("BEGIN");
     await client.query("DELETE FROM historia_gier WHERE id_gracza = $1", [idGracza]);
-    await client.query("UPDATE gracze SET saldo = 5000.00 WHERE id = $1", [idGracza]);
+    await client.query("UPDATE gracze SET saldo = 10000.00 WHERE id = $1", [idGracza]);
     await client.query("COMMIT");
 
     res.json({ message: "Zresetowano finanse do 5000 PLN oraz wyczyszczono historię!" });

@@ -45,7 +45,6 @@ const autoryzacja = (req: AuthenticatedRequest, res: Response, next: NextFunctio
 
 // REJESTRACJA
 app.post("/api/auth/register", async (req: Request, res: Response) => {
-  console.log("REGISTER BODY:", req.body);
 
   try {
     const { login, haslo } = req.body;

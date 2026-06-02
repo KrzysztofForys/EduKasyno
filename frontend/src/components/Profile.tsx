@@ -173,31 +173,23 @@ export const Profile: React.FC = () => {
             className={styles.profileInfoWithTokenImg}
           />
         </div>
-
-        <button
-          onClick={handleReset}
-          disabled={isResetting}
-          className={styles.resetButton}
-        >
-          {isResetting
-            ? "Przetwarzanie..."
-            : "Resetuj saldo do 10k"}
-        </button>
-        <button
-          onClick={handleLogout}
-          className="logout-btn"
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#f44336",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: "bold"
-          }}
-        >
-          Wyloguj się
-        </button>
+        <div style={{ display: "inline-flex", gap: "10px" }}>
+          <button
+            onClick={handleReset}
+            disabled={isResetting}
+            className={styles.resetButton}
+          >
+            {isResetting
+              ? "Przetwarzanie..."
+              : "Resetuj saldo do 10k"}
+          </button>
+          <button
+            onClick={handleLogout}
+            className={styles.resetButton}
+          >
+            Wyloguj się
+          </button>
+        </div>
       </div>
 
       <div>

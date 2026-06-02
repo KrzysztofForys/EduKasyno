@@ -2,17 +2,6 @@ import { type RouletteNumber, WHEEL_NUMBERS } from "./rouletteTypes";
 import { describeArc } from "./rouletteLogic";
 import styles from "./RouletteWheel.module.css";
 
-// Indywidualne przesunięcia kątowe (w stopniach) dla każdego z 8 deflektorów w celu nadania im niesymetrycznego obrotu
-const DEFLECTOR_ROTATIONS = [75, 60, 110, 100, 270, 300, 300, 100];
-
-// Deflektory geometryczne (pozycje i obroty) – eksportowane dla logiki kolizji
-export const DEFLECTORS = [0, 45, 90, 135, 180, 225, 270, 315].map((deg, idx) => {
-  const rad = (deg - 90) * Math.PI / 180;
-  const cx = 250 + 176 * Math.cos(rad);
-  const cy = 250 + 176 * Math.sin(rad);
-  const rotation = deg + (DEFLECTOR_ROTATIONS[idx] || 0);
-  return { deg, cx, cy, rotation };
-});
 
 type RouletteWheelProps = {
   wheelAngle: number;
@@ -144,7 +133,7 @@ export const RouletteWheel = ({ wheelAngle, ballX, ballY, history }: RouletteWhe
           <circle cx="250" cy="250" r="36" fill="url(#chromeGrad)" stroke="#666666" strokeWidth="0.8" />
 
           {/* Cztery ramiona/uchwyty wrzeciona ruletki (spindle handles) */}
-          {[0, 90, 180, 270].map((deg) => {
+          {[45, 135, 225, 315].map((deg) => {
             const angleRad = (deg - 90) * Math.PI / 180;
             const spokeEndX = 250 + 50 * Math.cos(angleRad);
             const spokeEndY = 250 + 50 * Math.sin(angleRad);
@@ -179,28 +168,19 @@ export const RouletteWheel = ({ wheelAngle, ballX, ballY, history }: RouletteWhe
                 y1={250 + 55 * Math.sin(rad)}
                 x2={250 + 148 * Math.cos(rad)}
                 y2={250 + 148 * Math.sin(rad)}
-                stroke="url(#goldGrad)"
-                strokeWidth="1.2"
-                opacity="0.9"
+                stroke="#d4af37"
+                strokeWidth="1.5"
+                opacity="0.95"
               />
             );
           })}
+
 
           {/* Środkowy nit wrzeciona */}
           <circle cx="250" cy="250" r="10" fill="url(#chromeGrad)" />
           <circle cx="250" cy="250" r="5" fill="#0c0c0e" />
         </g>
 
-        {DEFLECTORS.map((d, idx) => (
-          <g key={idx} transform={`rotate(${d.rotation}, ${d.cx}, ${d.cy})`}>
-            <polygon
-              points={`${d.cx},${d.cy - 12} ${d.cx + 12},${d.cy} ${d.cx},${d.cy + 12} ${d.cx - 12},${d.cy}`}
-              fill="#444"
-              stroke="url(#goldGrad)"
-              strokeWidth="1"
-            />
-          </g>
-        ))}
 
         {/* 4. NIEZALEŻNA KULKA RULETKI */}
         <circle

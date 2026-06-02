@@ -10,7 +10,6 @@ import {
   CELL_W,
   CELL_H
 } from "../components/roulette/rouletteTypes";
-import { DEFLECTORS } from "../components/roulette/RouletteWheel";
 import { getTargetedNumbers } from "../components/roulette/rouletteLogic";
 import { RouletteWheel } from "../components/roulette/RouletteWheel";
 import { BettingTable } from "../components/roulette/BettingTable";
@@ -26,7 +25,7 @@ export const Roulette = () => {
   const [spinning, setSpinning] = useState<boolean>(false);
   const [wheelAngle, setWheelAngle] = useState<number>(0);
   const [ballAngle, setBallAngle] = useState<number>(0);
-  const [ballRadius, setBallRadius] = useState<number>(188);
+  const [ballRadius, setBallRadius] = useState<number>(120); // Domyślnie startuje na wewnętrznym kółku z liczbami
   const [history, setHistory] = useState<RouletteNumber[]>([]);
   const [hoveredBetKey, setHoveredBetKey] = useState<string | null>(null);
   const [showResultModal, setShowResultModal] = useState<boolean>(false);
@@ -37,7 +36,6 @@ export const Roulette = () => {
   });
 
   const animationFrameId = useRef<number | null>(null);
-  const bouncedDeflectors = useRef<Set<number>>(new Set());
 
   // Zabezpieczenie przed zachowaniem danych z serwera w trakcie pętli animacji
   const serverResultRef = useRef<{ winningIdx: number; winningItem: RouletteNumber; winAmount: number; totalBet: number } | null>(null);
@@ -175,88 +173,61 @@ export const Roulette = () => {
       const startTime = performance.now();
       const startWheelAngle = wheelAngle % 360;
 
-      const startBallAngleOffset = Math.random() * 360;
-      const startBallAngle = (ballAngle + startBallAngleOffset) % 360;
-
-      setBallAngle(startBallAngle);
-      setBallRadius(20);
-      const ballSpeedMultiplier = 0.95 + Math.random() * 0.10;
-
+      // Konfiguracja matematyki obrotu kulki względem koła (całkowicie płynny ruch)
       const stepAngle = 360 / WHEEL_NUMBERS.length;
       const winningPocketAngle = winningIdx * stepAngle;
       const targetWheelAngle = startWheelAngle + 360 * 6 - winningPocketAngle;
 
       const OUTER_RADIUS = 188;
       const INNER_RADIUS = 120;
-      const radiusAt070 = OUTER_RADIUS - (OUTER_RADIUS - INNER_RADIUS) * Math.pow(0.70 / 0.85, 3);
 
-      const pocketCenterLocal = winningPocketAngle + stepAngle / 2;
-      const totalBallRotations = 9;
-      const ballAnglePhase1End = startBallAngle - totalBallRotations * 360 * ballSpeedMultiplier;
+      // Obliczanie docelowego kąta kulki w układzie współrzędnych koła
+      const targetRelativeAngle = winningIdx * stepAngle + stepAngle / 2 - 90;
+      
+      // Losowa liczba pełnych obrotów kulki względem koła dla naturalności (od 7.5 do 9.5)
+      const relativeRotations = 7.5 + Math.random() * 2;
+      const startRelativeAngle = targetRelativeAngle + 360 * relativeRotations;
 
       const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-
-      const wheelAngleAt085 = startWheelAngle + (targetWheelAngle - startWheelAngle) * easeOutCubic(0.85);
-      let targetAnglePhase3Start = pocketCenterLocal + wheelAngleAt085 - 90;
-
-      while (targetAnglePhase3Start > ballAnglePhase1End) targetAnglePhase3Start -= 360;
-      const diff = ballAnglePhase1End - targetAnglePhase3Start;
-      targetAnglePhase3Start -= Math.floor((diff - 360) / 360) * 360;
 
       const animate = (now: number) => {
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / animationDuration, 1);
 
+        // 1. Kąt koła (płynny obrót)
         const currentWheelAngle = startWheelAngle + (targetWheelAngle - startWheelAngle) * easeOutCubic(progress);
         setWheelAngle(currentWheelAngle);
 
         let currentBallAngle = 0;
-        let currentBallRadius = OUTER_RADIUS;
+        let currentBallRadius = INNER_RADIUS;
 
-        if (progress < 0.70) {
-          const baseAngle = startBallAngle - totalBallRotations * 360 * Math.pow(progress / 0.70, 1.2) * ballSpeedMultiplier;
-          let baseRadius = OUTER_RADIUS;
-          if (progress < 0.20) {
-            const launchProgress = progress / 0.20;
-            baseRadius = 20 + (OUTER_RADIUS - 20) * Math.sin(launchProgress * Math.PI / 2);
-          } else {
-            const trackProgress = (progress - 0.20) / 0.50;
-            baseRadius = OUTER_RADIUS - (OUTER_RADIUS - radiusAt070) * Math.pow(trackProgress, 2);
-          }
-
-          let kickContrib = 0;
-          let radiusBump = 0;
-
-          if (progress >= 0.70) {
-            bouncedDeflectors.current.clear();
-          }
-
-          DEFLECTORS.forEach((d, idx) => {
-            if (bouncedDeflectors.current.has(idx)) return;
-            const angleDiff = Math.abs(((baseAngle - d.deg + 540) % 360) - 180);
-            const radiusProximity = baseRadius;
-            if (radiusProximity > 160 && radiusProximity < 200 && angleDiff < 12) {
-              const kick = (Math.random() > 0.5 ? 1 : -1) * (15 + Math.random() * 10);
-              const radiusAdj = -5 - Math.random() * 5;
-              kickContrib += kick;
-              radiusBump += radiusAdj;
-              bouncedDeflectors.current.add(idx);
-            }
-          });
-
-          currentBallAngle = baseAngle + kickContrib;
-          currentBallRadius = baseRadius + radiusBump;
-        } else if (progress < 0.85) {
-          const phaseProgress = (progress - 0.70) / 0.15;
-          currentBallRadius = radiusAt070 - (radiusAt070 - INNER_RADIUS) * phaseProgress;
-          currentBallAngle = ballAnglePhase1End + (targetAnglePhase3Start - ballAnglePhase1End) * phaseProgress;
+        // 2. Promień kulki (zsynchronizowany ze spowalnianiem kątowym)
+        if (progress < 0.20) {
+          // Faza rozbiegu: z koła wewnętrznego (120) na zewnętrzne (188)
+          const spiralProgress = progress / 0.20;
+          currentBallRadius = INNER_RADIUS + (OUTER_RADIUS - INNER_RADIUS) * Math.sin(spiralProgress * Math.PI / 2);
+        } else if (progress < 0.55) {
+          // Kręcenie się po zewnętrznym torze (188)
+          currentBallRadius = OUTER_RADIUS;
+        } else if (progress < 0.95) {
+          // Faza opadania: z koła zewnętrznego (188) do wewnętrznego (120) - zsynchronizowana do końca zjazdu kulki (95%)
+          const spiralProgress = (progress - 0.55) / 0.40;
+          currentBallRadius = OUTER_RADIUS - (OUTER_RADIUS - INNER_RADIUS) * Math.sin(spiralProgress * Math.PI / 2);
         } else {
+          // Spoczynek w kieszeni
           currentBallRadius = INNER_RADIUS;
-          currentBallAngle = targetAnglePhase3Start + (currentWheelAngle - wheelAngleAt085);
-          if (progress < 0.93) {
-            const bounceT = (progress - 0.85) / 0.08;
-            currentBallRadius += Math.sin(bounceT * Math.PI) * 4.5;
-          }
+        }
+
+        // 3. Kąt kulki (płynne spowalnianie i dopasowanie do koła na finiszu 95%)
+        if (progress < 0.95) {
+          const progressToLanding = progress / 0.95;
+          // Zastosowanie łagodnego profilu kwadratowego gwarantuje, że zatrzymanie i lądowanie kulki nastąpi dokładnie przy 95% czasu, w tym samym momencie w którym promień osiągnie 120.
+          const easeFactor = Math.pow(1 - progressToLanding, 2.0);
+          const currentRelativeAngle = targetRelativeAngle + (startRelativeAngle - targetRelativeAngle) * easeFactor;
+          currentBallAngle = currentWheelAngle + currentRelativeAngle;
+        } else {
+          // Po 95% czasu kulka leży sztywno w kieszeni i obraca się dokładnie z kołem
+          currentBallAngle = currentWheelAngle + targetRelativeAngle;
         }
 
         setBallAngle(currentBallAngle);
@@ -265,7 +236,7 @@ export const Roulette = () => {
         if (progress < 1) {
           animationFrameId.current = requestAnimationFrame(animate);
         } else {
-          // ─── ZAKOŃCZENIE ANIMACJI KOŁA ───
+          // ─── ZAKOŃCZENIE ANIMACJI ───
           setSpinning(false);
           const result = serverResultRef.current;
 

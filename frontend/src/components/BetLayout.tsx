@@ -2,17 +2,13 @@ import React, { useState, useRef } from "react";
 import type { ChangeEvent } from "react";
 import { formatBalance } from "../utils/format.ts";
 
-// 1. Definiujemy interfejs dla propsów
 interface BetLayoutProps {
     bet: number;
-    setBet: React.Dispatch<React.SetStateAction<number>>; // Typ pasujący idealnie do standardowego useState
+    setBet: React.Dispatch<React.SetStateAction<number>>;
 }
 
-// 2. Przekazujemy interfejs do React.FC i destrukturyzujemy propsy
 export const BetLayout: React.FC<BetLayoutProps> = ({ bet, setBet }) => {
-    // Stan isEditing zostaje lokalnie, bo interesuje tylko ten konkretny input
     const [isEditing, setIsEditing] = useState<boolean>(false);
-
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const getStep = (currentBet: number): number => {
@@ -34,9 +30,7 @@ export const BetLayout: React.FC<BetLayoutProps> = ({ bet, setBet }) => {
 
     const startTimer = (direction: "increment" | "decrement") => {
         if (timerRef.current) return;
-
         handleModifyBet(direction);
-
         timerRef.current = setInterval(() => {
             handleModifyBet(direction);
         }, 150);
@@ -70,7 +64,7 @@ export const BetLayout: React.FC<BetLayoutProps> = ({ bet, setBet }) => {
             <input
                 type={isEditing ? "number" : "text"}
                 name="bet"
-                placeholder="Kwota"
+                placeholder="Stawka żetonów"
                 min={0}
                 value={isEditing ? (bet === 0 ? "" : bet) : formatBalance(bet)}
                 onChange={handleInputChange}

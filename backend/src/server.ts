@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { pool } from "./db";
 dotenv.config();
+
 const JWT_SECRET = "super_tajny_klucz_kasyna_123!";
 const requiredEnv = [
   "DB_USER",
@@ -18,9 +19,8 @@ const requiredEnv = [
 for (const key of requiredEnv) if (!process.env[key]) throw new Error(`Brak zmiennej środowiskowej ${key}`);
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:5173' }))
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
-
 
 interface AuthenticatedRequest extends Request {
   userId?: number;
@@ -43,7 +43,7 @@ const autoryzacja = (req: AuthenticatedRequest, res: Response, next: NextFunctio
   }
 };
 
-// REJESTRACJA (Automatyczne 5000 PLN na start dla każdego)
+// REJESTRACJA
 app.post("/api/auth/register", async (req: Request, res: Response) => {
   try {
     const { login, haslo } = req.body;
@@ -60,20 +60,19 @@ app.post("/api/auth/register", async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const hashedHaslo = await bcrypt.hash(haslo, salt);
 
-    // Zapisujemy gracza od razu z kwotą 5000.00 PLN w bazie
     await pool.query(
-      "INSERT INTO gracze (login, haslo, saldo) VALUES ($1, $2, $3)",
-      [login, hashedHaslo, 5000.00]
+      "INSERT INTO gracze (login, haslo, saldo) VALUES ($1, $2, 10000)",
+      [login, hashedHaslo]
     );
 
-    res.status(201).json({ message: "Konto utworzone pomyślnie z kwotą 5000 PLN!" });
+    res.status(201).json({ message: "Konto utworzone pomyślnie! Otrzymujesz 10 000 żetonów na start. Możesz się zalogować." });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Błąd serwera podczas rejestracji." });
   }
 });
 
-// LOGOWANIE (Generuje i wysyła token JWT)
+// LOGOWANIE
 app.post("/api/auth/login", async (req: Request, res: Response) => {
   try {
     const { login, haslo } = req.body;
@@ -99,7 +98,7 @@ app.post("/api/auth/login", async (req: Request, res: Response) => {
   }
 });
 
-// POBIERANIE PROFILU GRACZA (Zliczanie statystyk bez kolumn zaklad/wygrana)
+// POBIERANIE PROFILU GRACZA
 app.get("/api/profile", autoryzacja, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const idGracza = req.userId;
@@ -140,7 +139,7 @@ app.get("/api/profile", autoryzacja, async (req: AuthenticatedRequest, res: Resp
   }
 });
 
-// POBIERANIE HISTORII (Bezpieczne pobieranie na podstawie podstawowych kolumn)
+// POBIERANIE HISTORII
 app.get("/api/profile/history", autoryzacja, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const idGracza = req.userId;
@@ -159,51 +158,138 @@ app.get("/api/profile/history", autoryzacja, async (req: AuthenticatedRequest, r
   }
 });
 
-// ZAPIS WYNIKU GRY 
+// Endpoint obsługujący wynik zdrapki
 app.post("/api/games/scratch/result", autoryzacja, async (req: AuthenticatedRequest, res: Response) => {
-  const client = await pool.connect();
+  const { koszt, wynik } = req.body; 
+  const userId = req.userId;
+
+  if (koszt === undefined || wynik === undefined) {
+    return res.status(400).json({ error: "Brak wymaganych danych rozgrywki." });
+  }
+
   try {
-    const idGracza = req.userId;
-    const { wynik, koszt } = req.body;
-
-    const numWygrana = Number(wynik);
-    const numZaklad = Number(koszt);
-    const zmianaSalda = numWygrana - numZaklad;
-
-    await client.query("BEGIN");
-
-    const checkBalanceResult = await client.query("SELECT saldo FROM gracze WHERE id = $1", [idGracza]);
-    const aktualneSaldoBazy = Number(checkBalanceResult.rows[0].saldo);
-
-    if (aktualneSaldoBazy + zmianaSalda < 0) {
-      await client.query("ROLLBACK");
-      return res.status(400).json({ message: "Brak wystarczających środków na koncie!" });
+    const userRes = await pool.query("SELECT saldo FROM gracze WHERE id = $1", [userId]);
+    if (userRes.rows.length === 0) {
+      return res.status(404).json({ error: "Nie znaleziono gracza" });
     }
 
-    const updateResult = await client.query(
+    const aktualneSaldo = Number(userRes.rows[0].saldo);
+    if (aktualneSaldo < koszt) {
+      return res.status(400).json({ error: "Brak wystarczającej ilości żetonów!" });
+    }
+
+    const zmianaSalda = wynik - koszt;
+
+    const updateRes = await pool.query(
       "UPDATE gracze SET saldo = saldo + $1 WHERE id = $2 RETURNING saldo",
-      [zmianaSalda, idGracza]
+      [zmianaSalda, userId]
     );
 
-    await client.query(
-      `INSERT INTO historia_gier (id_gracza, nazwa_gry, wynik) 
-       VALUES ($1, 'Zdrapki', $2)`,
-      [idGracza, numWygrana]
+    const noweSaldo = updateRes.rows[0].saldo;
+
+    await pool.query(
+      "INSERT INTO historia_gier (id_gracza, nazwa_gry, wynik, data_gry) VALUES ($1, $2, $3, NOW())",
+      [userId, "Zdrapka", wynik]
     );
 
-    await client.query("COMMIT");
+    return res.json({ 
+      success: true, 
+      noweSaldo: Number(noweSaldo),
+      message: "Wynik zdrapki zapisany pomyślnie" 
+    });
 
-    res.json({ message: "Gra zapisana", noweSaldo: Number(updateResult.rows[0].saldo) });
-  } catch (error) {
-    await client.query("ROLLBACK");
-    console.error(error);
-    res.status(500).json({ message: "Błąd serwera gier." });
-  } finally {
-    client.release();
+  } catch (err) {
+    console.error("Błąd podczas przetwarzania zdrapki:", err);
+    return res.status(500).json({ error: "Błąd serwera" });
   }
 });
 
-// RESET FINANSÓW (Czyści historię i przywraca 5000 PLN)
+// NOWY BEZPIECZNY ENDPOINT SLOTÓW (Losowanie na serwerze - wyklucza podwójne wpisy i błędy salda)
+app.post("/api/games/slots/play", autoryzacja, async (req: AuthenticatedRequest, res: Response) => {
+  const { bet } = req.body;
+  const userId = req.userId;
+
+  if (!bet || bet <= 0) {
+    return res.status(400).json({ error: "Nieprawidłowa stawka zakręcenia." });
+  }
+
+  const SYMBOLS = ["czeresnia", "cytryna", "arbuz", "pomarancza", "winogrono", "bar", "siedem"];
+  const MULTIPLIERS: Record<string, number> = {
+    "czeresnia": 1,
+    "cytryna": 1.5,
+    "arbuz": 2,
+    "pomarancza": 2,
+    "winogrono": 3,
+    "bar": 5,
+    "siedem": 10 
+  };
+
+  try {
+    const userRes = await pool.query("SELECT saldo FROM gracze WHERE id = $1", [userId]);
+    if (userRes.rows.length === 0) {
+      return res.status(404).json({ error: "Nie znaleziono gracza" });
+    }
+
+    const aktualneSaldo = Number(userRes.rows[0].saldo);
+    if (aktualneSaldo < bet) {
+      return res.status(400).json({ error: "Niewystarczające środki na koncie!" });
+    }
+
+    // 1. Losowanie symboli na backendzie
+    const s1 = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+    const s2 = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+    const s3 = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+    const wylosowaneSymbole = [s1, s2, s3];
+
+    // 2. Obliczanie wygranej
+    let winAmount = 0;
+    let message = "Spróbuj ponownie.";
+
+    if (s1 === s2 && s2 === s3) {
+      const mult = MULTIPLIERS[s1] * 5;
+      winAmount = bet * mult;
+      message = `SUPER JACKPOT x${mult}!`;
+    } else if (s1 === s2 || s1 === s3) {
+      const mult = Math.max(0.5, MULTIPLIERS[s1] * 0.6);
+      winAmount = Math.round(bet * mult);
+      message = `Para! Wygrana x${mult.toFixed(1)}`;
+    } else if (s2 === s3) {
+      const mult = Math.max(0.5, MULTIPLIERS[s2] * 0.6);
+      winAmount = Math.round(bet * mult);
+      message = `Para! Wygrana x${mult.toFixed(1)}`;
+    }
+
+    const zmianaSalda = winAmount - bet;
+
+    // 3. Aktualizacja bazy danych (Zapis salda)
+    const updateRes = await pool.query(
+      "UPDATE gracze SET saldo = saldo + $1 WHERE id = $2 RETURNING saldo",
+      [zmianaSalda, userId]
+    );
+    const noweSaldo = Number(updateRes.rows[0].saldo);
+
+    // 4. Zapis do historii (Dokładnie jeden raz!)
+    await pool.query(
+      "INSERT INTO historia_gier (id_gracza, nazwa_gry, wynik, data_gry) VALUES ($1, $2, $3, NOW())",
+      [userId, "Sloty", winAmount]
+    );
+
+    // 5. Zwracamy komplet danych do wyświetlenia animacji
+    return res.json({
+      success: true,
+      symbols: wylosowaneSymbole,
+      winAmount,
+      message,
+      noweSaldo
+    });
+
+  } catch (err) {
+    console.error("Błąd serwera podczas gry w sloty:", err);
+    return res.status(500).json({ error: "Błąd serwera" });
+  }
+});
+
+// RESET FINANSÓW
 app.post("/api/profile/reset", autoryzacja, async (req: AuthenticatedRequest, res: Response) => {
   const client = await pool.connect();
   try {
@@ -211,10 +297,10 @@ app.post("/api/profile/reset", autoryzacja, async (req: AuthenticatedRequest, re
 
     await client.query("BEGIN");
     await client.query("DELETE FROM historia_gier WHERE id_gracza = $1", [idGracza]);
-    await client.query("UPDATE gracze SET saldo = 5000.00 WHERE id = $1", [idGracza]);
+    await client.query("UPDATE gracze SET saldo = 10000.00 WHERE id = $1", [idGracza]);
     await client.query("COMMIT");
 
-    res.json({ message: "Zresetowano finanse do 5000 PLN oraz wyczyszczono historię!" });
+    res.json({ message: "Zresetowano finanse do 10000 PLN oraz wyczyszczono historię!" });
   } catch (error) {
     await client.query("ROLLBACK");
     console.error(error);

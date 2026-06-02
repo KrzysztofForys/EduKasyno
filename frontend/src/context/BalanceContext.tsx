@@ -27,10 +27,10 @@ export const BalanceProvider = ({ children }: BalanceProviderProps) => {
             });
             if (res.ok) {
                 const data = await res.json();
-                setBalance(data.saldo); 
+                setBalance(Number(data.saldo)); 
             }
         } catch (err) {
-            console.error("Błąd Contextu przy pobieraniu salda:", err);
+            console.error("Błąd pobierania salda z bazy:", err);
         }
     };
 
@@ -38,18 +38,12 @@ export const BalanceProvider = ({ children }: BalanceProviderProps) => {
         refreshBalance();
     }, []);
 
+    // Ta funkcja służy teraz WYŁĄCZNIE do szybkiej weryfikacji na froncie, czy użytkownik ma za co grać
     const tryToChangeBalance = (amount: number): boolean => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            alert("Musisz być zalogowany!");
-            return false;
-        }
-
         if (balance + amount >= 0) {
-            setBalance((prevBalance) => prevBalance + amount);
             return true;
         } else {
-            alert("Brak środków na koncie!");
+            alert("Brak wystarczającej ilości żetonów na koncie!");
             return false;
         }
     };
@@ -64,7 +58,7 @@ export const BalanceProvider = ({ children }: BalanceProviderProps) => {
 export const useBalance = () => {
     const context = useContext(BalanceContext);
     if (!context) {
-        throw new Error('useBalance must be used within a BalanceProvider');
+        throw new Error("useBalance must be used within a BalanceProvider");
     }
     return context;
 };

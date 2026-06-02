@@ -4,7 +4,7 @@ import { ScratchCard } from "../components/ScratchCard";
 import { audio } from "../utils/audio";
 import { useBalance } from "../context/BalanceContext";
 
-// Define Card configurations for Lobby
+// Definicje konfiguracji kart w Lobby
 interface CardConfig {
   id: "classic" | "gold" | "extreme";
   name: string;
@@ -57,7 +57,7 @@ const CARDS_LOBBY: CardConfig[] = [
   },
 ];
 
-// Scratch Card State Definitions
+// Definicje stanów zdrapek
 interface ClassicCardState {
   fields: { amount: number; isWinning: boolean }[];
 }
@@ -78,7 +78,8 @@ type CardState =
   | { type: "extreme"; data: ExtremeCardState };
 
 export const Scratch = () => {
-  const { tryToChangeBalance } = useBalance();
+  // POBIERAMY REFRESHBALANCE - to wymusi aktualizację licznika na ekranie
+  const { balance, refreshBalance } = useBalance();
   const [gameState, setGameState] = useState<"lobby" | "playing" | "revealing" | "complete">("lobby");
   const [activeCard, setActiveCard] = useState<CardConfig | null>(null);
   const [cardState, setCardState] = useState<CardState | null>(null);
@@ -87,14 +88,19 @@ export const Scratch = () => {
   const [payout, setPayout] = useState(0);
   const [showResultModal, setShowResultModal] = useState(false);
 
-  // Generate Card values on buy
+  // Generowanie wartości przy wyborze karty
   const handleSelectCard = (card: CardConfig) => {
+    if (balance < card.cost) {
+      alert("Masz za mało żetonów, aby kupić tę zdrapkę!");
+      return;
+    }
+
     setActiveCard(card);
     setIsCanvasRevealed(false);
     setPayout(0);
     setShowResultModal(false);
+    setIsBought(false);
 
-    // Generate specific card logic
     let generatedState: CardState;
     if (card.id === "classic") {
       generatedState = { type: "classic", data: generateClassicCard() };
@@ -108,11 +114,10 @@ export const Scratch = () => {
     setGameState("playing");
   };
 
-  // --- GAME GENERATORS (Weighted Probabilities) ---
-
+  // --- GENERATORY LOGIKI (PROBABILITIES) ---
   const generateClassicCard = (): ClassicCardState => {
     const amounts = [2, 5, 10, 20, 50, 100, 500];
-    const isWin = Math.random() < 0.42; // ~42% win rate
+    const isWin = Math.random() < 0.42;
 
     if (isWin) {
       const roll = Math.random();
@@ -164,7 +169,7 @@ export const Scratch = () => {
   };
 
   const generateGoldCard = (): GoldCardState => {
-    const isWin = Math.random() < 0.35; // 35% win rate
+    const isWin = Math.random() < 0.35;
     const winningNumbers: number[] = [];
     while (winningNumbers.length < 2) {
       const n = Math.floor(Math.random() * 89) + 10;
@@ -217,7 +222,7 @@ export const Scratch = () => {
   };
 
   const generateExtremeCard = (): ExtremeCardState => {
-    const isWin = Math.random() < 0.28; // 28% win rate
+    const isWin = Math.random() < 0.28;
 
     const multRoll = Math.random();
     let multiplier = 1;
@@ -260,13 +265,11 @@ export const Scratch = () => {
     return { multiplier, boxes };
   };
 
-  // --- SCRATCH COMPLETION LOGIC (Zapis do bazy danych z poprawną autoryzacją) ---
-
+  // --- LOGIKA ZAKOŃCZENIA ZDRAPYWANIA ---
   const handleScratchComplete = async () => {
     if (gameState !== "playing") return;
     setGameState("revealing");
 
-    // Calculate payouts
     let totalWin = 0;
     if (cardState?.type === "classic") {
       const amounts = cardState.data.fields.map((f) => f.amount);
@@ -302,19 +305,15 @@ export const Scratch = () => {
 
     setPayout(totalWin);
 
-    // WYKONYWANIE ŻĄDANIA DO BACKENDU (Zapis wyniku rundy i update salda w PG)
     try {
-      const token = localStorage.getItem("token"); // Pobranie tokenu z pamięci przeglądarki
-
-      if (!token) {
-        throw new Error("Brak tokenu autoryzacji w localStorage.");
-      }
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Brak tokenu autoryzacji.");
 
       const response = await fetch("http://localhost:3001/api/games/scratch/result", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // <- DODANY NAGŁÓWEK DO AUTORYZACJI JWT
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
           wynik: totalWin,
@@ -322,24 +321,19 @@ export const Scratch = () => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Serwer odpowiedział statusem błędu: ${response.status}`);
+      if (!response.ok) throw new Error(`Serwer odpowiedział statusem: ${response.status}`);
+
+      const data = await response.json();
+
+      if (data.success) {
+        // WYMUSZENIE NATYCHMIASTOWEJ SYNCHRONIZACJI Z FRONTENDEM
+        refreshBalance();
       }
-
-      // Aktualizacja lokalnego salda w Context o czysty zysk/stratę z tej rundy
-      const roznicaSalda = totalWin - activeCard!.cost;
-      tryToChangeBalance(roznicaSalda);
-
     } catch (err) {
-      console.error("Nie udało się zsynchronizować gry z bazą danych:", err);
-      alert("Problem z połączeniem z bazą. Wynik zapisany tylko tymczasowo (w trybie offline).");
-      
-      // Awaryjny fallback, gdyby backend leżał
-      const roznicaSalda = totalWin - activeCard!.cost;
-      tryToChangeBalance(roznicaSalda);
+      console.error("Błąd zapisu w DB:", err);
+      alert("Problem z połączeniem z bazą danych. Wynik nie został zsynchronizowany.");
     }
 
-    // Trigger visual/sound feedback
     setTimeout(() => {
       if (totalWin > 0) {
         audio.playWinSound(totalWin >= activeCard!.cost * 2);
@@ -353,11 +347,7 @@ export const Scratch = () => {
 
   const handleScratchAll = () => {
     if (!isBought) {
-      if (!tryToChangeBalance(-activeCard!.cost)) {
-        return;
-      } else {
-        audio.playCoinSound();
-      }
+      audio.playCoinSound();
     }
     setIsCanvasRevealed(true);
   };
@@ -382,38 +372,27 @@ export const Scratch = () => {
       {/* LOBBY VIEW */}
       {gameState === "lobby" && (
         <div className={styles.grid}>
-          {CARDS_LOBBY.map((card) => {
-            return (
-              <div
-                key={card.id}
-                className={`${styles.choiceCard} ${card.tierClass}`}
-              >
-                <div className={`${styles.tierTag} ${card.tagClass}`}>
-                  {card.tag}
-                </div>
-                <div className={styles.cardIcon}>{card.icon}</div>
-                <h3 className={styles.cardName}>{card.name}</h3>
-                <p className={styles.cardDesc}>{card.desc}</p>
-                <div className={styles.costSection}>
-                  <span>{card.cost}</span>
-                  <img src="zeton-portfel.svg" alt="Żeton" className={styles.tokenIcon} />
-                </div>
-                <button
-                  className={styles.playButton}
-                  onClick={() => handleSelectCard(card)}
-                >
-                  Wybierz zdrapkę
-                </button>
+          {CARDS_LOBBY.map((card) => (
+            <div key={card.id} className={`${styles.choiceCard} ${card.tierClass}`}>
+              <div className={`${styles.tierTag} ${card.tagClass}`}>{card.tag}</div>
+              <div className={styles.cardIcon}>{card.icon}</div>
+              <h3 className={styles.cardName}>{card.name}</h3>
+              <p className={styles.cardDesc}>{card.desc}</p>
+              <div className={styles.costSection}>
+                <span>{card.cost}</span>
+                <img src="zeton-portfel.svg" alt="Żeton" className={styles.tokenIcon} />
               </div>
-            );
-          })}
+              <button className={styles.playButton} onClick={() => handleSelectCard(card)}>
+                Wybierz zdrapkę
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
       {/* GAMEPLAY VIEW */}
       {activeCard && cardState && (gameState === "playing" || gameState === "revealing" || gameState === "complete") && (
         <div className={styles.gameArea}>
-          {/* Scratch Card Frame Wrapper */}
           <ScratchCard
             cartCost={activeCard.cost}
             width={activeCard.width}
@@ -423,17 +402,12 @@ export const Scratch = () => {
             onComplete={handleScratchComplete}
             onBought={(isBought) => { setIsBought(isBought); }}
           >
-            {/* UNDERLYING CONTENTS RENDERED DYNAMICALLY BASED ON CARD TYPE */}
-
             {cardState.type === "classic" && (
               <div className={styles.classicInnerGrid}>
                 {cardState.data.fields.map((field, idx) => (
                   <div
                     key={idx}
-                    className={`${styles.classicScratchField} ${field.isWinning && (gameState === "complete" || gameState === "revealing")
-                      ? styles.winning
-                      : ""
-                      }`}
+                    className={`${styles.classicScratchField} ${field.isWinning && (gameState === "complete" || gameState === "revealing") ? styles.winning : ""}`}
                   >
                     <div className={styles.fieldAmount}>
                       {field.amount}
@@ -447,27 +421,20 @@ export const Scratch = () => {
 
             {cardState.type === "gold" && (
               <div className={styles.goldInnerContainer}>
-                {/* Winning Numbers Header */}
                 <div className={styles.goldWinningSection}>
                   <div className={styles.goldWinLabel}>Wygrane Liczby</div>
                   <div className={styles.goldWinNumbers}>
                     {cardState.data.winningNumbers.map((num, idx) => (
-                      <div key={idx} className={styles.goldWinNumberBox}>
-                        {num}
-                      </div>
+                      <div key={idx} className={styles.goldWinNumberBox}>{num}</div>
                     ))}
                   </div>
                 </div>
 
-                {/* Player Numbers Grid */}
                 <div className={styles.goldPlayerSection}>
                   {cardState.data.playerCards.map((card, idx) => (
                     <div
                       key={idx}
-                      className={`${styles.goldPlayerBox} ${card.isWinning && (gameState === "complete" || gameState === "revealing")
-                        ? styles.winning
-                        : ""
-                        }`}
+                      className={`${styles.goldPlayerBox} ${card.isWinning && (gameState === "complete" || gameState === "revealing") ? styles.winning : ""}`}
                     >
                       <div className={styles.goldNumber}>{card.number}</div>
                       <div className={styles.goldPrize}>
@@ -486,9 +453,7 @@ export const Scratch = () => {
                   <span className={styles.extremeMultLabel}>Szansa na Jackpot</span>
                   <div className={styles.extremeMultiplierBox}>
                     <span className={styles.extremeMultLabel}>Mnożnik:</span>
-                    <span className={styles.extremeMultValue}>
-                      x{cardState.data.multiplier}
-                    </span>
+                    <span className={styles.extremeMultValue}>x{cardState.data.multiplier}</span>
                   </div>
                 </div>
 
@@ -496,10 +461,7 @@ export const Scratch = () => {
                   {cardState.data.boxes.map((box, idx) => (
                     <div
                       key={idx}
-                      className={`${styles.extremeBox} ${box.prize > 0
-                        ? styles.winning
-                        : styles.empty
-                        }`}
+                      className={`${styles.extremeBox} ${box.prize > 0 ? styles.winning : styles.empty}`}
                     >
                       {box.prize > 0 ? (
                         <>
@@ -510,9 +472,7 @@ export const Scratch = () => {
                           <div className={styles.extremeBoxIcon}>💎</div>
                         </>
                       ) : (
-                        <div style={{ fontSize: "10px", color: "rgba(255, 0, 127, 0.4)", fontWeight: 700 }}>
-                          X
-                        </div>
+                        <div style={{ fontSize: "10px", color: "rgba(255, 0, 127, 0.4)", fontWeight: 700 }}>X</div>
                       )}
                     </div>
                   ))}
@@ -550,12 +510,13 @@ export const Scratch = () => {
       {showResultModal && activeCard && (
         <div className={styles.modal}>
           <div
-            className={`${styles.modalContent} ${activeCard.id === "classic"
-              ? styles.modalThemeClassic
-              : activeCard.id === "gold"
+            className={`${styles.modalContent} ${
+              activeCard.id === "classic"
+                ? styles.modalThemeClassic
+                : activeCard.id === "gold"
                 ? styles.modalThemeGold
                 : styles.modalThemeExtreme
-              }`}
+            }`}
           >
             {payout > 0 ? (
               <>
@@ -566,8 +527,7 @@ export const Scratch = () => {
                   <img src="zeton-portfel.svg" alt="Żetony" style={{ width: "28px" }} />
                 </div>
                 <p className={styles.modalText}>
-                  Zdrapka okazała się szczęśliwa! Twoja nagroda w wysokości {payout} żetonów
-                  wyszła z gry i została zaktualizowana w bazie danych.
+                  Zdrapka okazała się szczęśliwa! Twoja nagroda w wysokości {payout} żetonów została zaktualizowana w bazie danych.
                 </p>
               </>
             ) : (
@@ -575,8 +535,7 @@ export const Scratch = () => {
                 <div className={styles.modalIcon}>😢</div>
                 <h2 className={`${styles.modalTitle} styles.modalTitleLose`}>Spróbuj Ponownie</h2>
                 <p className={styles.modalText} style={{ marginTop: "18px" }}>
-                  Tym razem się nie udało. Nie poddawaj się! Każda kolejna zdrapka to nowa
-                  szansa na rozbicie banku.
+                  Tym razem się nie udało. Nie poddawaj się! Każda kolejna zdrapka to nowa szansa na rozbicie banku.
                 </p>
               </>
             )}

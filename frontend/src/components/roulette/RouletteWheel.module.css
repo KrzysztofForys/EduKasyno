@@ -1,0 +1,65 @@
+/* RouletteWheel.module.css */
+
+.wheelSection {
+  flex: 0 1 480px;
+  text-align: center;
+  background: #111;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #292929;
+}
+
+.wheelSvg {
+  max-width: 440px;
+  filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.8));
+}
+
+.historyContainer {
+  margin-top: 20px;
+}
+
+.historyHeader {
+  font-size: 13px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.historyList {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.historyEmpty {
+  font-size: 14px;
+  color: #555;
+  font-style: italic;
+}
+
+.historyCircle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.red {
+  background: #cc0000;
+}
+
+.black {
+  background: #222222;
+}
+
+.green {
+  background: #008000;
+}

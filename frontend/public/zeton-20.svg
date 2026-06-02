@@ -9,7 +9,7 @@
    id="Capa_1"
    viewBox="-47.78 -47.78 573.34 573.34"
    xml:space="preserve"
-   sodipodi:docname="zeton-50.svg"
+   sodipodi:docname="zeton-20.svg"
    inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -25,7 +25,7 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:zoom="5.7063517"
-   inkscape:cx="31.631419"
+   inkscape:cx="31.806662"
    inkscape:cy="39.166881"
    inkscape:window-width="1920"
    inkscape:window-height="1009"
@@ -39,7 +39,7 @@
    id="SVGRepo_bgCarrier"
    stroke-width="0"
    transform="matrix(0.99670623,0,0,0.99670623,2.1349051,2.1349001)"
-   style="display:inline;fill:#1a1a1a;fill-opacity:1"
+   style="display:inline;fill:#16a34a;fill-opacity:1"
    inkscape:label="SVGRepo_bgCarrier">
 
 <rect
@@ -51,7 +51,7 @@
    fill="#9cec7e"
    strokewidth="0"
    id="rect1"
-   style="fill:#1a1a1a;fill-opacity:1" />
+   style="fill:#16a34a;fill-opacity:1" />
 
 </g>
 
@@ -83,4 +83,4 @@
      id="tspan1"
      style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:152.891px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:5.7334"
      x="237.15092"
-     y="294.63437">50</tspan></text></svg>
+     y="294.63437">20</tspan></text></svg>

@@ -1,0 +1,97 @@
+/* ChipSelector.module.css */
+
+.controlsBar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px;
+}
+
+.chipLabel {
+  display: block;
+  font-size: 12px;
+  color: #8bcf9a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.chipList {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.chipButton {
+  margin: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  padding: 0;
+  overflow: hidden;
+}
+
+.chipButton:hover:not(.chipSelected) {
+  transform: scale(1.08);
+}
+
+.chipSelected {
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+  transform: scale(1.15);
+}
+
+.chipImg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.chipBtn1 { background: #ffffff; color: #111; }
+.chipBtn2 { background: #ff4d4d; color: #fff; }
+.chipBtn5 { background: #3399ff; color: #fff; }
+.chipBtn10 { background: #33cc66; color: #fff; }
+.chipBtn20 { background: #1a1a1a; color: #fff; }
+.chipBtn50 { background: linear-gradient(135deg, #ffd700, #b39700); color: #fff; }
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.clearBtn {
+  margin: 0;
+  background: rgba(220, 53, 69, 0.2);
+  color: var(--color-danger-light);
+  border: 1.5px solid var(--color-danger);
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clearBtn:hover:not(:disabled) {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+.clearBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

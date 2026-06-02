@@ -35,7 +35,7 @@ export const BettingTable = ({
   return (
     <div className={styles.tableSection}>
       <div className={styles.tableWrapper}>
-        <svg viewBox="0 0 920 340" width="100%" height="auto" className={styles.tableSvg}>
+        <svg viewBox="0 0 920 340" className={styles.tableSvg}>
           <defs>
             {/* Efekt podświetlenia hover pól */}
             <filter id="hoverGlow" x="-10%" y="-10%" width="120%" height="120%">

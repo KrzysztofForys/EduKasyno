@@ -21,7 +21,7 @@ export const Navbar = () => {
       <div className={styles.navContainer}>
         {/* LOGO / NAZWA KASYNA */}
         <Link to="/" className={styles.logo}>
-          🎰 EduKasyno
+          EduKasyno
         </Link>
 
         {/* LINKI NAWIGACYJNE */}
@@ -39,17 +39,24 @@ export const Navbar = () => {
             Zdrapki
           </Link>
           <Link to="/profil" className={`${styles.navLink} ${styles.profileLink}`}>
-            👤 Mój Profil
+            Mój Profil
           </Link>
         </div>
 
-        {/* SEKCJA SALDA W NAVBARZE (SKRÓCONE) */}
         <div className={styles.balanceSection}>
-          <span className={styles.balanceLabel}>Saldo:</span>
-          <div className={styles.balanceValue}>
-            <span title={`Dokładne saldo: ${balance}`}>{formatBalance(balance)}</span>
-            <img src="zeton-portfel.svg" alt="Żetony" className={styles.tokenIcon} />
-          </div>
+          <span className={styles.balanceLabel}>SALDO:</span>
+
+          <span
+            title={`Dokładne saldo: ${balance}`}
+            className={styles.balanceValue}
+          >
+            {formatBalance(balance)}
+            <img
+              src="zeton-portfel.svg"
+              alt="Żetony"
+              className={styles.tokenIcon}
+            />
+          </span>
         </div>
       </div>
     </nav>

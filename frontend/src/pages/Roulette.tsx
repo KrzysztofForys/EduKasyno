@@ -291,6 +291,40 @@ export const Roulette = () => {
     }
   };
 
+      if (progress < 1) {
+        animationFrameId.current = requestAnimationFrame(animate);
+      } else {
+        // Zakończenie animacji — rozliczenie wygranych
+        setSpinning(false);
+
+        let totalWin = 0;
+        Object.entries(bets).forEach(([betKey, betValue]) => {
+          const coveredNums = getTargetedNumbers(betKey);
+          if (coveredNums.includes(winningItem.value)) {
+            if (betKey.startsWith("straight-")) totalWin += betValue * 36;
+            else if (betKey.startsWith("split-")) totalWin += betValue * 18;
+
+            // Deflector rendering removed – handled in collision detection
+
+            else if (betKey.startsWith("corner-")) totalWin += betValue * 9;
+            else if (betKey.startsWith("sixline-")) totalWin += betValue * 6;
+            else if (betKey.startsWith("column-") || betKey.startsWith("dozen-")) totalWin += betValue * 3;
+            else totalWin += betValue * 2;
+          }
+        });
+
+        setBalance(prev => prev + totalWin);
+        setHistory(prev => [winningItem, ...prev.slice(0, 4)]);
+        setPayoutInfo({ totalBet: totalBetAmount, winAmount: totalWin, winningNum: winningItem });
+        setBets({});
+        setShowResultModal(true);
+      }
+    };
+
+    animationFrameId.current = requestAnimationFrame(animate);
+  };
+
+  // Sprzątanie referencji animacji po odmontowaniu
   useEffect(() => {
     return () => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
@@ -307,6 +341,22 @@ export const Roulette = () => {
       </div>
 
       <div className={styles.gameLayout}>
+  // ─── RENDER ────────────────────────────────────────────────────────────────
+  return (
+    <div className={`page-content ${styles.rouletteContainer}`}>
+
+      {/* Nagłówek */}
+      <div className={styles.headerLayout}>
+        <div>
+          <h1 className={styles.title}>Ruletka Królewska</h1>
+          <p className={styles.subtitle}>Puść kulkę w ruch i przetestuj swoje szczęście!</p>
+        </div>
+      </div>
+
+      {/* Główna sekcja gry */}
+      <div className={styles.gameLayout}>
+
+        {/* LEWA STRONA: Koło ruletki */}
         <RouletteWheel
           wheelAngle={wheelAngle}
           ballX={ballX}
@@ -356,6 +406,53 @@ export const Roulette = () => {
         payoutInfo={payoutInfo}
         onClose={() => setShowResultModal(false)}
       />
+
+        {/* PRAWA STRONA: Stół zakładowy */}
+        <div className={styles.rightColumn}>
+          <BettingTable
+            bets={bets}
+            hoveredBetKey={hoveredBetKey}
+            highlightedNumbers={highlightedNumbers}
+            spinning={spinning}
+            onPlaceBet={handlePlaceBet}
+            onRemoveBet={handleRemoveBet}
+            onHoverChange={setHoveredBetKey}
+            onMouseMoveOnGrid={handleMouseMoveOnGrid}
+            selectedChip={selectedChip}
+            onSelectChip={setSelectedChip}
+            onClearBets={handleClearBets}
+          />
+        </div>
+      </div>
+
+      {/* Przycisk Zakręć kołem + suma zakładów */}
+      <div className={styles.spinContainer}>
+        <div className={styles.totalBetLabel}>
+          Suma na stole:{" "}
+          <span className={styles.totalBetAmount}>
+            {totalBetAmount}
+            <img src="zeton-portfel.svg" alt="Żeton" style={{ width: "18px", height: "18px" }} />
+          </span>
+        </div>
+        <button
+          onClick={handleSpin}
+          disabled={spinning || totalBetAmount === 0}
+          className={styles.spinBtn}
+        >
+          {spinning ? "Losowanie..." : "Zakręć kołem!"}
+        </button>
+        <p className={styles.helpText}>
+          * Kliknij lewym przyciskiem, aby postawić żeton. Użyj prawego przycisku myszy na polu, aby go zdjąć.
+        </p>
+      </div>
+
+      {/* Modal z wynikiem rundy */}
+      <ResultModal
+        show={showResultModal}
+        payoutInfo={payoutInfo}
+        onClose={() => setShowResultModal(false)}
+      />
+
     </div>
   );
 };

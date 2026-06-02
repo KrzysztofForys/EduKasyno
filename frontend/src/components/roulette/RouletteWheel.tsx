@@ -25,7 +25,7 @@ export const RouletteWheel = ({ wheelAngle, ballX, ballY, history }: RouletteWhe
   return (
     <div className={styles.wheelSection}>
 
-      <svg viewBox="0 0 500 500" width="100%" height="auto" className={styles.wheelSvg}>
+      <svg viewBox="0 0 500 500" className={styles.wheelSvg}>
         <defs>
           {/* Radialny gradient drewna mahoniowego obudowy */}
           <radialGradient id="woodGrad" cx="50%" cy="50%" r="50%">
@@ -191,7 +191,7 @@ export const RouletteWheel = ({ wheelAngle, ballX, ballY, history }: RouletteWhe
           <circle cx="250" cy="250" r="5" fill="#0c0c0e" />
         </g>
 
-{DEFLECTORS.map((d, idx) => (
+        {DEFLECTORS.map((d, idx) => (
           <g key={idx} transform={`rotate(${d.rotation}, ${d.cx}, ${d.cy})`}>
             <polygon
               points={`${d.cx},${d.cy - 12} ${d.cx + 12},${d.cy} ${d.cx},${d.cy + 12} ${d.cx - 12},${d.cy}`}

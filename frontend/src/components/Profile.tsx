@@ -117,7 +117,10 @@ export const Profile: React.FC = () => {
   if (loading) {
     return (
       <div className={styles.loadingState}>
-        Wczytywanie statystyk...
+        <div className={styles.loaderWrapper}>
+          <div className={styles.spinner}></div>
+          <p>Wczytywanie statystyk profilu...</p>
+        </div>
       </div>
     );
   }
@@ -125,118 +128,135 @@ export const Profile: React.FC = () => {
   if (error) {
     return (
       <div className={styles.errorState}>
-        {error}
-        <button
-          onClick={handleLogout}
-          className="logout-btn"
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#f44336",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: "bold"
-          }}
-        >
-          Wyloguj się
-        </button>
+        <div className={styles.errorCard}>
+          <span className={styles.errorIcon}>⚠️</span>
+          <p className={styles.errorText}>{error}</p>
+          <button
+            onClick={handleLogout}
+            className={styles.errorLogoutBtn}
+          >
+            Wyloguj się
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className={styles.profilePage}>
-      <h1>Profil użytkownika: {profile?.login}</h1>
+      <h1 className={styles.profileTitle}>
+        Profil użytkownika: <span>{profile?.login}</span>
+      </h1>
 
-      <div className={styles.financeCard}>
-        <div className={styles.profileInfoWithToken}>
-          <div>
-            Saldo konta: <strong>{balance}</strong>
+      {/* Główna siatka dwukolumnowa */}
+      <div className={styles.dashboardGrid}>
+
+        {/* LEWA KOLUMNA: Finanse i Akcje */}
+        <aside className={styles.sidebar}>
+          <div className={styles.financeCard}>
+            <div className={styles.cardHeader}>
+              <h3>Twoje Środki</h3>
+            </div>
+
+            <div className={styles.profileInfoWithToken}>
+              <div className={styles.balanceText}>
+                Saldo konta: <strong>{balance}</strong>
+              </div>
+              <img
+                src="/zeton-portfel.svg"
+                alt="Żetony"
+                className={styles.profileInfoWithTokenImg}
+              />
+            </div>
+
+            <div className={styles.profileInfoWithToken}>
+              <div className={styles.sumText}>
+                Suma wygranych: <strong>{profile?.sumaWygranych}</strong>
+              </div>
+              <img
+                src="/zeton-portfel.svg"
+                alt="Żetony"
+                className={styles.profileInfoWithTokenImg}
+              />
+            </div>
+
+            <div className={styles.actionButtons}>
+              <button
+                onClick={handleReset}
+                disabled={isResetting}
+                className={styles.resetButton}
+              >
+                {isResetting ? "Przetwarzanie..." : "Resetuj saldo do 10k"}
+              </button>
+              <button
+                onClick={handleLogout}
+                className={styles.logoutButton}
+              >
+                Wyloguj się
+              </button>
+            </div>
           </div>
-          <img
-            src="/zeton-portfel.svg"
-            alt="Żetony"
-            className={styles.profileInfoWithTokenImg}
-          />
-        </div>
+        </aside>
 
-        <p>Wszystkie gry: {profile?.lacznieGier}</p>
+        {/* PRAWA KOLUMNA: Statystyki i Historia gier */}
+        <main className={styles.mainContent}>
+          {/* Górne podsumowanie statystyk w formie poziomych kafelków */}
+          <div className={styles.statsRow}>
+            <div className={styles.statBox}>
+              <span className={styles.statLabel}>Rozegrane partie</span>
+              <span className={styles.statValue}>{profile?.lacznieGier || 0}</span>
+            </div>
+            <div className={styles.statBox}>
+              <span className={styles.statLabel}>Trafione wygrane</span>
+              <span className={styles.statValue}>{profile?.wygraneGier || 0}</span>
+            </div>
+          </div>
 
-        <p>Trafione wygrane: {profile?.wygraneGier}</p>
+          {/* Tabela z historią */}
+          <div className={styles.historySection}>
+            <h3 className={styles.historyTitle}>Ostatnie 10 gier</h3>
 
-        <div className={styles.profileInfoWithToken}>
-          <div>Suma wygranych: {profile?.sumaWygranych}</div>
-          <img
-            src="/zeton-portfel.svg"
-            alt="Żetony"
-            className={styles.profileInfoWithTokenImg}
-          />
-        </div>
-        <div style={{ display: "inline-flex", gap: "10px" }}>
-          <button
-            onClick={handleReset}
-            disabled={isResetting}
-            className={styles.resetButton}
-          >
-            {isResetting
-              ? "Przetwarzanie..."
-              : "Resetuj saldo do 10k"}
-          </button>
-          <button
-            onClick={handleLogout}
-            className={styles.resetButton}
-          >
-            Wyloguj się
-          </button>
-        </div>
-      </div>
+            {history.length === 0 ? (
+              <p className={styles.emptyHistory}>
+                Brak rozegranych partii.
+              </p>
+            ) : (
+              <div className={styles.tableResponsive}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr className={styles.tableHeaderRow}>
+                      <th className={styles.tableCell}>Gra</th>
+                      <th className={styles.tableCell}>Kwota końcowa</th>
+                      <th className={styles.tableCell}>Data rozegrania</th>
+                    </tr>
+                  </thead>
 
-      <div>
-        <h3>Ostatnie 10 gier:</h3>
+                  <tbody>
+                    {history.map((item, index) => (
+                      <tr key={index} className={styles.tableRow}>
+                        <td className={styles.tableCell}>
+                          {item.nazwa_gry}
+                        </td>
 
-        {history.length === 0 ? (
-          <p className={styles.emptyHistory}>
-            Brak rozegranych partii.
-          </p>
-        ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr className={styles.tableHeaderRow}>
-                <th className={styles.tableCell}>Gra</th>
-                <th className={styles.tableCell}>Kwota końcowa</th>
-                <th className={styles.tableCell}>Data rozegrania</th>
-              </tr>
-            </thead>
+                        <td
+                          className={`${styles.tableCell} ${item.wynik > 0 ? styles.winCell : styles.loseCell
+                            }`}
+                        >
+                          {item.wynik > 0 ? `+${item.wynik}` : item.wynik} żetonów
+                        </td>
 
-            <tbody>
-              {history.map((item, index) => (
-                <tr key={index} className={styles.tableRow}>
-                  <td className={styles.tableCell}>
-                    {item.nazwa_gry}
-                  </td>
+                        <td className={styles.dateCell}>
+                          {new Date(item.data_gry).toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </main>
 
-                  <td
-                    className={
-                      item.wynik > 0
-                        ? styles.winCell
-                        : styles.loseCell
-                    }
-                  >
-                    {item.wynik > 0
-                      ? `+${item.wynik}`
-                      : item.wynik}{" "}
-                    żetonów
-                  </td>
-
-                  <td className={styles.dateCell}>
-                    {new Date(item.data_gry).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
       </div>
     </div>
   );

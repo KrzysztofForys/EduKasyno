@@ -1,20 +1,10 @@
 import { Link } from "react-router-dom";
 import { useBalance } from "../context/BalanceContext";
 import styles from "./Navbar.module.css";
+import { formatBalance } from "../utils/format.ts";
 
 export const Navbar = () => {
   const { balance } = useBalance();
-
-  // Funkcja skracająca saldo (np. 1500 -> 1.5K, 2000000 -> 2M)
-  const formatBalance = (num: number): string => {
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-    }
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
-    }
-    return num.toString();
-  };
 
   return (
     <nav className={styles.navbar}>

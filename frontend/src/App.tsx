@@ -1,11 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { MainLayout } from "./layout/MainLayout.tsx"
-import { ProtectedRoute } from "./components/ProtectedRoute.tsx" // Import guard'a
+import { ProtectedRoute } from "./components/ProtectedRoute.tsx"
 
-// Import Twojego nowego kontenera logowania
+// Importy kontenerów autoryzacji
 import { LoginContainer } from "./pages/LoginContainer.tsx"
-
+import { RegisterContainer } from "./pages/RegisterContainer.tsx" // Upewnij się, że masz ten plik w pages!
+import { Profile } from "./components/Profile.tsx"
 import { Home } from "./pages/Home.tsx"
 import Slots from "./pages/Slots.tsx"
 import { Roulette } from "./pages/Roulette"
@@ -17,24 +18,42 @@ import { Team } from "./pages/Team.tsx"
 import { ResponsibleGaming } from "./pages/ResponsibleGaming.tsx"
 import { Terms } from "./pages/Terms.tsx"
 import { Help } from "./pages/Help.tsx"
+
 import "./App.css"
 
 export const App = () => {
   const [tokens, setTokens] = useState<number>(1000)
 
-  // Stan autoryzacji (wartość początkowa: false)
-  // Przekaż funkcję setIsAuthenticated do komponentu logowania, aby zmienić ją na true po sukcesie
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  // Sprawdzamy przy uruchomieniu aplikacji, czy token istnieje w pamięci podręcznej
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem("token") !== null;
+  });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token && isAuthenticated) {
+      setIsAuthenticated(false);
+    }
+  }, [isAuthenticated]);
 
   return (
     <BrowserRouter>
       <Routes>
-        {/* Ścieżka publiczna: Ekran logowania */}
+        {/* ========================================================================= */}
+        {/* ŚCIEŻKI PUBLICZNE (Dostępne BEZ logowania)                                */}
+        {/* ========================================================================= */}
         <Route path="/login" element={
           isAuthenticated ? <Navigate to="/" replace /> : <LoginContainer setIsAuthenticated={setIsAuthenticated} />
         } />
+        
+        {/* TUTAJ BYŁ BŁĄD - DODAJEMY PUBLICZNĄ ŚCIEŻKĘ REJESTRACJI */}
+        <Route path="/register" element={
+          isAuthenticated ? <Navigate to="/" replace /> : <RegisterContainer onSwitchToLogin={() => window.location.href = "/login"} />
+        } />
 
-        {/* Wszystkie ścieżki poniżej wymagają zalogowania */}
+        {/* ========================================================================= */}
+        {/* ŚCIEŻKI PRYWATNE (Wymagają zalogowania - ProtectedRoute)                   */}
+        {/* ========================================================================= */}
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
 
           {/* Główny layout kasyna (paski boczne, navbar, stan żetonów) */}
@@ -43,8 +62,9 @@ export const App = () => {
             <Route path="/sloty" element={<Slots />} />
             <Route path="/ruletka" element={<Roulette balance={tokens} setBalance={setTokens} />} />
             <Route path="/zdrapki" element={<Scratch />} />
+            <Route path="/profil" element={<Profile/>}/>
 
-            {/* Nowe ścieżki */}
+            {/* Pozostałe ścieżki */}
             <Route path="/o-nas" element={<About />} />
             <Route path="/misja" element={<Mission />} />
             <Route path="/kontakt" element={<Contact />} />
@@ -56,7 +76,7 @@ export const App = () => {
 
         </Route>
 
-        {/* Catch-all: jeśli ktoś wpisze bzdurę w URL, przekieruje go do głównej strony (którą i tak sprawdzi Guard) */}
+        {/* Catch-all: Jeśli ścieżka nie istnieje, przekieruj na główną */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

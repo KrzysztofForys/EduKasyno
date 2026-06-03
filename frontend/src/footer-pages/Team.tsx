@@ -15,30 +15,30 @@ export const Team: React.FC = () => {
   const members: TeamMember[] = [
     {
       id: 1,
-      name: "Oskar 'Oskarito'",
-      role: "Lead Founder & Visionary",
-      description: "Mózg operacyjny projektu. Przekształca skomplikowaną mechanikę kasynową w przystępne i wciągające moduły edukacyjne.",
+      name: "Oskar 'Agencik'",
+      role: "Leader",
+      description: "Mózg operacyjny projektu. Przekształca skomplikowaną mechanikę kasynową w przystępne i wciągające moduły edukacyjne (nie na odwrót).",
       emoji: "👑",
       tierClass: styles.tierExtreme,
-      specialty: "Gamification / UX Architecture"
+      specialty: "UI Architecture / API Specialist"
     },
     {
       id: 2,
-      name: "Dr. Kamila",
-      role: "EdTech Methodologist",
-      description: "Dba o to, aby za każdym spinem i zakładem szła realna wartość naukowa. Projektuje ścieżki zapamiętywania wiedzy.",
+      name: "Krzysztof",
+      role: "Project manager",
+      description: "Wprowadza poprawki, gdy inni członkowie zespołu coś zepsują. Odpowiedzialny był za ruletkę i sloty oraz odpowiednie zarządzanie repozytorium GitHub.",
       emoji: "🧠",
       tierClass: styles.tierCyjan,
-      specialty: "Cognitive Psychology / Learning Design"
+      specialty: "Learning Design"
     },
     {
       id: 3,
-      name: "Alex 'Byte'",
-      role: "Core Systems Developer",
+      name: "Marek 'MAREK'",
+      role: "Logic master",
       description: "Czarodziej kodu, który dba o to, by animacje bębnów slotów i algorytmy obliczania balansu śmigały w 120 FPS bez zająknięcia.",
       emoji: "💻",
       tierClass: styles.tierGold,
-      specialty: "React / High-Performance Animations"
+      specialty: "React / High-Performance Animations / Styling"
     }
   ];
 
@@ -59,7 +59,7 @@ export const Team: React.FC = () => {
 
       {/* Siatka z kartami zespołu */}
       <section className={styles.teamGrid}>
-        {members.filter(m => m.id === 1).map((member) => (
+        {members.map((member) => (
           <div key={member.id} className={`${styles.memberCard} ${member.tierClass}`}>
 
             {/* Awatar z emoji i tłem premium */}

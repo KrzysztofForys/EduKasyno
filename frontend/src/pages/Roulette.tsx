@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./Roulette.module.css";
 import { useBalance } from "../context/BalanceContext"; // Import spójnego kontekstu salda
+import WinPopUp from "../components/WinPopUp";
 
 import {
   type RouletteNumber,
@@ -13,7 +14,6 @@ import {
 import { getTargetedNumbers } from "../components/roulette/rouletteLogic";
 import { RouletteWheel } from "../components/roulette/RouletteWheel";
 import { BettingTable } from "../components/roulette/BettingTable";
-import { ResultModal } from "../components/roulette/ResultModal";
 
 export const Roulette = () => {
   // Pobieramy globalne saldo i funkcje synchronizacji z bazą danych
@@ -335,11 +335,22 @@ export const Roulette = () => {
       </div>
 
       {/* Modal z wynikiem rundy */}
-      <ResultModal
-        show={showResultModal}
-        payoutInfo={payoutInfo}
-        onClose={() => setShowResultModal(false)}
-      />
+      {showResultModal && (
+        <WinPopUp
+          message={payoutInfo.winAmount > 0 ? `Wygrałeś! Trafiłeś numer z zakładu.` : `Niestety nie udało się wygrać.`}
+          theme={payoutInfo.winAmount > 0 ? "gold" : "classic"}
+          winAmount={payoutInfo.winAmount}
+          betAmount={payoutInfo.totalBet}
+          onClose={() => setShowResultModal(false)}
+          icon={
+            <div
+              className={`${styles.winningNumberCircle} ${payoutInfo.winningNum?.color === "red" ? styles.red : payoutInfo.winningNum?.color === "black" ? styles.black : styles.green
+                }`}
+            >
+              {payoutInfo.winningNum?.value}
+            </div>}
+        />
+      )}
     </div>
   );
 };

@@ -3,6 +3,7 @@ import styles from "./Scratch.module.css";
 import { ScratchCard } from "../components/ScratchCard";
 import { audio } from "../utils/audio";
 import { useBalance } from "../context/BalanceContext";
+import WinPopUp from "../components/WinPopUp";
 
 // Definicje konfiguracji kart w Lobby
 interface CardConfig {
@@ -335,11 +336,6 @@ export const Scratch = () => {
     }
 
     setTimeout(() => {
-      if (totalWin > 0) {
-        audio.playWinSound(totalWin >= activeCard!.cost * 2);
-      } else {
-        audio.playLoseSound();
-      }
       setShowResultModal(true);
       setGameState("complete");
       setIsBought(false);
@@ -509,41 +505,13 @@ export const Scratch = () => {
 
       {/* POPUP RESULTS MODAL */}
       {showResultModal && activeCard && (
-        <div className={styles.modal}>
-          <div
-            className={`${styles.modalContent} ${activeCard.id === "classic"
-              ? styles.modalThemeClassic
-              : activeCard.id === "gold"
-                ? styles.modalThemeGold
-                : styles.modalThemeExtreme
-              }`}
-          >
-            {payout > 0 ? (
-              <>
-                <div className={styles.modalIcon}>🎉</div>
-                <h2 className={`${styles.modalTitle} styles.modalTitleWin`}>Gratulacje!</h2>
-                <div className={styles.modalPayout}>
-                  <span>+{payout}</span>
-                  <img src="zeton-portfel.svg" alt="Żetony" style={{ width: "28px" }} />
-                </div>
-                <p className={styles.modalText}>
-                  Zdrapka okazała się szczęśliwa! Twoja nagroda w wysokości {payout} żetonów została zaktualizowana w bazie danych.
-                </p>
-              </>
-            ) : (
-              <>
-                <div className={styles.modalIcon}>😢</div>
-                <h2 className={`${styles.modalTitle} styles.modalTitleLose`}>Spróbuj Ponownie</h2>
-                <p className={styles.modalText} style={{ marginTop: "18px" }}>
-                  Tym razem się nie udało. Nie poddawaj się! Każda kolejna zdrapka to nowa szansa na rozbicie banku.
-                </p>
-              </>
-            )}
-            <button className={styles.modalButton} onClick={handleCloseModal}>
-              Zagraj Ponownie
-            </button>
-          </div>
-        </div>
+        <WinPopUp
+          betAmount={activeCard.cost}
+          message={payout > 0 ? "Zdrapka okazała się szczęśliwa!" : "Niestety nie udało się wygrać."}
+          winAmount={payout}
+          theme={activeCard.id}
+          onClose={handleCloseModal}
+        />
       )}
     </div>
   );

@@ -107,3 +107,30 @@
   color: #666;
   font-size: 13px;
 }
+
+.red {
+  background: #cc0000;
+}
+
+.black {
+  background: #222222;
+}
+
+.green {
+  background: #008000;
+}
+
+.winningNumberCircle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  font-weight: bold;
+  color: #fff;
+  border: 4px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  transform: scale(1.15);
+}

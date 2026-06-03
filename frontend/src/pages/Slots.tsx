@@ -3,6 +3,7 @@ import { useBalance } from "../context/BalanceContext.tsx";
 import { BetLayout } from "../layout/BetLayout.tsx";
 import { SlotReel } from "../components/SlotReel.tsx";
 import styles from "./Slots.module.css";
+import WinPopUp from "../components/WinPopUp.tsx";
 
 export default function Slots() {
   const { balance, updateBalance } = useBalance();
@@ -106,20 +107,12 @@ export default function Slots() {
 
       {/* Poprawiony Modal na CSS Modules */}
       {message && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <h2 className={styles.modalMessage}>{message}</h2>
-            {winAmount > 0 && (
-              <div className={styles.modalWinBody}>
-                <div>Wygrana: <span>+{winAmount}</span></div>
-                <img src="zeton-portfel.svg" alt="Żetony" className={styles.modalWinBodyImg} />
-              </div>
-            )}
-            <button onClick={() => setMessage(null)} className={styles.modalCloseBtn}>
-              OK
-            </button>
-          </div>
-        </div>
+        <WinPopUp
+          message={winAmount > 0 ? message : "Niestety nie udało się wygrać."}
+          theme={winAmount > 0 ? "gold" : "classic"}
+          winAmount={winAmount}
+          betAmount={bet}
+          onClose={() => setMessage(null)} />
       )}
     </div>
   );
